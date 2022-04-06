@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'api' => [
+            'driver' => 'passport',
+            'provider' => 'users',
+            'hash'=>false,
+        ],
     ],
 
     /*
@@ -107,5 +112,12 @@ return [
     */
 
     'password_timeout' => 10800,
+
+    'form_params' => [
+        'grant_type' => 'password',
+        'client_id' => env('PASSPORT_CLIENT_ID', '2'),
+        'client_secret' => env('PASSPORT_CLIENT_SECRET', ''),
+        'scope' => '*',
+    ]
 
 ];
