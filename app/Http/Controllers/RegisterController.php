@@ -31,7 +31,7 @@ class RegisterController extends Controller
             'image_base64'=>''
         ]);
 
-        $this->form_params['username'] = $user->email;
+        $this->form_params['username'] = $user->phone;
         $this->form_params['password'] = '123456';
         $response = $this->http->post(config('app.url').'/oauth/token',[
             'form_params' => $this->form_params,
