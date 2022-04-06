@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
+use App\Models\Sms;
 use App\Models\User;
 use GuzzleHttp\Client as Guzzle;
 use Illuminate\Http\Request;
@@ -25,11 +26,13 @@ class RegisterController extends Controller
         $user = User::create([
             'name'  => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password)
+            'password' => bcrypt('123456'),
+            'phone' => $request->phone,
+            'image_base64'=>''
         ]);
 
         $this->form_params['username'] = $user->email;
-        $this->form_params['password'] = $request->password;
+        $this->form_params['password'] = '123456';
         $response = $this->http->post(config('app.url').'/oauth/token',[
             'form_params' => $this->form_params,
         ]);
@@ -42,12 +45,30 @@ class RegisterController extends Controller
 
     public function login(LoginUserRequest $request)
     {
-        $this->form_params['username'] = $request->username;
-        $this->form_params['password'] = $request->password;
+        // 验证验证码verificationCode
+        if(!$sms = Sms::verificationCode($request->code,$request->username)){
+            return response()->json([
+                'data'=>[],
+                'message'=>'验证码错误'
+            ],423);
+        }
+
+        // 验证登入
+        if(!$user = User::findForPhone($request->username)){
+            return response()->json([
+                'data'=>[],
+                'message'=>'用户不存在'
+            ],404);
+        };
+
+
+        // 生成token
+        $this->form_params['username'] = $user->phone;
+        $this->form_params['password'] = '123456';
         $response = $this->http->post(config('app.url').'/oauth/token',[
             'form_params' => $this->form_params,
         ]);
-
+//        Sms::updateCode($request->code,$request->username);
         $token = json_decode((string) $response->getBody(),true);
         return response()->json([
             'token'=>$token

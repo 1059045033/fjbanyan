@@ -17,10 +17,15 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('phone')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->default(bcrypt('123456'));
+            $table->text('image_base64')->comment('存放人脸图片');
+            $table->string('avator')->default('')->comment('头像');
             $table->rememberToken();
-            $table->timestamps();
+            //$table->timestamps();
+            $table->unsignedInteger('created_at');
+            $table->unsignedInteger('updated_at');
         });
     }
 

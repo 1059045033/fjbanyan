@@ -12,7 +12,7 @@ use Laravel\Passport\HasApiTokens;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable,HasApiTokens;
-
+    protected $dateFormat = 'U';
     /**
      * The attributes that are mass assignable.
      *
@@ -22,6 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone',
+        'image_base64',
     ];
 
     /**
@@ -42,4 +44,24 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * 重写oauth授权验证
+     * @param $username
+     * @return mixed
+     */
+    public function findForPassPort($username)
+    {
+        return $this->where('phone',$username)->first();
+    }
+
+    public function findForEmail($username)
+    {
+        return self::where('email',$username)->first();
+    }
+
+    public function findForPhone($username)
+    {
+        return self::where('phone',$username)->first();
+    }
 }

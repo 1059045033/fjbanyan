@@ -26,7 +26,10 @@ class RegisterUserRequest extends FormRequest
         return [
             'name'=>'required|min:6',
             'email'=>'required|email|unique:users',
-            'password'=>'required|min:6',
+            'phone' => [
+                "required","regex:/^1(3|5|7|6|8|4)[\d]{9}$/",
+                "unique:users"
+            ]
         ];
     }
 }
