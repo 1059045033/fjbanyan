@@ -12,8 +12,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 // 注册路由
 Route::post('/register','RegisterController@register');
-
 Route::post('/login','RegisterController@login');
+Route::post('/sms','SmsController@send');
 
 
 
