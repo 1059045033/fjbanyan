@@ -16,7 +16,7 @@ class CreateSmsTable extends Migration
         Schema::create('sms', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('code',10)->comment("验证码");
-            $table->string('mobile')->unique();
+            $table->string('mobile');
             $table->integer('type')->default(0)->comment("0:登入");
             $table->unsignedInteger('expire_time')->comment('过期时间');;
             $table->unsignedInteger('created_at');
