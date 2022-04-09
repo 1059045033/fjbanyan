@@ -22,8 +22,10 @@ class MemberController extends Controller
     public function store(Request $request)
     {
         $user = $request->user();
+        if(!empty($user['image_base64'])){
+            $user['image_base64'] = config('app.url').$user['image_base64'];
+        }
 
-        $user['image_base64'] = config('app.url').$user['image_base64'];
         return $this->myResponse($user,'得到用户信息',200);
     }
 
