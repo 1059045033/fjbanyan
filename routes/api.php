@@ -19,6 +19,7 @@ Route::post('/online','OnlineOfflineController@online');
 Route::post('/offline','OnlineOfflineController@offline');
 Route::post('/onoffline/history','OnlineOfflineController@history');
 Route::get('/regions','WorkRegionController@regions');
+Route::post('/member/upload/face','MemberController@uploadeFace');
 
 
 
