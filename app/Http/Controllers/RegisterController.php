@@ -48,18 +48,12 @@ class RegisterController extends Controller
     {
         // 验证验证码verificationCode
         if(!$sms = Sms::verificationCode($request->code,$request->username)){
-            return response()->json([
-                'data'=>[],
-                'message'=>'验证码错误'
-            ],423);
+            return $this->myResponse([],'验证码错误',423);
         }
 
         // 验证登入
         if(!$user = User::findForPhone($request->username)){
-            return response()->json([
-                'data'=>[],
-                'message'=>'用户不存在'
-            ],404);
+            return $this->myResponse([],'用户不存在',423);
         };
 
 
@@ -69,11 +63,12 @@ class RegisterController extends Controller
         $response = $this->http->post(config('app.url').'/oauth/token',[
             'form_params' => $this->form_params,
         ]);
-//        Sms::updateCode($request->code,$request->username);
+        //Sms::updateCode($request->code,$request->username);
+
         $token = json_decode((string) $response->getBody(),true);
-        return response()->json([
-            'token'=>$token
-        ],200);
+
+        return $this->myResponse(['token'=>$token],'登入成功',200);
+
     }
 
     public function banner()
