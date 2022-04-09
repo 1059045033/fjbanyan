@@ -16,6 +16,6 @@ class Controller extends BaseController
             'code'   => $code,
             'message'=> $message,
             'data'=>$data
-        ],$code);
+        ]);
     }
 }
