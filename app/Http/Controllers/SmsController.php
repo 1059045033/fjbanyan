@@ -31,6 +31,6 @@ class SmsController extends Controller
             'type' => $request->type
         ]);
 
-        return $this->myResponse(['code'=>$code],'短信发送成功',201);
+        return $this->myResponse(['code'=>$code],'短信发送成功',200);
     }
 }

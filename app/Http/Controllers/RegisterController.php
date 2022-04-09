@@ -39,9 +39,7 @@ class RegisterController extends Controller
         ]);
 
         $token = json_decode((string) $response->getBody(),true);
-        return response()->json([
-            'token'=>$token
-        ],201);
+        return $this->myResponse(['token'=>$token],'注册成功',200);
     }
 
     public function login(LoginUserRequest $request)
