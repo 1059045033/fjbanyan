@@ -14,6 +14,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('/register','RegisterController@register');
 Route::post('/login','RegisterController@login');
 Route::post('/sms','SmsController@send');
+Route::get('/banner','SmsController@send');
 
 
 

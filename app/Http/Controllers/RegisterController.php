@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
+use App\Models\ActivityMsg;
 use App\Models\Sms;
 use App\Models\User;
 use GuzzleHttp\Client as Guzzle;
@@ -73,5 +74,10 @@ class RegisterController extends Controller
         return response()->json([
             'token'=>$token
         ],200);
+    }
+
+    public function banner()
+    {
+        ActivityMsg::where(['is_show'=>1])->select();
     }
 }
