@@ -5,9 +5,24 @@ namespace App\Http\Controllers;
 use App\Models\WorkRegion;
 use App\Http\Requests\StoreWorkRegionRequest;
 use App\Http\Requests\UpdateWorkRegionRequest;
+use Illuminate\Http\Request;
 
 class WorkRegionController extends Controller
 {
+
+
+    public function __construct(Request $request)
+    {
+        // 对数据进行处理 处理完就可以拿到用户信息
+        $this->middleware('auth:api');
+    }
+
+    public function regions()
+    {
+        $regions = WorkRegion::all();
+        return $this->myResponse($regions,'获取地图区域成功',200);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +30,7 @@ class WorkRegionController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     /**

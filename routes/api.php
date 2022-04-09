@@ -14,8 +14,17 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('/register','RegisterController@register');
 Route::post('/login','RegisterController@login');
 Route::post('/sms','SmsController@send');
-Route::get('/banner','SmsController@send');
+Route::post('/banner','BannerController@index');
+Route::post('/online','OnlineOfflineController@online');
+Route::post('/offline','OnlineOfflineController@offline');
+Route::post('/onoffline/history','OnlineOfflineController@history');
+Route::get('/regions','WorkRegionController@regions');
 
+
+
+
+
+Route::apiResource('/member','MemberController');
 
 
 

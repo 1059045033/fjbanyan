@@ -9,4 +9,11 @@ class OnlineOffline extends Model
 {
     use HasFactory;
     protected $dateFormat = 'U';
+
+    protected $guarded = [];
+
+    protected function serializeDate($date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
 }

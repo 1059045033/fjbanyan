@@ -19,6 +19,8 @@ class CreateOnlineOfflinesTable extends Migration
             $table->integer('type')->comment('[ 1 : 上线  2 : 下线 ]');
             $table->string('position')->comment('位置 {lag:4,lat:5,h:8}');
             $table->string('address')->comment('详细地址');
+            $table->integer('is_effective')->default(1)->comment('是否有效 [ 1 有效 2无效]');
+            $table->string('imag')->comment('图片')->nullable();
             $table->unsignedInteger('created_at');
             $table->unsignedInteger('updated_at');
         });

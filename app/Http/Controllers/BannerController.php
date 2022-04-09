@@ -13,9 +13,15 @@ class BannerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(StoreBannerRequest $request)
     {
-        //
+
+        $list = Banner::getlist($request->all());
+        return response()->json([
+            'code'    => 200,
+            'message' => '获取成功',
+            'data'    => $list,
+        ],200);
     }
 
     /**

@@ -13,7 +13,7 @@ class StoreOnlineOfflineRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,9 @@ class StoreOnlineOfflineRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'lng'=> 'required',
+            'lat'=> 'required',
+            'address'=> 'required',
         ];
     }
 }
