@@ -1,3 +1,7 @@
 location / {
         try_files $uri $uri/ /index.php?$query_string;
     }
+location /admin {
+        index index.html index.htm;
+        try_files $uri $uri/ /admin/index.html;
+    }
