@@ -30,6 +30,7 @@ class CreateUsersTable extends Migration
             $table->string('city')->comment('市')->nullable();
             $table->string('district')->comment('区')->nullable();
             $table->string('address')->comment('地址')->nullable();
+            $table->integer('is_online')->default(0)->comment('是否上线 [0offline 1online]');
 
             $table->text('image_base64')->comment('存放人脸图片');
             $table->string('avator')->default('')->comment('头像');

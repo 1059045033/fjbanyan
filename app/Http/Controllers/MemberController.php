@@ -48,8 +48,33 @@ class MemberController extends Controller
         }else{
             return $this->myResponse([],'更新头像失,败稍后再试',423);
         }
-
     }
+
+
+
+
+    public function uploadeImage(Request $request){
+        $user = $request->user();
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'type'  => 'required|in:avator,online,task_atlas'
+
+        ]);
+
+        //'status'   => 'required'.($request->input('type') == 'all' ? '':($request->input('type') == 'iscross' ? '|in:-1,0,1,2,3':'|in:0,10,20,30')),
+        $imageName = $user['id'].'.'.$request->image->extension();
+        $request->image->move(public_path('faces'),$imageName);
+
+        $face_url = '/faces/'.$imageName;
+        $res = User::where(['id'=>$user['id']])->update(['image_base64'=>$face_url]);
+
+        if(!empty($res)){
+            return $this->myResponse(['face_url' => config('app.url').$face_url],'更新头像成功',200);
+        }else{
+            return $this->myResponse([],'更新头像失,败稍后再试',423);
+        }
+    }
+
 
 
 
