@@ -9,4 +9,9 @@ class WorkNotice extends Model
 {
     use HasFactory;
     protected $dateFormat = 'U';
+
+    protected function serializeDate($date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
 }
