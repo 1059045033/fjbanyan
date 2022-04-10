@@ -29,7 +29,7 @@ class SmsController extends Controller
         $password = md5(md5("Jin889%w") . $tKey);
 
         $data = array(
-            'content' => "您的验证码是{$code},72小时内有效【Test】",
+            'content' => "您的验证码是{$code},72小时内有效【熹茗】",
             'mobile' => $mobile,
             'productid' => '676767',//产品id
             'xh' => '',//小号
