@@ -71,7 +71,7 @@ class SmsController extends Controller
             $result_code = 423;
             $msg = 'Errno'.curl_error($curl);
         }else{
-            $msg = '短信发送成功';
+            $msg = '短信发送成功'.json_encode($result);
         }
         curl_close($curl); // 关闭CURL会话
         #================= 发送短信 end   ========================
