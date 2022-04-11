@@ -17,11 +17,7 @@ class BannerController extends Controller
     {
 
         $list = Banner::getlist($request->all());
-        return response()->json([
-            'code'    => 200,
-            'message' => '获取成功',
-            'data'    => $list,
-        ],200);
+        return $this->myResponse($list,'获取成功',200);
     }
 
     /**

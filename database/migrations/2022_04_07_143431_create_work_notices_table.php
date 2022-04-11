@@ -23,10 +23,12 @@ class CreateWorkNoticesTable extends Migration
             $table->string('atlas')->comment('图集 []')->nullable();
             $table->string('cover')->comment('封面')->nullable();
             $table->string('position')->comment('位置 {lag:4,lat:5,h:8}')->nullable();
+            $table->string('address')->comment('具体地址')->nullable();
             $table->integer('is_accept')->comment('是否被接受 [ 0 :未  1:已 ] ')->nullable();
             $table->unsignedInteger('accept_time')->comment('接受任务的是时间')->nullable();
             $table->integer('author')->comment('通知产生者')->nullable();
             $table->integer('user_id')->comment('通知对象');
+            $table->integer('task_id')->default(0)->comment('关联的任务ID');
             $table->unsignedInteger('created_at');
             $table->unsignedInteger('updated_at');
         });

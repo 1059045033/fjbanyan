@@ -2,48 +2,77 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\WorkNoticeCollection;
+use App\Http\Resources\WorkNoticeResource;
+use App\Models\Task;
+use App\Models\User;
 use App\Models\WorkNotice;
 use App\Http\Requests\StoreWorkNoticeRequest;
-use App\Http\Requests\UpdateWorkNoticeRequest;
+use App\Http\Resources\TopicCollection;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class WorkNoticeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function __construct()
     {
-        //
+        // 对数据进行处理 处理完就可以拿到用户信息
+        $this->middleware('auth:api');//->except(['show','index']);;
+    }
+
+
+    // 创建一条新的通知
+    public function create(StoreWorkNoticeRequest $request)
+    {
+        $user = $request->user();
+        if(empty($user->region_id))
+        {
+            return $this->myResponse([],'还未分配所属区域',423);
+        }
+
+        $users = User::where('work_region_id',$user->region_id)->select('id as user_id')->get();
+        if(empty($users))
+        {
+            return $this->myResponse([],'该区域还未安排作业人员',423);
+        }
+
+        // 任务通知字段
+        $fields = $request->all();
+        $fields['atlas'] = json_encode($fields['atlas'],JSON_UNESCAPED_SLASHES);
+        $fields['position'] = json_encode($fields['position']);
+        $fields['type'] = 2;
+
+        // 任务字段
+        $task_fields = [
+            'type' => 1,
+            'content' => $fields['content'],
+            'atlas' => $fields['atlas'],
+            'position'=> $fields['position'],
+            'create_user'=> $user['id']
+        ];
+
+        DB::beginTransaction();
+        try {
+            $task_id = Task::create($task_fields)->id;
+            foreach ($users as $k=>$v){
+                // 创建任务消息
+                $fields['user_id'] = $v['user_id'];
+                $fields['task_id'] = $task_id;
+                WorkNotice::create($fields);
+                // 调用三方推送
+
+            }
+            DB::commit();
+        } catch (QueryException $exception) {
+            DB::rollback();
+            return $this->myResponse([],'创建任务失败,请联系管理人员',423);
+        }
+        return $this->myResponse([],'创建任务成功,并通知该区域工作人员',200);
+
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreWorkNoticeRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreWorkNoticeRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\WorkNotice  $workNotice
-     * @return \Illuminate\Http\Response
+     * 展示一条通知
      */
     public function show(WorkNotice $workNotice)
     {
@@ -51,36 +80,35 @@ class WorkNoticeController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\WorkNotice  $workNotice
-     * @return \Illuminate\Http\Response
+     * 工作通知列表
      */
-    public function edit(WorkNotice $workNotice)
+    public function index(Request $request)
     {
-        //
+        $user = $request->user();
+        // $notices = WorkNotice::with('user')->where('user_id',$user['id'])->paginate(3);
+        // $list = new WorkNoticeCollection($notices);
+        $list = WorkNotice::getlist([],$user['id']);
+        return $this->myResponse($list,'获取成功',200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateWorkNoticeRequest  $request
-     * @param  \App\Models\WorkNotice  $workNotice
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateWorkNoticeRequest $request, WorkNotice $workNotice)
+    public function read(Request $request)
     {
-        //
-    }
+        $user = $request->user();
+        $request->validate([
+            'notice_id' => 'required|exists:work_notices,id'
+        ]);
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\WorkNotice  $workNotice
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(WorkNotice $workNotice)
-    {
-        //
+        $notice = WorkNotice::find($request->notice_id);
+
+       if(!$user->ownsNotice($notice))
+       {
+           return $this->myResponse([],'只能查阅自己的',423);
+       }
+        if(empty($notice->is_read)){
+            $notice->is_read = 1;
+            $notice->save();
+            return $this->myResponse([],'查阅完成',200);
+        }
+
     }
 }

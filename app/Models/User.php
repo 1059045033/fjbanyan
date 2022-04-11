@@ -45,6 +45,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    protected function serializeDate($date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
+
     /**
      * 重写oauth授权验证
      * @param $username
@@ -64,4 +69,16 @@ class User extends Authenticatable
     {
         return self::where('phone',$username)->first();
     }
+
+    public function notices()
+    {
+        return $this->hasMany(WorkNotice::class,'id','user_id');
+    }
+
+
+    public function ownsNotice($notice)
+    {
+        return $this->id === $notice->user_id;
+    }
+
 }

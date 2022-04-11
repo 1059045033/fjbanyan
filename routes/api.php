@@ -21,6 +21,14 @@ Route::post('/onoffline/history','OnlineOfflineController@history');
 Route::get('/regions','WorkRegionController@regions');
 Route::post('/member/upload/face','MemberController@uploadeFace');
 
+// 消息通知
+Route::post('/messages/notice','WorkNoticeController@index');
+Route::post('/messages/notice/read','WorkNoticeController@read');
+Route::post('/messages/notice/create','WorkNoticeController@create');
+
+// 任务
+Route::post('/task/detail','TaskController@detail');
+
 
 
 

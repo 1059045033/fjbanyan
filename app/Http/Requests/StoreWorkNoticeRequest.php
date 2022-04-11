@@ -13,7 +13,7 @@ class StoreWorkNoticeRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,11 @@ class StoreWorkNoticeRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name'=> 'required',
+            'content'=> 'required',
+            'atlas' =>'required|array',
+            'position'=>'required|array',
+            'address'=>'required'
         ];
     }
 }

@@ -19,6 +19,7 @@ class CreateUsersTable extends Migration
 
             $table->string('phone')->unique()->comment('手机号码');
             $table->string('company_id')->comment('公司');
+            $table->string('region_id')->comment('所属区域')->nullable();
             $table->string('work_region_id')->comment('工作区域')->nullable();
             $table->string('password')->default(bcrypt('123456'));
             $table->string('ID_Card')->comment('身份证号')->nullable();
