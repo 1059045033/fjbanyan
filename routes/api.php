@@ -30,7 +30,7 @@ Route::post('/messages/notice/create','WorkNoticeController@create');
 Route::post('/task/detail','TaskController@detail');
 Route::post('/task/accept','TaskController@accept');
 
-
+Route::post('/member/upload/image','MemberController@uploadeImage');
 
 
 

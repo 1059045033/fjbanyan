@@ -58,21 +58,31 @@ class MemberController extends Controller
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'type'  => 'required|in:avator,online,task_atlas'
-
         ]);
 
         //'status'   => 'required'.($request->input('type') == 'all' ? '':($request->input('type') == 'iscross' ? '|in:-1,0,1,2,3':'|in:0,10,20,30')),
-        $imageName = $user['id'].'.'.$request->image->extension();
-        $request->image->move(public_path('faces'),$imageName);
 
-        $face_url = '/faces/'.$imageName;
-        $res = User::where(['id'=>$user['id']])->update(['image_base64'=>$face_url]);
+        $imageName = time().'.'.$request->image->extension();
 
-        if(!empty($res)){
-            return $this->myResponse(['face_url' => config('app.url').$face_url],'更新头像成功',200);
-        }else{
-            return $this->myResponse([],'更新头像失,败稍后再试',423);
-        }
+        $request->image->move(public_path('task_atlas'),$imageName);
+        $r_path = public_path('task_atlas').$imageName;
+
+        $face_url = '/task_atlas/'.$imageName;
+
+        return $this->myResponse([
+            'url' => config('app.url').$face_url,
+            'path' => $face_url
+        ],'图片上传成功',200);
+
+
+//        if(file_exists($r_path)){
+//            return $this->myResponse([
+//                'url' => config('app.url').$face_url,
+//                'path' => $face_url
+//                ],'图片上传成功',200);
+//        }else{
+//            return $this->myResponse([],'图片上传失败,败稍后再试',423);
+//        }
     }
 
 
