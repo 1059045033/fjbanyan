@@ -28,6 +28,7 @@ Route::post('/messages/notice/create','WorkNoticeController@create');
 
 // 任务
 Route::post('/task/detail','TaskController@detail');
+Route::post('/task/accept','TaskController@accept');
 
 
 

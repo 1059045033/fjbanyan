@@ -25,6 +25,7 @@ class CreateTasksTable extends Migration
 
             $table->unsignedInteger('complete_user')->comment("任务执行者")->nullable();
             $table->unsignedInteger('create_user')->comment("任务创建者")->nullable();
+            $table->unsignedInteger('region_id')->comment("任务所属区域")->nullable();
 
 
             $table->unsignedInteger('created_at');
