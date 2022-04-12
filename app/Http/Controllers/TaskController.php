@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
+use App\Models\TaskLog;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -55,6 +56,30 @@ class TaskController extends Controller
 
         $progress['progress'] = (round($effective/24,2)*100).'%';
         return $this->myResponse($progress,'当日任务量进度',200);
+
+    }
+
+    public function execute(Request $request)
+    {
+        $user = $request->user();
+        $request->validate([
+            'type'    => 'required|in:1,2',
+            'atlas'   => 'required|array',
+            'position'=> 'required|array',
+            'address' => 'required',
+            'task_id' => ($request->input('type') == 1 ) ? 'nullable':'required|exists:tasks,id'
+        ]);
+
+
+        TaskLog::create([
+            'user_id' =>$user['id'],
+            'position' => json_encode($request->position),
+            'atlas' => json_encode($request->atlas,JSON_UNESCAPED_SLASHES),
+            ''
+        ]);
+
+
+
 
     }
 

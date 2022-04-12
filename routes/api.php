@@ -28,10 +28,11 @@ Route::post('/messages/notice/create','WorkNoticeController@create');
 Route::post('/messages/unread/tip','WorkNoticeController@unReadTip');
 
 // 任务
-Route::post('/task/detail','TaskController@detail');
-Route::post('/task/accept','TaskController@accept');
+Route::post('/task/detail','TaskController@detail');//任务详情
+Route::post('/task/accept','TaskController@accept');//任务领取/接受
+Route::post('/task/execute','TaskController@execute');//任务执行
 
-Route::post('/task/today/progress','TaskController@todayProgress');
+Route::post('/task/today/progress','TaskController@todayProgress');//
 
 Route::post('/member/upload/image','MemberController@uploadeImage');
 
