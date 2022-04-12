@@ -52,10 +52,16 @@ class TaskController extends Controller
     public function todayProgress(Request $request)
     {
         $user = $request->user();
-        $progress = ['complete'=>4,'incomplete'=>21,'progress'=>0];
-        $effective = 3 ;
+        $total = 24;
+        $progress = ['complete'=>0,'incomplete'=>0,'progress'=>0];
+        $start = Carbon::now()->startOfDay()->timestamp;
+        $end   = Carbon::now()->endOfDay()->timestamp;
+        $effective = TaskLog::where(['user_id'=>$user['id']])->where('is_effective','>',0)->whereBetWeen('created_at',[$start,$end])->get()->count();
+        $progress['complete']   = TaskLog::where(['user_id'=>$user['id']])->whereBetWeen('created_at',[$start,$end])->get()->count();
+        $progress['incomplete'] = $total - $effective;
 
-        $progress['progress'] = (round($effective/24,2)*100).'%';
+
+        $progress['progress'] = (round($effective/$total,2)*100).'%';
         return $this->myResponse($progress,'当日任务量进度',200);
 
     }
