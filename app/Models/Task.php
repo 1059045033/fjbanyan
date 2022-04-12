@@ -33,4 +33,11 @@ class Task extends Model
         return $array;
     }
 
+    public function getlist($params=[],$user_id = 0)
+    {
+        $fillter = [];
+        !empty($user_id) && $fillter['create_user'] = $user_id;
+        return self::where($fillter)->select('id as task_id','content','atlas','position','address','is_complete','complete_time','complete_user','created_at')->paginate($params['size'] ?? 10);
+    }
+
 }

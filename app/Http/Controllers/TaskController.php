@@ -74,6 +74,13 @@ class TaskController extends Controller
         $is_effective = 1 ;
         $start = Carbon::now()->startOfDay()->timestamp;
         $end   = Carbon::now()->endOfDay()->timestamp;
+        if($request->type == 2)
+        {
+            $temp =Task::where(['id'=>$request->task_id,'complete_user'=>$user['id']])->first();
+            if(empty($temp)){
+                return $this->myResponse([],'该任务未被接受，或者这个任务不是你的',423);
+            }
+        }
 
         $tasks = TaskLog::where(['user_id'=>$user['id'],'is_effective'=>1])
             ->whereBetWeen('created_at',[$start,$end])
@@ -115,9 +122,22 @@ class TaskController extends Controller
         }
 
         return $this->myResponse(['task_log_id'=>$task_log_id],'提交任务成功',200);
+    }
+
+    public function executeList(Request $request)
+    {
+        $user = $request->user();
+        $list = TaskLog::getlist($request->all(),$user['id']);
+        return $this->myResponse($list,'执行任务列表',200);
 
     }
 
+    public function distributeList(Request $request)
+    {
+        $user = $request->user();
+        $list = Task::getlist($request->all(),$user['id']);
+        return $this->myResponse($list  ,'派发任务列表',200);
+    }
 
 
 }

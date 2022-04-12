@@ -19,6 +19,7 @@ class CreateTasksTable extends Migration
             $table->text('content')->comment('任务内容')->nullable();
             $table->string('atlas')->comment('图集 []');
             $table->string('position')->comment('位置 {lag:4,lat:5,h:8}');
+            $table->string('address')->comment('地址')->nullable();
 
             $table->integer('is_complete')->default(0)->comment("任务是否完成  [ 0 : 未完成 1 : 完成]");
             $table->unsignedInteger('complete_time')->comment("完成时间")->nullable();

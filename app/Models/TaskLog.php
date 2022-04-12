@@ -32,4 +32,11 @@ class TaskLog extends Model
 
         return $array;
     }
+
+    public function getlist($params=[],$user_id = 0)
+    {
+        $fillter = [];
+        !empty($user_id) && $fillter['user_id'] = $user_id;
+        return self::where($fillter)->select('id as task_log_id','atlas','position','address','is_effective','task_id','type','created_at')->paginate($params['size'] ?? 10);
+    }
 }

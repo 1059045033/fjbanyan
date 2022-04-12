@@ -50,7 +50,8 @@ class WorkNoticeController extends Controller
             'atlas' => $fields['atlas'],
             'position'=> $fields['position'],
             'create_user'=> $user['id'],
-            'region_id'=> $user->region_id
+            'region_id'=> $user->region_id,
+            'address'=> $fields['address'],
         ];
 
         DB::beginTransaction();

@@ -31,6 +31,8 @@ Route::post('/messages/unread/tip','WorkNoticeController@unReadTip');
 Route::post('/task/detail','TaskController@detail');//任务详情
 Route::post('/task/accept','TaskController@accept');//任务领取/接受
 Route::post('/task/execute','TaskController@execute');//任务执行
+Route::post('/task/execute_list','TaskController@executeList');//任务执行列表
+Route::post('/task/distribute_list','TaskController@distributeList');//任务执行列表
 
 Route::post('/task/today/progress','TaskController@todayProgress');//
 
