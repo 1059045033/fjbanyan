@@ -31,14 +31,14 @@ class TaskController extends Controller
 
         $user = $request->user();
         if($task->create_user == $user['id']){
-            //return $this->myResponse([],'不能自己领取',423);
+            return $this->myResponse([],'不能自己领取',423);
         }
 
         // 只有该区域下的人方可领取
         $users = User::where('work_region_id',$task->region_id)->select('id')->get();
         $users_ids = array_column($users->toArray(),'id');
         if(!in_array($user['id'],$users_ids)){
-            //return $this->myResponse([],'只有在该区域的工作人员可以领取',423);
+            return $this->myResponse([],'只有在该区域的工作人员可以领取',423);
         }
 
         $task->complete_user = $user['id'];
@@ -46,6 +46,7 @@ class TaskController extends Controller
         return $this->myResponse([],'接受成功',200);
     }
 
+    
 
 
 
