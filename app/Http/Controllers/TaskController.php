@@ -7,6 +7,7 @@ use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Models\TaskLog;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -70,16 +71,50 @@ class TaskController extends Controller
             'task_id' => ($request->input('type') == 1 ) ? 'nullable':'required|exists:tasks,id'
         ]);
 
+        $is_effective = 1 ;
+        $start = Carbon::now()->startOfDay()->timestamp;
+        $end   = Carbon::now()->endOfDay()->timestamp;
 
-        TaskLog::create([
-            'user_id' =>$user['id'],
-            'position' => json_encode($request->position),
-            'atlas' => json_encode($request->atlas,JSON_UNESCAPED_SLASHES),
-            ''
-        ]);
+        $tasks = TaskLog::where(['user_id'=>$user['id'],'is_effective'=>1])
+            ->whereBetWeen('created_at',[$start,$end])
+            //->orderByDesc('created_at')
+            ->get()->toArray();
+        if(!empty($tasks)){
+            // 最近的一个有效任务
+            $task_last = array_pop($tasks);
+            // 超过一个小时了
+            if( Carbon::now()->timestamp >= (strtotime($task_last['created_at']) + ( 60 * 60 ))){
+                $is_effective = 1 ;
+            }else{
+                // 一小时内的有效数量
+                $effective_num = TaskLog::where(['user_id'=>$user['id']])
+                    ->where('is_effective','>',0)
+                    ->whereBetWeen('created_at',[$task_last['created_at'],$end])
+                    ->orderByDesc('created_at')
+                    ->get()->count();
+                ($effective_num < 3) ? $is_effective = 2 : $is_effective = 0;
+            }
+        }
 
+        $task_log_id = TaskLog::create([
+            'user_id'           => $user['id'],
+            'position'          => json_encode($request->position),
+            'atlas'             => json_encode($request->atlas,JSON_UNESCAPED_SLASHES),
+            'type'              => $request->type,
+            'address'           => $request->address,
+            'task_id'           => ($request->type == 1 ) ? null:$request->task_id,
+            'is_effective'      => $is_effective
+        ])->id;
 
+        // 修改 指派任务的任务状态
+        if($is_effective && $request->type == 2){
+            Task::where('id',$request->task_id)->update([
+                'is_complete' => 1,
+                'complete_time' => Carbon::now()->timestamp
+            ]);
+        }
 
+        return $this->myResponse(['task_log_id'=>$task_log_id],'提交任务成功',200);
 
     }
 

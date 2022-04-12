@@ -23,8 +23,7 @@ class CreateTaskLogsTable extends Migration
             $table->string('position')->comment('位置 {lag:4,lat:5,h:8}');
             $table->string('address')->comment('地址')->nullable();
 
-            $table->integer('is_effective')->comment('是否有效 [0无效 1有效]');
-            $table->unsignedInteger('day_first_time')->comment('当天第一条有效任务的时间');
+            $table->integer('is_effective')->comment('是否有效 [0无效 1|2有效(一小时内的第一条)]');
 
             $table->integer('task_id')->comment('任务ID')->nullable();
 
