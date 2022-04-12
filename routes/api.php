@@ -31,6 +31,8 @@ Route::post('/messages/unread/tip','WorkNoticeController@unReadTip');
 Route::post('/task/detail','TaskController@detail');
 Route::post('/task/accept','TaskController@accept');
 
+Route::post('/task/today/progress','TaskController@todayProgress');
+
 Route::post('/member/upload/image','MemberController@uploadeImage');
 
 

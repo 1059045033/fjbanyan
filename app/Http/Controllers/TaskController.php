@@ -6,6 +6,7 @@ use App\Models\Task;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
@@ -46,7 +47,16 @@ class TaskController extends Controller
         return $this->myResponse([],'接受成功',200);
     }
 
-    
+    public function todayProgress(Request $request)
+    {
+        $user = $request->user();
+        $progress = ['complete'=>4,'incomplete'=>21,'progress'=>0];
+        $effective = 3 ;
+
+        $progress['progress'] = (round($effective/24,2)*100).'%';
+        return $this->myResponse($progress,'当日任务量进度',200);
+
+    }
 
 
 
