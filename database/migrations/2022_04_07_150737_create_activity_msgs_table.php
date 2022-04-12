@@ -20,6 +20,8 @@ class CreateActivityMsgsTable extends Migration
             $table->string('cover')->comment('封面');
             $table->integer('is_read')->default(0)->comment("[ 0 : 未读  1: 已读]");
             $table->unsignedInteger('read_time')->comment("读取时间");
+            $table->integer('user_id')->comment('通知对象');
+            $table->integer('activity_id')->comment('活动ID');
 
 
             $table->unsignedInteger('created_at');

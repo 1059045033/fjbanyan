@@ -25,6 +25,7 @@ Route::post('/member/upload/face','MemberController@uploadeFace');
 Route::post('/messages/notice','WorkNoticeController@index');
 Route::post('/messages/notice/read','WorkNoticeController@read');
 Route::post('/messages/notice/create','WorkNoticeController@create');
+Route::post('/messages/unread/tip','WorkNoticeController@unReadTip');
 
 // 任务
 Route::post('/task/detail','TaskController@detail');

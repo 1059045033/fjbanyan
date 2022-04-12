@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\WorkNoticeCollection;
 use App\Http\Resources\WorkNoticeResource;
+use App\Models\ActivityMsg;
 use App\Models\Task;
 use App\Models\User;
 use App\Models\WorkNotice;
@@ -111,5 +112,19 @@ class WorkNoticeController extends Controller
             return $this->myResponse([],'查阅完成',200);
         }
 
+    }
+
+    public function unReadTip(Request $request)
+    {
+        $user = $request->user();
+        $tips = [ 'notice'=>0,'activity'=>0];
+        $notice = WorkNotice::where(['user_id'=>$user['id'],'is_read'=>0])->count();
+        $tips['notice'] = $notice;
+
+        $activity = ActivityMsg::where(['user_id'=>$user['id'],'is_read'=>0])->count();
+        $tips['activity'] = $activity;
+
+        $tips['total'] = $tips['notice'] + $tips['activity'];
+        return $this->myResponse($tips,'获取未读提醒消息',200);
     }
 }
