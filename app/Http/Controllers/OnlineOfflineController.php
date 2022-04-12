@@ -42,7 +42,7 @@ class OnlineOfflineController extends Controller
 
     public function history(Request $request)
     {
-
+        $user = $request->user();
         $request->validate([
             'month' => 'nullable'//|date_format:Y-m',
         ]);
@@ -50,7 +50,7 @@ class OnlineOfflineController extends Controller
         $data['start'] = strtotime($request->month);        //指定月份的开始时间戳
         $data['end'] = mktime(23,59,59,date('m',$data['start'])+1,00);
 
-        $histories = OnlineOffline::where(['user_id'=>2])
+        $histories = OnlineOffline::where(['user_id'=>$user['id']])
             ->whereBetween('created_at', [$data['start'], $data['end']])
             ->select('id','type','position','address','is_effective','created_at','imag')
             ->orderByDesc('created_at')
