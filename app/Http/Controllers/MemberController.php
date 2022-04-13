@@ -61,8 +61,8 @@ class MemberController extends Controller
         ]);
 
         //'status'   => 'required'.($request->input('type') == 'all' ? '':($request->input('type') == 'iscross' ? '|in:-1,0,1,2,3':'|in:0,10,20,30')),
-
-        $imageName = time().'.'.$request->image->extension();
+        $code = str_pad(mt_rand(10, 999999), 6, "0", STR_PAD_BOTH);
+        $imageName = $user['id'].'_'.$code.'_'.time().'.'.$request->image->extension();
 
         $request->image->move(public_path('task_atlas'),$imageName);
         $r_path = public_path('task_atlas').$imageName;
