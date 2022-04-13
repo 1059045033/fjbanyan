@@ -92,17 +92,20 @@ class TaskController extends Controller
             ->whereBetWeen('created_at',[$start,$end])
             //->orderByDesc('created_at')
             ->get()->toArray();
+
         if(!empty($tasks)){
             // 最近的一个有效任务
             $task_last = array_pop($tasks);
+
             // 超过一个小时了
             if( Carbon::now()->timestamp >= (strtotime($task_last['created_at']) + ( 60 * 60 ))){
                 $is_effective = 1 ;
             }else{
+
                 // 一小时内的有效数量
                 $effective_num = TaskLog::where(['user_id'=>$user['id']])
                     ->where('is_effective','>',0)
-                    ->whereBetWeen('created_at',[$task_last['created_at'],$end])
+                    ->whereBetWeen('created_at',[strtotime($task_last['created_at']),$end])
                     ->orderByDesc('created_at')
                     ->get()->count();
                 ($effective_num < 3) ? $is_effective = 2 : $is_effective = 0;
