@@ -37,6 +37,6 @@ class TaskLog extends Model
     {
         $fillter = [];
         !empty($user_id) && $fillter['user_id'] = $user_id;
-        return self::where($fillter)->select('id as task_log_id','atlas','position','address','is_effective','task_id','type','created_at')->paginate($params['size'] ?? 10);
+        return self::where($fillter)->select('id as task_log_id','atlas','position','address','is_effective','task_id','type','created_at')->orderByDesc('created_at')->paginate($params['size'] ?? 10);
     }
 }
