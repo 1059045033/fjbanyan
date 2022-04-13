@@ -52,6 +52,7 @@ class WorkNoticeController extends Controller
             'create_user'=> $user['id'],
             'region_id'=> $user->region_id,
             'address'=> $fields['address'],
+            'business_district'=>$fields['business_district']
         ];
 
         DB::beginTransaction();

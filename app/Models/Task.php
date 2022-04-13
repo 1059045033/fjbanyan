@@ -37,7 +37,7 @@ class Task extends Model
     {
         $fillter = [];
         !empty($user_id) && $fillter['create_user'] = $user_id;
-        return self::where($fillter)->select('id as task_id','content','atlas','position','address','is_complete','complete_time','complete_user','created_at')->orderByDesc('created_at')->paginate($params['size'] ?? 10);
+        return self::where($fillter)->select('id as task_id','content','atlas','position','address','is_complete','complete_time','complete_user','created_at','content','business_district')->orderByDesc('created_at')->paginate($params['size'] ?? 10);
     }
 
 }

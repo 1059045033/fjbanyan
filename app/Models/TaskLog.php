@@ -37,6 +37,11 @@ class TaskLog extends Model
     {
         $fillter = [];
         !empty($user_id) && $fillter['user_id'] = $user_id;
-        return self::where($fillter)->select('id as task_log_id','atlas','position','address','is_effective','task_id','type','created_at')->orderByDesc('created_at')->paginate($params['size'] ?? 10);
+        return self::where($fillter)->when(!empty($params['start_date']), function ($query) use($params){
+                $tt = strtotime($params['start_date']);
+                $data['start'] = strtotime(date('Y-m-d 00:00:00',$tt));
+                $data['end']   = strtotime(date('Y-m-d 23:59:59',$tt));
+                $query->whereBetween('created_at', [$data['start'], $data['end']]);
+                })->select('id as task_log_id','atlas','position','address','is_effective','task_id','type','created_at','content','business_district')->orderByDesc('created_at')->paginate($params['size'] ?? 10);
     }
 }
