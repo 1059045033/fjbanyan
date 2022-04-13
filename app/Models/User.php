@@ -34,6 +34,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'updated_at'
     ];
 
     /**
@@ -73,6 +74,11 @@ class User extends Authenticatable
     public function notices()
     {
         return $this->hasMany(WorkNotice::class,'id','user_id');
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 
 

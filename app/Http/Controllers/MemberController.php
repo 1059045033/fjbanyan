@@ -21,7 +21,7 @@ class MemberController extends Controller
     // 獲取
     public function store(Request $request)
     {
-        $user = $request->user();
+        $user = User::with('company')->find($request->user()->id);//$request->user()->with('company');
         if(!empty($user['image_base64'])){
             $user['image_base64'] = config('app.url').$user['image_base64'];
         }

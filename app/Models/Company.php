@@ -9,4 +9,5 @@ class Company extends Model
 {
     use HasFactory;
     protected $dateFormat = 'U';
+    protected $hidden = ['created_at','updated_at'];
 }
