@@ -19,6 +19,7 @@ Route::post('/online','OnlineOfflineController@online');
 Route::post('/offline','OnlineOfflineController@offline');
 Route::post('/onoffline/history','OnlineOfflineController@history');
 Route::get('/regions','WorkRegionController@regions');
+Route::get('/region','WorkRegionController@region');
 Route::post('/member/upload/face','MemberController@uploadeFace');
 
 // 消息通知
@@ -33,8 +34,14 @@ Route::post('/task/accept','TaskController@accept');//任务领取/接受
 Route::post('/task/execute','TaskController@execute');//任务执行
 Route::post('/task/execute_list','TaskController@executeList');//任务执行列表
 Route::post('/task/distribute_list','TaskController@distributeList');//任务执行列表
-
 Route::post('/task/today/progress','TaskController@todayProgress');//
+
+
+// 轨迹
+Route::post('/track/create','TrackController@create');//
+Route::post('/user/track/history','TrackController@userHistory');//
+
+
 
 Route::post('/member/upload/image','MemberController@uploadeImage');
 

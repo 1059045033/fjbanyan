@@ -20,7 +20,16 @@ class WorkRegionController extends Controller
     public function regions()
     {
         $regions = WorkRegion::all();
-        return $this->myResponse($regions,'获取地图区域成功',200);
+        return $this->myResponse($regions,'获取地图区域成功(all)',200);
+    }
+
+    public function region(Request $request)
+    {
+        $request->validate([
+            'region_id' => 'required|exists:work_regions,id'
+        ]);
+        $regions = WorkRegion::find($request->region_id);
+        return $this->myResponse($regions,'获取地图区域成功(单个)',200);
     }
 
     /**

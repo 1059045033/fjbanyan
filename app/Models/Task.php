@@ -55,7 +55,12 @@ class Task extends Model
 
     public function completeUserInfo()
     {
-        return $this->belongsTo(User::class,'complete_user','id');//->select(['name']);
+        return $this->belongsTo(User::class,'complete_user','id');
+    }
+
+    public function completeTaskInfo()
+    {
+        return $this->hasOne(TaskLog::class,'task_id','id');
     }
 
 
@@ -64,7 +69,16 @@ class Task extends Model
     {
         $fillter = [];
         !empty($user_id) && $fillter['create_user'] = $user_id;
-        return self::where($fillter)->select('id as task_id','content','atlas','position','address','is_complete','complete_time','complete_user','created_at','content','business_district')->orderByDesc('created_at')->paginate($params['size'] ?? 10);
+
+        return self::with('completeUserInfo:id,name')->where($fillter)->when(!empty($params['status']), function ($query) use($params){
+                    if($params['status'] == 1){
+                        $query->whereNull('complete_user');
+                    }elseif ($params['status'] == 2){
+                        $query->whereNotNull('complete_user')->where('is_complete',0);
+                    }elseif ($params['status'] == 3){
+                        $query->where('is_complete',1);
+                    }
+            })->select('id as task_id','content','atlas','position','address','is_complete','complete_time','complete_user','created_at','content','business_district')->orderByDesc('created_at')->paginate($params['size'] ?? 10);
     }
 
 }

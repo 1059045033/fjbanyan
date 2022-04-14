@@ -31,6 +31,10 @@ class WorkNoticeController extends Controller
             return $this->myResponse([],'还未分配所属区域',423);
         }
 
+        // 给区域管理员也加上 工作区域 就为自身所属区域
+        $user->work_region_id = $user->region_id;
+        $user->save();
+
         $users = User::where('work_region_id',$user->region_id)->select('id as user_id')->get();
         if(empty($users))
         {
@@ -127,6 +131,8 @@ class WorkNoticeController extends Controller
         $tips['activity'] = $activity;
 
         $tips['total'] = $tips['notice'] + $tips['activity'];
+        $user_n = User::with('workRegion:id,name')->find($user['id']);//
+        $tips['work_region_info'] = $user_n['workRegion'];
         return $this->myResponse($tips,'获取未读提醒消息',200);
     }
 }

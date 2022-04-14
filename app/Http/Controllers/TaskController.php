@@ -21,7 +21,7 @@ class TaskController extends Controller
 
     public function detail(StoreTaskRequest $request)
     {
-            $task = Task::with('completeUserInfo:id,name')->find($request->task_id);
+            $task = Task::with(['completeUserInfo:id,name','completeTaskInfo'])->find($request->task_id);
             //$task = Task::with(['completeUserInfo:name'])->where('id',$request->task_id)->first();
             return $this->myResponse($task,'任务详情',200);
     }
@@ -35,7 +35,7 @@ class TaskController extends Controller
 
         $user = $request->user();
         if($task->create_user == $user['id']){
-            return $this->myResponse([],'不能自己领取',423);
+            // return $this->myResponse([],'不能自己领取',423);
         }
 
         // 只有该区域下的人方可领取
@@ -87,6 +87,11 @@ class TaskController extends Controller
             if(empty($temp)){
                 return $this->myResponse([],'该任务未被接受，或者这个任务不是你的',423);
             }
+            if(!empty($temp->is_complete)){
+                return $this->myResponse([],'任务已经完成。不用重复做',423);
+            }
+
+
         }
 
         $tasks = TaskLog::where(['user_id'=>$user['id'],'is_effective'=>1])
@@ -146,6 +151,9 @@ class TaskController extends Controller
 
     public function distributeList(Request $request)
     {
+        $request->validate([
+            'status'    => 'required|in:0,1,2,3',
+        ]);
         $user = $request->user();
         $list = Task::getlist($request->all(),$user['id']);
         return $this->myResponse($list  ,'派发任务列表',200);

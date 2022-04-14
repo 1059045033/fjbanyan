@@ -5,17 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Track;
 use App\Http\Requests\StoreTrackRequest;
 use App\Http\Requests\UpdateTrackRequest;
+use Illuminate\Http\Request;
 
 class TrackController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function __construct()
     {
-        //
+        // 对数据进行处理 处理完就可以拿到用户信息
+        $this->middleware('auth:api');//->except(['show','index']);;
     }
 
     /**
@@ -23,64 +20,29 @@ class TrackController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $user = $request->user();
+        $request->validate([
+            'position'=> 'required|array',
+            'address' => 'required'
+        ]);
+
+        $track_id = Track::create([
+                'user_id'           => $user['id'],
+                'position'          => json_encode($request->position),
+                'address'           => $request->address,
+            ])->id;
+
+        return $this->myResponse(['track_id'=>$track_id],'轨迹创建成功',200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreTrackRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreTrackRequest $request)
+
+    public function userHistory(Request $request)
     {
-        //
+        $user = $request->user();
+        $list = Track::getlist($request->all(),$user['id']);
+        return $this->myResponse($list,'轨迹列表',200);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Track  $track
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Track $track)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Track  $track
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Track $track)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateTrackRequest  $request
-     * @param  \App\Models\Track  $track
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateTrackRequest $request, Track $track)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Track  $track
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Track $track)
-    {
-        //
-    }
 }
