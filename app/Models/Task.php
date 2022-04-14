@@ -11,6 +11,8 @@ class Task extends Model
     protected $dateFormat = 'U';
     protected $guarded = [];
 
+    protected $appends = ['status'];
+
     protected function serializeDate($date)
     {
         return $date->format('Y-m-d H:i:s');
@@ -32,6 +34,31 @@ class Task extends Model
 
         return $array;
     }
+
+    public function getStatusAttribute($value)
+    {
+        $status = 0 ;// [0:未知  1:待接收  2:待执行  3:完成]
+        if(empty($this->attributes['complete_user']))
+        {
+            $status = 1 ;
+
+        }else{
+            if($this->attributes['is_complete'] == 0)
+            {
+                $status = 2 ;
+            }else{
+                $status = 3 ;
+            }
+        }
+        return $status;
+    }
+
+    public function completeUserInfo()
+    {
+        return $this->belongsTo(User::class,'complete_user','id');//->select(['name']);
+    }
+
+
 
     public function getlist($params=[],$user_id = 0)
     {

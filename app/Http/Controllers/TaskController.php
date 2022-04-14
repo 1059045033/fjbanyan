@@ -21,7 +21,8 @@ class TaskController extends Controller
 
     public function detail(StoreTaskRequest $request)
     {
-            $task = Task::find($request->task_id);
+            $task = Task::with('completeUserInfo:id,name')->find($request->task_id);
+            //$task = Task::with(['completeUserInfo:name'])->where('id',$request->task_id)->first();
             return $this->myResponse($task,'任务详情',200);
     }
 
