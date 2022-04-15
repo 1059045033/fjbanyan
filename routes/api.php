@@ -37,6 +37,11 @@ Route::post('/task/distribute_list','TaskController@distributeList');//任务执
 Route::post('/task/today/progress','TaskController@todayProgress');//
 
 
+// 团队
+Route::post('/teams','MemberController@teamList');
+Route::post('/team/join','MemberController@teamJoinWorkRegion');
+
+
 // 轨迹
 Route::post('/track/create','TrackController@create');//
 Route::post('/user/track/history','TrackController@userHistory');//

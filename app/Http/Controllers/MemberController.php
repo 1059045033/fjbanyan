@@ -18,7 +18,7 @@ class MemberController extends Controller
         $this->middleware('auth:api');
     }
 
-    // 獲取
+    // 上传
     public function store(Request $request)
     {
         $user = User::with('company')->find($request->user()->id);//$request->user()->with('company');
@@ -29,9 +29,7 @@ class MemberController extends Controller
         return $this->myResponse($user,'得到用户信息',200);
     }
 
-
-
-
+    // 上传人脸
     public function uploadeFace(Request $request){
         $user = $request->user();
         $request->validate([
@@ -50,9 +48,7 @@ class MemberController extends Controller
         }
     }
 
-
-
-
+    // 上传图片
     public function uploadeImage(Request $request){
         $user = $request->user();
         $request->validate([
@@ -85,6 +81,53 @@ class MemberController extends Controller
 //        }
     }
 
+    // 团队列表
+    public function teamList(Request $request)
+    {
+        $user = $request->user();
+
+        if(!in_array($user['role'],[20])){
+            return $this->myResponse([],'只有区域管理员才有团队列表',423);
+        }
+
+        if(empty($user['region_id'])){
+            return $this->myResponse([],'还未配置所属区域',423);
+        }
+        $res = [];
+        $list = User::with('company')->where(['region_id'=> $user['region_id']])->where('id','<>',$user['id'])
+            ->select('id as user_id','name','avator','created_at','phone','company_id')->get();
+        $res['belonging'] = $list;
+
+        $list = User::with('company')->whereNull('region_id')->where('id','>',1)
+            ->select('id as user_id','name','avator','created_at','phone','company_id')->get();
+
+        $res['un_belonging'] = $list;
+
+        return $this->myResponse($res,'获取团队列表',200);
+
+    }
+
+    // 安排工作区域
+    public function teamJoinWorkRegion(Request $request)
+    {
+        $user = $request->user();
+        $request->validate([
+            //'region_id' => 'required|exists:work_regions,id',
+            'user_id'   => 'required|exists:users,id'
+        ]);
+        if(!in_array($user['role'],[20])){
+            return $this->myResponse([],'只有区域管理员才能设置归属区域',423);
+        }
+        $o_user = User::find($request->user_id);
+        if(!empty($o_user->region_id)){
+            return $this->myResponse([],'该对象已经设置了归属区域',423);
+        }
+
+        $o_user->region_id = $user['region_id'];
+        $o_user->save();
+
+        return $this->myResponse([],'归属区域设置成功',200);
+    }
 
 
 
