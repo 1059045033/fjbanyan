@@ -23,4 +23,9 @@ class WorkRegion extends Model
 
         return $array;
     }
+
+    public function regionManagerInfo()
+    {
+        return $this->hasOne(User::class,'id','region_manager');
+    }
 }
