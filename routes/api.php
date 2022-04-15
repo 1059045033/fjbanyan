@@ -41,6 +41,15 @@ Route::post('/task/today/progress','TaskController@todayProgress');//
 Route::post('/teams','MemberController@teamList');
 Route::post('/team/join','MemberController@teamJoinWorkRegion');
 
+// 作业安排
+Route::post('/work/teams','MemberController@workTeams');//作业队伍列表
+Route::post('/work/region/set','MemberController@workRegionSet');//设置工作人员的工作区域
+Route::post('/work/to_work_region','MemberController@usersToWorkRegion');//设置工作人员的工作区域
+
+
+
+
+
 
 // 轨迹
 Route::post('/track/create','TrackController@create');//
