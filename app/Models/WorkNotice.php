@@ -27,6 +27,6 @@ class WorkNotice extends Model
     {
         $fillter = [];
         !empty($user_id) && $fillter['user_id'] = $user_id;
-        return self::where($fillter)->select('id as notice_id','name','content','is_read','created_at')->paginate($params['size'] ?? 10);
+        return self::where($fillter)->select('id as notice_id','name','content','is_read','created_at')->orderByDesc('created_at')->paginate($params['size'] ?? 10);
     }
 }

@@ -95,7 +95,7 @@ class WorkNoticeController extends Controller
         $user = $request->user();
         // $notices = WorkNotice::with('user')->where('user_id',$user['id'])->paginate(3);
         // $list = new WorkNoticeCollection($notices);
-        $list = WorkNotice::getlist([],$user['id']);
+        $list = WorkNotice::getlist($request->all(),$user['id']);
         return $this->myResponse($list,'获取成功',200);
     }
 
