@@ -183,13 +183,17 @@ class MemberController extends Controller
         }
 
         $work_user = User::find($request->user_id);
+
+        if(!empty($work_user->work_region_id)){
+            return $this->myResponse([],'该工作人员已经有工作区域了',423);
+        }
         // 如果是区域管理员只能将自己当前得区域设置给工作人员
         $work_region_id = $request->region_id;
-        if($user['role'] == 20){
+        /*if($user['role'] == 20){
             if($request->region_id != $user['region_id']){
                 return $this->myResponse([],'区域管理员只能将工作人员安排到自己的区域里',423);
             }
-        }
+        }*/
         // 超级管理员可以给工作人员设置其他得工作区域
 
         $work_user->work_region_id = $work_region_id;
@@ -204,8 +208,12 @@ class MemberController extends Controller
     public function usersToWorkRegion(Request $request)
     {
         $user = $request->user();
+//        $request->validate([
+//            'region_id' => $user['role'] == 30 ? 'required|exists:work_regions,id':'nullable',
+//            'user_ids'  => 'required|array'
+//        ]);
         $request->validate([
-            'region_id' => $user['role'] == 30 ? 'required|exists:work_regions,id':'nullable',
+            'region_id' => 'required|exists:work_regions,id',
             'user_ids'  => 'required|array'
         ]);
 
@@ -214,19 +222,23 @@ class MemberController extends Controller
         }
 
         if($user['role'] == 20 && empty($user['region_id'])){
-            return $this->myResponse([],'区域管理员要先配置自己的所属区域',423);
+            //return $this->myResponse([],'区域管理员要先配置自己的所属区域',423);
         }
 
-        $user['role']==20 && $region_id = $user['region_id'];
-        $user['role']==30 && $region_id = $request->region_id;
+        //$user['role']==20 && $region_id = $user['region_id'];
+        //$user['role']==30 && $region_id = $request->region_id;
 
+        $region_id = $request->region_id;
         // 找到说有的用户
         foreach ($request->user_ids as $v)
         {
             $temp_user = User::find($v);
-            if($user['role'] == 20 && $temp_user['region_id'] != $region_id)
-            {
-                // 如果当前操作的人是区域管理员 而选择的用户里含有其他区域的工作人 那会跳过针对这些工作人员的工作区域设置
+//            if($user['role'] == 20 && $temp_user['region_id'] != $region_id)
+//            {
+//                // 如果当前操作的人是区域管理员 而选择的用户里含有其他区域的工作人 那会跳过针对这些工作人员的工作区域设置
+//                continue;
+//            }
+            if(!empty($temp_user->work_region_id)){
                 continue;
             }
             $temp_user->work_region_id = $region_id;
@@ -237,4 +249,35 @@ class MemberController extends Controller
 
     }
 
+    // 移除指定区域的工作人员
+    public function removeUser(Request $request)
+    {
+        $user = $request->user();
+        $request->validate([
+            'region_id' => 'required|exists:work_regions,id',
+            'user_ids'  => $request->type == 'all' ? 'nullable':'required|array',
+            'type'      => 'required|in:all,assign'
+        ]);
+
+        if(!in_array($user['role'],[20,30])){
+            return $this->myResponse([],'只有区域管理员/总管理员才能操作',423);
+        }
+        $msg = '';
+        if($request->type == 'all')
+        {
+            $msg = '清除指定区域下的所有工作人员成功';
+            User::where('work_region_id',$request->region_id)->update([
+                'work_region_id' => null
+            ]);
+        }else{
+            User::where('work_region_id',$request->region_id)->whereIn('id',$request->user_ids)->update([
+                'work_region_id' => null
+            ]);
+            $msg = '清除指定区域下的指定工作人员成功';
+        }
+
+
+        return $this->myResponse([],$msg,200);
+
+    }
 }
