@@ -48,6 +48,12 @@ Route::post('/work/to_work_region','MemberController@usersToWorkRegion');//设�
 Route::post('/work/remove_user','MemberController@removeUser');//
 
 
+// 公共
+
+Route::post('/helper','MemberController@helper');
+Route::post('/safe/education','MemberController@safeEducation');
+
+
 
 
 
