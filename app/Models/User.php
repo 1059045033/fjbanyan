@@ -56,7 +56,10 @@ class User extends Authenticatable
     {
         $array = parent::toArray();
 
-        isset($array['image_base64']) && $array['image_base64'] = config('app.url').$array['image_base64'];
+        if(!empty($array['image_base64']))
+        {
+            $array['image_base64'] = config('app.url').$array['image_base64'];
+        }
 
         return $array;
     }
