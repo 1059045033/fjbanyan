@@ -23,7 +23,7 @@ class MemberController extends Controller
     {
         $user = User::with('company')->find($request->user()->id);//$request->user()->with('company');
         if(!empty($user['image_base64'])){
-            $user['image_base64'] = config('app.url').$user['image_base64'];
+            //$user['image_base64'] = config('app.url').$user['image_base64'];
         }
 
         return $this->myResponse($user,'得到用户信息',200);
@@ -94,12 +94,12 @@ class MemberController extends Controller
             return $this->myResponse([],'还未配置所属区域',423);
         }
         $res = [];
-        $list = User::with('company')->where(['region_id'=> $user['region_id']])->where('id','<>',$user['id'])
-            ->select('id as user_id','name','avator','created_at','phone','company_id')->get();
+        $list = User::with(['company','Region:id,name'])->where(['region_id'=> $user['region_id']])->where('id','<>',$user['id'])
+            ->select('id as user_id','name','avator','created_at','phone','image_base64','company_id','region_id')->get();
         $res['belonging'] = $list;
 
-        $list = User::with('company')->whereNull('region_id')->where('id','>',1)
-            ->select('id as user_id','name','avator','created_at','phone','company_id')->get();
+        $list = User::with(['company','Region:id,name'])->whereNull('region_id')->where('id','>',1)
+            ->select('id as user_id','name','avator','created_at','phone','image_base64','company_id','region_id')->get();
 
         $res['un_belonging'] = $list;
 

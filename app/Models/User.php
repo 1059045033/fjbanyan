@@ -51,6 +51,16 @@ class User extends Authenticatable
         return $date->format('Y-m-d H:i:s');
     }
 
+
+    public function toArray()
+    {
+        $array = parent::toArray();
+
+        isset($array['image_base64']) && $array['image_base64'] = config('app.url').$array['image_base64'];
+
+        return $array;
+    }
+
     /**
      * 重写oauth授权验证
      * @param $username
