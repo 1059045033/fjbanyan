@@ -103,6 +103,7 @@ class MemberController extends Controller
         $list = User::with(['company','Region:id,name'])->when(!empty($params['region_id']), function ($query) use($params){
             $query->where('region_id',$params['region_id']);
         })->where('id','<>',$user['id'])
+            ->whereNotNull('region_id')
             ->where('role',10)->select('id as user_id','name','avator','created_at','phone','image_base64','company_id','region_id')->get();
         $res['belonging'] = $list;
 
