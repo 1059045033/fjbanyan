@@ -51,6 +51,7 @@ Route::post('/work/remove_user','MemberController@removeUser');//
 // 公共
 
 Route::post('/helper','MemberController@helper');
+Route::post('/bicycle','MemberController@bicycle');
 Route::post('/safe/education','MemberController@safeEducation');
 
 
