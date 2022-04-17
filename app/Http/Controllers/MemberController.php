@@ -146,7 +146,7 @@ class MemberController extends Controller
     {
         $user = $request->user();
         $request->validate([
-            'region_id' => $user['role'] == 30 ? 'required|exists:work_regions,id':'nullable'
+           // 'region_id' => $user['role'] == 30 ? 'required|exists:work_regions,id':'nullable'
         ]);
 
 
@@ -158,15 +158,17 @@ class MemberController extends Controller
         if($user['role']==20 && empty($user['region_id'])){
             return $this->myResponse([],'区域管理员需先配置所属区域',423);
         }
-
-
-        $user['role']==20 && $region_id = $user['region_id'];
-        $user['role']==30 && $region_id = $request->region_id;
-
+        $region_id = 0;
+        if($user['role']==20){
+            $region_id = $user['region_id'];
+        }
 
         $list = User::with(['company','region:id,name','workRegion:id,name'])
-            ->where(['region_id' => $region_id])
-            ->where('id','<>',$user['id'])
+            ->when(!empty($region_id), function ($query) use($region_id){
+                $query->where('region_id',$region_id);
+            })
+            //->where('id','<>',$user['id'])
+            ->whereIn('role',[10,20])
             ->select('id as user_id','name','avator','created_at','phone','company_id','region_id','work_region_id')->get();
 
         return $this->myResponse($list,'获取作业队伍列表',200);
