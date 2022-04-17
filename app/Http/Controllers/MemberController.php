@@ -257,7 +257,7 @@ class MemberController extends Controller
             $temp_user->save();
         }
 
-        return $this->myResponse([],'工作区域全部设置完成',423);
+        return $this->myResponse([],'工作区域全部设置完成',200);
 
     }
 
