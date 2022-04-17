@@ -198,7 +198,7 @@ class MemberController extends Controller
         $work_user = User::find($request->user_id);
 
         if(!empty($work_user->work_region_id)){
-            return $this->myResponse([],'该工作人员已经有工作区域了',423);
+            //return $this->myResponse([],'该工作人员已经有工作区域了',423);
         }
         // 如果是区域管理员只能将自己当前得区域设置给工作人员
         $work_region_id = $request->region_id;
@@ -251,9 +251,9 @@ class MemberController extends Controller
 //                // 如果当前操作的人是区域管理员 而选择的用户里含有其他区域的工作人 那会跳过针对这些工作人员的工作区域设置
 //                continue;
 //            }
-            if(!empty($temp_user->work_region_id)){
-                continue;
-            }
+//            if(!empty($temp_user->work_region_id)){
+//                continue;
+//            }
             $temp_user->work_region_id = $region_id;
             $temp_user->save();
         }
