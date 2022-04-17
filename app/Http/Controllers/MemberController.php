@@ -87,15 +87,22 @@ class MemberController extends Controller
         $user = $request->user();
 
         if(!in_array($user['role'],[20])){
-            return $this->myResponse([],'只有区域管理员才有团队列表',423);
+            // return $this->myResponse([],'只有区域管理员才有团队列表',423);
         }
-
-        if(empty($user['region_id'])){
+        $params = [];
+        if($user['role'] == 20 && empty($user['region_id'])){
             return $this->myResponse([],'还未配置所属区域',423);
         }
+
+        if($user['role'] == 20)
+        {
+            $params['region_id'] = $user['region_id'];
+        }
+
         $res = [];
-        $list = User::with(['company','Region:id,name'])->where(['region_id'=> $user['region_id']])->where('id','<>',$user['id'])
-            ->select('id as user_id','name','avator','created_at','phone','image_base64','company_id','region_id')->get();
+        $list = User::with(['company','Region:id,name'])->when(!empty($params['region_id']), function ($query) use($params){
+            $query->where('region_id',$params['region_id']);
+        })->where('id','<>',$user['id'])->select('id as user_id','name','avator','created_at','phone','image_base64','company_id','region_id')->get();
         $res['belonging'] = $list;
 
         $list = User::with(['company','Region:id,name'])->whereNull('region_id')->where('id','>',1)
