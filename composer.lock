@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "29c26fa905cd658c6b10cadd5fa3a4b0",
+    "content-hash": "6b4ac60b136f3456087a186f2a4efb59",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1082,6 +1082,59 @@
                 }
             ],
             "time": "2021-10-06T17:43:30+00:00"
+        },
+        {
+            "name": "jpush/jpush",
+            "version": "v3.6.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jpush/jpush-api-php-client.git",
+                "reference": "ebb191e8854a35c3fb7a6626028b3a23132cbe2c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jpush/jpush-api-php-client/zipball/ebb191e8854a35c3fb7a6626028b3a23132cbe2c",
+                "reference": "ebb191e8854a35c3fb7a6626028b3a23132cbe2c",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "JPush\\": "src/JPush/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "JPush",
+                    "email": "support@jpush.cn",
+                    "homepage": "https://www.jpush.cn/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "JPush API PHP Client",
+            "homepage": "https://github.com/jpush/jpush-api-php-client",
+            "support": {
+                "issues": "https://github.com/jpush/jpush-api-php-client/issues",
+                "source": "https://github.com/jpush/jpush-api-php-client/tree/v3.6.8"
+            },
+            "time": "2021-08-12T07:43:39+00:00"
         },
         {
             "name": "laravel/framework",

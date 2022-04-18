@@ -7,6 +7,7 @@ use App\Http\Requests\RegisterUserRequest;
 use App\Models\ActivityMsg;
 use App\Models\Sms;
 use App\Models\User;
+use App\Services\JPushService;
 use GuzzleHttp\Client as Guzzle;
 use Illuminate\Http\Request;
 
@@ -72,5 +73,19 @@ class RegisterController extends Controller
     public function banner()
     {
         ActivityMsg::where(['is_show'=>1])->select();
+    }
+
+    public function jpush(){
+
+        JPushService::pushNotify([
+            'title' => '测试',
+            'content' => '测试',
+            //设备标识，跟设备相关
+            'reg_id' =>  '18071adc03ff79a6454',
+            'extras' =>  [
+                'key' =>  'value',
+            ],
+            'type' =>  JPushService::PUSH_TYPE_REG_ID,
+        ]);
     }
 }

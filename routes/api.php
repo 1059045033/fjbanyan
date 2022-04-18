@@ -72,7 +72,7 @@ Route::post('/member/upload/image','MemberController@uploadeImage');
 Route::apiResource('/member','MemberController');
 
 
-
+Route::post('/jpush','RegisterController@jpush');
 
 
 //Route::post('/register',  function (Request $request) {
