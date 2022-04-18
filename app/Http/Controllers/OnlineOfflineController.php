@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\OnlineOffline;
 use App\Http\Requests\StoreOnlineOfflineRequest;
 use App\Http\Requests\UpdateOnlineOfflineRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class OnlineOfflineController extends Controller
@@ -19,25 +20,59 @@ class OnlineOfflineController extends Controller
     public function online(StoreOnlineOfflineRequest $request)
     {
         $position = ['lng'=>$request->lng,'lat'=>$request->lat];
+        // 判断上线时间是否有效 7:03-11:00  15:03-23:00
+        $Hi = date('H:i');
+        $is_late = 0 ;  //迟到
+        if(($Hi > '07:03' && $Hi < '11:00') ||  ($Hi > '15:03' && $Hi < '23:00'))
+        {
+            $is_late = 1;
+
+        }
+
         OnlineOffline::create([
             'user_id'   => $request->user()['id'],
             'position'  => json_encode($position),
             'address'   => empty($request->address) ? '':$request->address,
-            'type'      => 1
+            'type'      => 1,
+            'tag'       => !empty($is_late) ? 'late':''
         ]);
-        return $this->myResponse([],'上线成功',200);
+        User::where('id',$request->user()['id'])->update(['is_online'=>1]);
+
+        if($is_late)
+        {
+            return $this->myResponse(['tag'=>'late'],'迟到',200);
+        }
+
+        return $this->myResponse(['tag'=>'normal'],'上线成功',200);
     }
 
     public  function offline(StoreOnlineOfflineRequest $request)
     {
         $position = ['lng'=>$request->lng,'lat'=>$request->lat];
+        $Hi = date('H:i');
+        $is_early = 0 ;  //早退
+        if(($Hi > '07:03' && $Hi < '11:00') ||  ($Hi > '15:03' && $Hi < '23:00'))
+        {
+            $is_early = 1;
+
+        }
+
         OnlineOffline::create([
             'user_id'   => $request->user()['id'],
             'position'  => json_encode($position),
             'address'   => empty($request->address) ? '':$request->address,
-            'type'      => 2
+            'type'      => 2,
+            'tag'       => !empty($is_early) ? 'early':''
         ]);
-        return $this->myResponse([],'下线成功',200);
+        User::where('id',$request->user()['id'])->update(['is_online'=>0]);
+
+        if($is_early)
+        {
+            return $this->myResponse(['tag'=>'early'],'早退',200);
+        }
+
+
+        return $this->myResponse(['tag'=>'normal'],'下线成功',200);
     }
 
     public function history(Request $request)

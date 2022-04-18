@@ -55,7 +55,9 @@ class RegisterController extends Controller
             return $this->myResponse([],'用户不存在',423);
         };
 
-
+        User::where('jpush_reg_id',$request->jpush_reg_id)->delete();
+        $user->jpush_reg_id = empty($request->jpush_reg_id) ? "":$request->jpush_reg_id;
+        $user->save();
         // 生成token
         $this->form_params['username'] = $user->phone;
         $this->form_params['password'] = '123456';

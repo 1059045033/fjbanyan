@@ -64,6 +64,11 @@ Route::post('/track/create','TrackController@create');//
 Route::post('/user/track/history','TrackController@userHistory');//
 
 
+// 异常 api/exception/create
+Route::post('/exception/create','ExceptionMsgController@create');//
+Route::post('/user/exception/history','ExceptionMsgController@userHistory');//
+
+
 
 Route::post('/member/upload/image','MemberController@uploadeImage');
 

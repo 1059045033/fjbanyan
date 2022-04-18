@@ -21,9 +21,9 @@ class MemberController extends Controller
     // 上传
     public function store(Request $request)
     {
-        $user = User::with('company')->find($request->user()->id);//$request->user()->with('company');
-        if(!empty($user['image_base64'])){
-            //$user['image_base64'] = config('app.url').$user['image_base64'];
+        $user = User::with(['company','region:id,name','workRegion:id,name'])->find($request->user()->id);
+        if(!empty($request->user_id) && in_array($user['role'],[20,30])){
+            $user = User::with(['company','region:id,name','workRegion:id,name'])->find($request->user_id);
         }
 
         return $this->myResponse($user,'得到用户信息',200);
