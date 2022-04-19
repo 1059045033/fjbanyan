@@ -7,6 +7,7 @@ use App\Http\Requests\RegisterUserRequest;
 use App\Models\ActivityMsg;
 use App\Models\Sms;
 use App\Models\User;
+use App\Models\VersionControl;
 use App\Services\JPushService;
 use GuzzleHttp\Client as Guzzle;
 use Illuminate\Http\Request;
@@ -70,6 +71,12 @@ class RegisterController extends Controller
 
         return $this->myResponse(['token'=>$token],'登入成功',200);
 
+    }
+
+    public function version()
+    {
+            $v = VersionControl::first();
+            return $this->myResponse($v,'获取版本信息',200);
     }
 
     public function banner()

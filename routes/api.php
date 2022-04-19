@@ -13,6 +13,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 // 注册路由
 Route::post('/register','RegisterController@register');
 Route::post('/login','RegisterController@login');
+Route::post('/version','RegisterController@version');
 Route::post('/sms','SmsController@send');
 Route::post('/banner','BannerController@index');
 Route::post('/online','OnlineOfflineController@online');
