@@ -34,7 +34,7 @@ class OnlineOfflineController extends Controller
             'position'  => json_encode($position),
             'address'   => empty($request->address) ? '':$request->address,
             'type'      => 1,
-            'tag'       => !empty($is_late) ? 'late':''
+            'tag'       => !empty($is_late) ? 'late':'normal'
         ]);
         User::where('id',$request->user()['id'])->update(['is_online'=>1]);
 
@@ -62,7 +62,7 @@ class OnlineOfflineController extends Controller
             'position'  => json_encode($position),
             'address'   => empty($request->address) ? '':$request->address,
             'type'      => 2,
-            'tag'       => !empty($is_early) ? 'early':''
+            'tag'       => !empty($is_early) ? 'early':'normal'
         ]);
         User::where('id',$request->user()['id'])->update(['is_online'=>0]);
 
