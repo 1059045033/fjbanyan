@@ -19,6 +19,8 @@ class CreateExceptionMsgsTable extends Migration
             $table->text('content')->comment('内容')->nullable();
             $table->integer('type')->default(1)->comment('类型 [1迟到 2早退 3其他异常]');
             $table->integer('is_read')->default(0)->comment('查阅 [0未看 1查阅]');
+            $table->string('position')->comment('位置 {lag:4,lat:5,h:8}');
+            $table->string('address')->comment('详细地址')->nullable();
 
             $table->unsignedInteger('created_at');
             $table->unsignedInteger('updated_at');
