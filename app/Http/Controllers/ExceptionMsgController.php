@@ -24,7 +24,7 @@ class ExceptionMsgController extends Controller
         $user = $request->user();
         $request->validate([
             'type'=> 'required|in:1,2,3',
-            'content' => 'required'
+            'content_' => 'required'
         ]);
 
         // 短信发送
@@ -35,7 +35,7 @@ class ExceptionMsgController extends Controller
         $track_id = ExceptionMsg::create([
             'user_id'           => $user['id'],
             'type'              => $request->type,
-            'content'           => $request->content,
+            'content'           => $request->content_,
         ])->id;
 
         return $this->myResponse(['exception_msg_id'=>$track_id],'异常记录成功',200);
