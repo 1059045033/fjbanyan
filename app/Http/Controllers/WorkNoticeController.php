@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\WorkNoticeCollection;
 use App\Http\Resources\WorkNoticeResource;
 use App\Models\ActivityMsg;
+use App\Models\ExceptionMsg;
 use App\Models\Task;
 use App\Models\User;
 use App\Models\WorkNotice;
@@ -123,14 +124,18 @@ class WorkNoticeController extends Controller
     public function unReadTip(Request $request)
     {
         $user = $request->user();
-        $tips = [ 'notice'=>0,'activity'=>0];
+        $tips = [ 'notice'=>0,'activity'=>0,'exception'=>0];
         $notice = WorkNotice::where(['user_id'=>$user['id'],'is_read'=>0])->count();
         $tips['notice'] = $notice;
 
-        $activity = ActivityMsg::where(['user_id'=>$user['id'],'is_read'=>0])->count();
-        $tips['activity'] = $activity;
+        // $activity = ActivityMsg::where(['user_id'=>$user['id'],'is_read'=>0])->count();
+        //$tips['activity'] = $activity;
 
-        $tips['total'] = $tips['notice'] + $tips['activity'];
+        $exception = ExceptionMsg::where(['user_id'=>$user['id'],'is_read'=>0])->count();
+        $tips['exception'] = $exception;
+
+        $tips['total'] = $tips['notice'] + $tips['activity'] + $tips['exception'];
+
         $user_n = User::with('workRegion:id,name')->find($user['id']);//
         $tips['work_region_info'] = $user_n['workRegion'];
         return $this->myResponse($tips,'获取未读提醒消息',200);

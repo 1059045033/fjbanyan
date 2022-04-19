@@ -63,4 +63,24 @@ class ExceptionMsgController extends Controller
         $list = ExceptionMsg::getlist($request->all(),$user_id);
         return $this->myResponse($list,'轨迹列表',200);
     }
+
+    public function check(Request $request)
+    {
+        $user = $request->user();
+        $request->validate([
+            'exception_id' => 'required|exists:exception_msgs,id',
+        ]);
+        $exception = ExceptionMsg::find($request->exception_id);
+        if($exception->user_id != $user['id'] )
+        {
+            return $this->myResponse([],'只能查阅自己的',423);
+        }
+
+        if(empty($exception->is_read))
+        {
+            $exception->is_read = 1;
+            $exception->save();
+        }
+        return $this->myResponse($exception,'查阅异常信息',200);
+    }
 }

@@ -17,6 +17,14 @@ class ExceptionMsg extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
+    public function toArray()
+    {
+        $array = parent::toArray();
+        isset($array['position']) && $array['position'] = json_decode($array['position'],1);
+
+        return $array;
+    }
+
     public function getlist($params=[],$user_id = 0)
     {
         $fillter = [];
@@ -27,6 +35,6 @@ class ExceptionMsg extends Model
             $data['start'] = strtotime(date('Y-m-d 00:00:00',$tt));
             $data['end']   = strtotime(date('Y-m-d 23:59:59',$tt));
             $query->whereBetween('created_at', [$data['start'], $data['end']]);
-        })->select('id as exception_msg_id','type','content','created_at')->orderByDesc('created_at')->paginate($params['size'] ?? 10);;
+        })->select('id as exception_msg_id','type','content','created_at','is_read')->orderByDesc('created_at')->paginate($params['size'] ?? 10);;
     }
 }

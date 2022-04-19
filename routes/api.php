@@ -64,9 +64,10 @@ Route::post('/track/create','TrackController@create');//
 Route::post('/user/track/history','TrackController@userHistory');//
 
 
-// 异常 api/exception/create
+// 异常 exception
 Route::post('/exception/create','ExceptionMsgController@create');//
 Route::post('/user/exception/history','ExceptionMsgController@userHistory');//
+Route::post('/user/exception/check','ExceptionMsgController@check');//
 
 
 
