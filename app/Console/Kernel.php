@@ -24,6 +24,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         // 新加 每分钟执行一次
         $schedule->command('notice:insert')->everyMinute();
+        //$schedule->command('reset:workRegion')->everyMinute();
     }
 
     /**
