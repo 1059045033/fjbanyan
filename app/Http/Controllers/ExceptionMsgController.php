@@ -51,10 +51,12 @@ class ExceptionMsgController extends Controller
             $region    = WorkRegion::find($user['region_id']);
             !empty($region['region_manager']) && $role_20_users[] = $region['region_manager'];
         }
+
         // 找到所以一级管理员
         $role_30_users = User::where('role',30)->select('id')->get()->pluck('id')->toArray();
-        $all_user_ids     = array_unique(array_merge($role_20_users,$role_30_users));
-        $all_user_ids     = array_push($all_user_ids,$user['id']);
+        $all_user_ids  = (array_merge($role_20_users,$role_30_users));
+        array_push($all_user_ids,$user['id']);
+        $all_user_ids = array_unique($all_user_ids);
         $all_users     = User::whereIn('id',$all_user_ids)->select('id','phone','jpush_reg_id')->get()->toArray();
 
         // 【郭伟文】于【2022.04.19 15.09】在【软件园F区】【迟到打卡/早退打卡/跑出工作区域】
