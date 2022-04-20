@@ -89,7 +89,6 @@ class JPushService
             }
             return $response;
         } catch (Throwable $e) {
-            echo 9999;die;
             Log::channel('jpush')->error(json_encode([
                 'file' =>  $e->getFile(),
                 'line' =>  $e->getLine(),
@@ -98,6 +97,66 @@ class JPushService
             ], JSON_UNESCAPED_UNICODE));
         }
     }
+
+    //透传
+    public static function pushInApp($params)
+    {
+        //推送平台
+        $platform = $params['platform'] ?? 'all';
+        //推送标题
+        $title = $params['title'] ?? '';
+        //推送内容
+        $content = '透传';
+        //通知栏样式ID
+        $builder_id = $params['builder_id'] ?? 0;
+        //附加字段
+        $extras = $params['extras'] ?? '';
+        //推送类型
+        $type = $params['type'] ?? '';
+        //推送目标(注册ID)
+        $reg_id = $params['reg_id'] ?? '';
+        //推送目标(标签)
+        $tag = $params['tag'] ?? '';
+        //推送目标(别名)
+        $alias = $params['alias'] ?? '';
+        try {
+            $push = self::getInstance()->push();
+            //设置平台
+            $push->setPlatform($platform);
+            switch ($type) {
+                case self::PUSH_TYPE_ALL:
+                    $push->addAllAudience();
+                    break;
+                case self::PUSH_TYPE_TAG:
+                    $push->addTag($tag);
+                    break;
+                case self::PUSH_TYPE_ALIAS:
+                    $push->addAlias($alias);
+                    break;
+                case self::PUSH_TYPE_REG_ID:
+                    $push->addRegistrationId($reg_id);
+                    break;
+            }
+            $push->message($content,[
+                'title'=>$title,
+                'extras'=>$extras
+            ]);
+            $response = $push->send();
+            if ($response['http_code'] != 200) {
+                Log::channel('jpush')->error(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+            return $response;
+        } catch (Throwable $e) {
+            Log::channel('jpush')->error(json_encode([
+                'file' =>  $e->getFile(),
+                'line' =>  $e->getLine(),
+                'message' =>  $e->getMessage(),
+                'params' =>  $params,
+            ], JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+
     /**
      * 获取指定设备的别名和标签
      */

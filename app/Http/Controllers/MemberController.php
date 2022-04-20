@@ -6,6 +6,7 @@ use App\Http\Requests\StoreActivityMsgRequest;
 use App\Http\Requests\UpdateActivityMsgRequest;
 use App\Models\ActivityMsg;
 use App\Models\User;
+use App\Services\JPushService;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 
@@ -222,6 +223,16 @@ class MemberController extends Controller
         $work_user->work_region_id = $work_region_id;
         $work_user->save();
 
+        #=========== 设置工作区域 start =========
+        JPushService::pushInApp([
+            'reg_id' =>  $work_user->jpush_reg_id,
+            'extras' =>  [
+                'type' => 1,
+            ],
+            'type' =>  JPushService::PUSH_TYPE_REG_ID,
+        ]);
+        #=========== 设置工作区域   end =========
+
         return $this->myResponse([],'工作人员工作区域设置成功',200);
 
 
@@ -252,6 +263,7 @@ class MemberController extends Controller
         //$user['role']==30 && $region_id = $request->region_id;
 
         $region_id = $request->region_id;
+        $jpush_reg_ids = [];
         // 找到说有的用户
         foreach ($request->user_ids as $v)
         {
@@ -266,7 +278,18 @@ class MemberController extends Controller
 //            }
             $temp_user->work_region_id = $region_id;
             $temp_user->save();
+            !empty($temp_user->jpush_reg_id) && $jpush_reg_ids[] = $temp_user->jpush_reg_id;
         }
+        #=========== 设置工作区域 start =========
+        JPushService::pushInApp([
+            'reg_id' =>  $jpush_reg_ids,
+            'extras' =>  [
+                'type' => 1,
+            ],
+            'type' =>  JPushService::PUSH_TYPE_REG_ID,
+        ]);
+        #=========== 设置工作区域   end =========
+
 
         return $this->myResponse([],'工作区域全部设置完成',200);
 

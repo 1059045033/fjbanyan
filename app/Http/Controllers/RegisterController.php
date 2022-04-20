@@ -87,12 +87,12 @@ class RegisterController extends Controller
     public function jpush(){
 
         JPushService::pushNotify([
-            'title' => '测试',
-            'content' => '测试',
+            'title' => '测试批量',
+            'content' => '测试批量',
             //设备标识，跟设备相关
-            'reg_id' =>  '18071adc03ff79a6454',
+            'reg_id' =>  ['13065ffa4ef8acd9480','18071adc03ff79a6454'],//'13065ffa4ef8acd9480',//1507bfd3f735ffaf601
             'extras' =>  [
-                'key' =>  'value',
+                'type'=> 'zidingyi'
             ],
             'type' =>  JPushService::PUSH_TYPE_REG_ID,
         ]);

@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\WorkNotice;
 use App\Http\Requests\StoreWorkNoticeRequest;
 use App\Http\Resources\TopicCollection;
+use App\Services\JPushService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -63,14 +64,25 @@ class WorkNoticeController extends Controller
         DB::beginTransaction();
         try {
             $task_id = Task::create($task_fields)->id;
+            $jpush_reg_ids = [];
             foreach ($users as $k=>$v){
                 // 创建任务消息
                 $fields['user_id'] = $v['user_id'];
                 $fields['task_id'] = $task_id;
                 WorkNotice::create($fields);
                 // 调用三方推送
-
+                !empty($v['jpush_reg_id']) && $jpush_reg_ids[] = $v['jpush_reg_id'];
             }
+            #=========== 派发任务推送 start =========
+            JPushService::pushInApp([
+                'reg_id' =>  $jpush_reg_ids,
+                'extras' =>  [
+                    'type' => 2,
+                ],
+                'type' =>  JPushService::PUSH_TYPE_REG_ID,
+            ]);
+            #=========== 派发任务推送   end =========
+
             DB::commit();
         } catch (QueryException $exception) {
             DB::rollback();
