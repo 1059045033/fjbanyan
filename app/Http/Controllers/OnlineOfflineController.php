@@ -23,7 +23,7 @@ class OnlineOfflineController extends Controller
         // 判断上线时间是否有效 7:03-11:00  15:03-23:00
         $Hi = date('H:i');
         $is_late = 0 ;  //迟到
-        if(($Hi > '07:03' && $Hi < '11:00') ||  ($Hi > '15:03' && $Hi < '23:00'))
+        if(($Hi > '07:03' && $Hi < '11:00') ||  ($Hi > '15:03' && $Hi < '19:00'))
         {
             $is_late = 1;
 
@@ -51,7 +51,7 @@ class OnlineOfflineController extends Controller
         $position = ['lng'=>$request->lng,'lat'=>$request->lat];
         $Hi = date('H:i');
         $is_early = 0 ;  //早退
-        if(($Hi > '07:03' && $Hi < '11:00') ||  ($Hi > '15:03' && $Hi < '23:00'))
+        if(($Hi > '07:03' && $Hi < '11:00') ||  ($Hi > '15:03' && $Hi < '19:00'))
         {
             $is_early = 1;
 
