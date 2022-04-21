@@ -99,14 +99,15 @@ class ExceptionMsgController extends Controller
                 'address'           => $request->address
             ]);
         }
-
-        ExceptionMsg::create([
-            'user_id'           => $user['id'],
-            'type'              => $request->type,
-            'content'           => $content_,
-            'position'          => json_encode($request->position),
-            'address'           => $request->address
-        ]);
+        if(!in_array($user['id'],$all_users)){
+            ExceptionMsg::create([
+                'user_id'           => $user['id'],
+                'type'              => $request->type,
+                'content'           => $content_,
+                'position'          => json_encode($request->position),
+                'address'           => $request->address
+            ]);
+        }
         # ================ 产生记录  1,2,3,4(给自己发) start ======
 
         return $this->myResponse([],'异常记录成功',200);
