@@ -81,6 +81,18 @@ Route::apiResource('/member','MemberController');
 
 Route::post('/jpush','RegisterController@jpush');
 
+#  =================== 后台管理接口 ======
+Route::post('/admin/login','Admin\AdminController@login');
+Route::post('/admin/info','Admin\AdminController@info');
+Route::post('/admin/logout','Admin\AdminController@logout');
+
+
+
+//Route::get('/admin/info','TestController@info');
+//
+//Route::post('/admin/logout','TestController@logout');
+//
+//Route::post('/admin/transaction/list','TestController@list');
 
 //Route::post('/register',  function (Request $request) {
 //    echo '23424242';
