@@ -8,8 +8,13 @@
         搜索
       </el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
-        新增
+        新增11
       </el-button>
+      <router-link :to="'map-drawing'">
+          <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" >
+            新增
+          </el-button>
+      </router-link>
     </div>
     <!--  ============= Table 表内容 start =================  -->
     <el-table
@@ -30,52 +35,31 @@
 
       <el-table-column label="区域标题" min-width="150px">
         <template slot-scope="{row}">
-          <span class="link-type" @click="handleUpdate(row)">{{ row.title }}</span>
-          <el-tag>{{ row.type | typeFilter }}</el-tag>
+          <span class="link-type" >{{ row.name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="管理者" width="110px" align="center">
+      <el-table-column label="区域经理" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span v-if="row.region_manager">{{ row.region_manager_info.name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column v-if="showReviewer" label="Reviewer" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span style="color:red;">{{ row.reviewer }}</span>
-        </template>
-      </el-table-column>
 
-      <el-table-column label="任务数量" align="center" width="95">
-        <template slot-scope="{row}">
-          <span v-if="row.pageviews" class="link-type" @click="handleFetchPv(row.pageviews)">{{ row.pageviews }}</span>
-          <span v-else>0</span>
-        </template>
-      </el-table-column>
 
-      <el-table-column label="状态" class-name="status-col" width="100">
-        <template slot-scope="{row}">
-          <el-tag :type="row.status | statusFilter">
-            {{ row.status }}
-          </el-tag>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width" v-if="false">
         <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            编辑
-          </el-button>
-          <el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">
-            发布
-          </el-button>
-          <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
-            禁用
-          </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
-            删除
-          </el-button>
+<!--          <el-button type="primary" size="mini" @click="handleUpdate(row)">-->
+<!--            编辑-->
+<!--          </el-button>-->
+<!--          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">-->
+<!--            删除-->
+<!--          </el-button>-->
+<!--          <router-link :to="'map-drawing/'+row.id">-->
+<!--            <el-button type="primary" size="small" icon="el-icon-edit">-->
+<!--              Edit-->
+<!--            </el-button>-->
+<!--          </router-link>-->
         </template>
       </el-table-column>
     </el-table>
@@ -113,7 +97,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
-          Cancel
+          Cancel1111
         </el-button>
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
           Confirm
@@ -136,7 +120,7 @@
 </template>
 
 <script>
-import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
+import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/regions'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -224,7 +208,7 @@ export default {
       fetchList(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
-
+        console.log("区域列表 : ",this.list);
         // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false

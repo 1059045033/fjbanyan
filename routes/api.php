@@ -86,6 +86,12 @@ Route::post('/admin/login','Admin\AdminController@login');
 Route::get('/admin/info','Admin\AdminController@info');
 Route::post('/admin/logout','Admin\AdminController@logout');
 
+Route::get('/admin/region/regions','Admin\WorkRegionController@regions');// 所有区域列表
+Route::get('/admin/user/unarrange','Admin\WorkRegionController@unArrange');// 未被安排用户
+Route::post('/admin/region/create','Admin\WorkRegionController@create');// 创建区域
+
+
+
 
 
 //Route::get('/admin/info','TestController@info');

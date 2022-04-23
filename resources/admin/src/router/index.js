@@ -198,6 +198,7 @@ export const asyncRoutes = [
         path: 'add',
         component: () => import('@/views/region/add'),
         name: 'region-add',
+        hidden: true,
         meta: {
           title: '增加区域'
           // if do not set roles, means: this page does not require permission
