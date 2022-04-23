@@ -1,6 +1,5 @@
 <template>
 
-
   <div>
     <aside>
       1.点击开始绘制按钮。 2.右键开始绘制。 3.双击结束绘制。 4.给区域取个名字并设置区域经理保存
@@ -9,25 +8,32 @@
       class="map"
       center="福州"
       :zoom="16"
+      :double-click-zoom="false"
+      :keyboard="false"
+      :pinch-to-zoom="false"
+      :map-click="false"
+      :scroll-wheel-zoom="true"
       @mousemove="syncPolyline"
       @dblclick="newPolyline"
       @rightclick="paintPolyline"
-      :double-click-zoom = "false"
-      :keyboard = "false"
-      :pinch-to-zoom = "false"
-      :map-click="false"
-      :scroll-wheel-zoom = "true"
     >
       <bm-control>
-        <button class="el-button el-button--primary el-button--medium"
-                @click="toggle('polyline')">{{ polyline.editing ? '停止绘制' : '开始绘制' }}</button>
+        <button
+          class="el-button el-button--primary el-button--medium"
+          @click="toggle('polyline')"
+        >{{ polyline.editing ? '停止绘制' : '开始绘制' }}</button>
       </bm-control>
-      <bm-polygon v-for="path of polyline.paths" :path="path" stroke-color="blue" :stroke-opacity="0.5" :stroke-weight="2"  />
-      <bm-polygon v-for="item of polylines.items" :path="item.region_scope" stroke-color="blue" :stroke-opacity="0.5"
-                  :stroke-weight="2" :data-region="1"
-                  @click="clickOverlay($event)"/>
+      <bm-polygon v-for="path of polyline.paths" :path="path" stroke-color="blue" :stroke-opacity="0.5" :stroke-weight="2" />
+      <bm-polygon
+        v-for="item of polylines.items"
+        :path="item.region_scope"
+        stroke-color="blue"
+        :stroke-opacity="0.5"
+        :stroke-weight="2"
+        :data-region="1"
+        @click="clickOverlay($event)"
+      />
     </baidu-map>
-
 
     <!--  ============= 弹窗 start =================  -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
@@ -59,17 +65,17 @@
 </template>
 
 <script>
-  import { fetchList, fetchManagerList,createRegion} from '@/api/regions'
-  import waves from '@/directive/waves' // waves directive
-  import { parseTime } from '@/utils'
+import { fetchList, fetchManagerList, createRegion } from '@/api/regions'
+import waves from '@/directive/waves' // waves directive
+import { parseTime } from '@/utils'
 
-  const calendarTypeOptions = [];
+const calendarTypeOptions = []
 
-  // arr to obj, such as { CN : "China", US : "USA" }
-  const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
-    acc[cur.key] = cur.display_name
-    return acc
-  }, {});
+// arr to obj, such as { CN : "China", US : "USA" }
+const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
+  acc[cur.key] = cur.display_name
+  return acc
+}, {})
 
 export default {
   directives: { waves },
@@ -80,28 +86,28 @@ export default {
         paths: []
       },
       polylines: {
-        items:[]
+        items: []
       },
       quyu: [],
       textMap: {
         update: 'Edit',
         create: 'Create'
       },
-      dialogFormVisible: false,//弹窗是否表单验证
-      dialogStatus: '',//弹窗状态
+      dialogFormVisible: false, // 弹窗是否表单验证
+      dialogStatus: '', // 弹窗状态
       rules: {
         manager_id: [{ required: true, message: '请选择区域管理员', trigger: 'change' }],
-        title: [{ required: true, message: '请填写区域名称', trigger: 'blur' }],
+        title: [{ required: true, message: '请填写区域名称', trigger: 'blur' }]
       },
       temp: {
         id: undefined,
-        manager_id : undefined,
-        title:''
+        manager_id: undefined,
+        title: ''
       },
       statusOptions: ['published', 'draft', 'deleted'],
       calendarTypeOptions,
-      currLines:[],
-      regionData:''
+      currLines: [],
+      regionData: ''
     }
   },
   created() {
@@ -150,19 +156,18 @@ export default {
       if (path.length) {
         paths.push([])
       }
-      const temp =[];
+      const temp = []
       for (let i = 0; i < path.length; i++) {
-        //this.currLines += '{"lng":'+path[i]['lng']+',"lat":'+path[i]['lat']+'},';
-        let temp_ = { "lng":path[i]['lng'],"lat": path[i]['lat']};
-        this.currLines[i] = temp_;
+        // this.currLines += '{"lng":'+path[i]['lng']+',"lat":'+path[i]['lat']+'},';
+        const temp_ = { 'lng': path[i]['lng'], 'lat': path[i]['lat'] }
+        this.currLines[i] = temp_
       }
 
       this.quyu.push(this.currLines)
       // 弹窗
       setTimeout(() => {
-        this.handleCreate();
+        this.handleCreate()
       }, 0.5 * 1000)
-
     },
     // 绘制线
     paintPolyline(e) {
@@ -176,7 +181,7 @@ export default {
     },
     // 开启弹窗
     handleCreate() {
-      //this.resetTemp()
+      // this.resetTemp()
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -195,21 +200,21 @@ export default {
     //   }
     // },
     createData() {
-      console.log("创建新的区域 = ",this.temp);
+      console.log('创建新的区域 = ', this.temp)
 
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.temp.scope = this.currLines;
+          this.temp.scope = this.currLines
           createRegion(this.temp).then(() => {
-            //this.list.unshift(this.temp)
-            let n_index = 0 ;
-            if(this.polylines.items.length > 0 ){
-              let n_index = this.polylines.items.length + 1 ;
+            // this.list.unshift(this.temp)
+            const n_index = 0
+            if (this.polylines.items.length > 0) {
+              const n_index = this.polylines.items.length + 1
             }
-            this.polylines.items[n_index].region_scope = this.polyline.paths;
-            this.polylines.items[n_index].region_manager_info.name = this.temp.manager_id;
-            this.polylines.items[n_index].name = this.temp.title;
-            this.polyline.paths = [];
+            this.polylines.items[n_index].region_scope = this.polyline.paths
+            this.polylines.items[n_index].region_manager_info.name = this.temp.manager_id
+            this.polylines.items[n_index].name = this.temp.title
+            this.polyline.paths = []
 
             this.dialogFormVisible = false
             this.$notify({
@@ -224,22 +229,21 @@ export default {
     },
     cancelData() {
       this.dialogFormVisible = false
-      //this.polyline.paths.pop();
-      this.polyline.paths = [];
+      // this.polyline.paths.pop();
+      this.polyline.paths = []
     },
     getManagerList() {
       fetchManagerList(this.listQuery).then(response => {
-          this.calendarTypeOptions = response.data.users;
-          // console.log( response.data.regions)
-          for(let i=0;i<response.data.regions.length;i++){
-            // console.log(response.data.regions[i].region_scope);
-            this.polylines.items[i] = response.data.regions[i];
-          }
-
+        this.calendarTypeOptions = response.data.users
+        // console.log( response.data.regions)
+        for (let i = 0; i < response.data.regions.length; i++) {
+          // console.log(response.data.regions[i].region_scope);
+          this.polylines.items[i] = response.data.regions[i]
+        }
       })
     },
     clickOverlay(e) {
-      console.log("点击覆盖物 = ",this.$refs.dataRegion)
+      console.log('点击覆盖物 = ', this.$refs.dataRegion)
       // console.log("点击覆盖物 = ",e.target.getAttribute("data-region"))
       // console.log("点击覆盖物 = ",e.currentTarget.getAttribute("data-region"))
     }

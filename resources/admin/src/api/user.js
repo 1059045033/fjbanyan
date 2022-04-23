@@ -23,6 +23,6 @@ export function getInfo(token) {
 export function logout() {
   return request({
     url: '/admin/logout',
-    method: 'post',
+    method: 'post'
   })
 }

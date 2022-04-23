@@ -7,13 +7,13 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
-        新增11
-      </el-button>
+<!--      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">-->
+<!--        新增11-->
+<!--      </el-button>-->
       <router-link :to="'map-drawing'">
-          <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" >
-            新增
-          </el-button>
+        <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit">
+          新增
+        </el-button>
       </router-link>
     </div>
     <!--  ============= Table 表内容 start =================  -->
@@ -35,7 +35,7 @@
 
       <el-table-column label="区域标题" min-width="150px">
         <template slot-scope="{row}">
-          <span class="link-type" >{{ row.name }}</span>
+          <span class="link-type">{{ row.name }}</span>
         </template>
       </el-table-column>
 
@@ -45,21 +45,19 @@
         </template>
       </el-table-column>
 
-
-
-      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width" v-if="false">
+      <el-table-column v-if="false" label="操作" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-<!--          <el-button type="primary" size="mini" @click="handleUpdate(row)">-->
-<!--            编辑-->
-<!--          </el-button>-->
-<!--          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">-->
-<!--            删除-->
-<!--          </el-button>-->
-<!--          <router-link :to="'map-drawing/'+row.id">-->
-<!--            <el-button type="primary" size="small" icon="el-icon-edit">-->
-<!--              Edit-->
-<!--            </el-button>-->
-<!--          </router-link>-->
+          <!--          <el-button type="primary" size="mini" @click="handleUpdate(row)">-->
+          <!--            编辑-->
+          <!--          </el-button>-->
+          <!--          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">-->
+          <!--            删除-->
+          <!--          </el-button>-->
+          <!--          <router-link :to="'map-drawing/'+row.id">-->
+          <!--            <el-button type="primary" size="small" icon="el-icon-edit">-->
+          <!--              Edit-->
+          <!--            </el-button>-->
+          <!--          </router-link>-->
         </template>
       </el-table-column>
     </el-table>
@@ -97,7 +95,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
-          Cancel1111
+          Cancel
         </el-button>
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
           Confirm
@@ -208,7 +206,7 @@ export default {
       fetchList(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
-        console.log("区域列表 : ",this.list);
+        console.log('区域列表 : ', this.list)
         // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
