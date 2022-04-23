@@ -86,12 +86,13 @@ export const constantRoutes = [
   {
     path: '/documentation',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: 'index',
         component: () => import('@/views/documentation/index'),
         name: 'Documentation',
-        meta: { title: 'Documentation', icon: 'documentation', affix: true }
+        meta: { title: 'Documentation', icon: 'documentation', affix: false }
       }
     ]
   },
@@ -99,6 +100,7 @@ export const constantRoutes = [
     path: '/guide',
     component: Layout,
     redirect: '/guide/index',
+    hidden: true,
     children: [
       {
         path: 'index',
@@ -133,7 +135,8 @@ export const asyncRoutes = [
     path: '/permission',
     component: Layout,
     redirect: '/permission/page',
-    alwaysShow: true, // will always show the root menu
+    alwaysShow: false, // will always show the root menu
+    hidden: true,
     name: 'Permission',
     meta: {
       title: 'Permission',
@@ -170,10 +173,61 @@ export const asyncRoutes = [
       }
     ]
   },
+  {
+    path: '/region',
+    component: Layout,
+    redirect: '/region/page',
+    alwaysShow: true, // will always show the root menu
+    name: 'Region',
+    meta: {
+      title: '区域管理',
+      icon: 'el-icon-map-location',
+      roles: ['admin', 'editor'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/region/index'),
+        name: 'region-list',
+        meta: {
+          title: '区域列表'
 
+        }
+      },
+      {
+        path: 'add',
+        component: () => import('@/views/region/add'),
+        name: 'region-add',
+        meta: {
+          title: '增加区域'
+          // if do not set roles, means: this page does not require permission
+        }
+      },
+      {
+        path: 'map-drawing',
+        component: () => import('@/views/region/map-drawing'),
+        name: 'map-drawing',
+        meta: {
+          title: '地图绘制'
+          // if do not set roles, means: this page does not require permission
+        }
+      }
+      // {
+      //   path: 'map',
+      //   component: () => import('@/views/region/map'),
+      //   name: 'map',
+      //   hidden: false,
+      //   meta: {
+      //     title: '地图'
+      //     // if do not set roles, means: this page does not require permission
+      //   }
+      // }
+    ]
+  },
   {
     path: '/icon',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: 'index',
@@ -195,6 +249,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/example/list',
     name: 'Example',
+    hidden: true,
     meta: {
       title: 'Example',
       icon: 'el-icon-s-help'
@@ -225,6 +280,7 @@ export const asyncRoutes = [
   {
     path: '/tab',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: 'index',
@@ -240,6 +296,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: 'noRedirect',
     name: 'ErrorPages',
+    hidden: true,
     meta: {
       title: 'Error Pages',
       icon: '404'
@@ -263,6 +320,7 @@ export const asyncRoutes = [
   {
     path: '/error-log',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: 'log',
@@ -278,6 +336,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/excel/export-excel',
     name: 'Excel',
+    hidden: true,
     meta: {
       title: 'Excel',
       icon: 'excel'
@@ -315,6 +374,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/zip/download',
     alwaysShow: true,
+    hidden: true,
     name: 'Zip',
     meta: { title: 'Zip', icon: 'zip' },
     children: [
@@ -331,6 +391,7 @@ export const asyncRoutes = [
     path: '/pdf',
     component: Layout,
     redirect: '/pdf/index',
+    hidden: true,
     children: [
       {
         path: 'index',
@@ -349,6 +410,7 @@ export const asyncRoutes = [
   {
     path: '/theme',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: 'index',
@@ -362,6 +424,7 @@ export const asyncRoutes = [
   {
     path: '/clipboard',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: 'index',
@@ -375,6 +438,7 @@ export const asyncRoutes = [
   {
     path: 'external-link',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: 'https://github.com/PanJiaChen/vue-element-admin',
@@ -389,7 +453,7 @@ export const asyncRoutes = [
 
 const createRouter = () => new Router({
   mode: 'history', // require service support
-  base:'/admin/',
+  base: '/admin/',
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })
