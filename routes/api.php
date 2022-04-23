@@ -83,7 +83,7 @@ Route::post('/jpush','RegisterController@jpush');
 
 #  =================== 后台管理接口 ======
 Route::post('/admin/login','Admin\AdminController@login');
-Route::post('/admin/info','Admin\AdminController@info');
+Route::get('/admin/info','Admin\AdminController@info');
 Route::post('/admin/logout','Admin\AdminController@logout');
 
 

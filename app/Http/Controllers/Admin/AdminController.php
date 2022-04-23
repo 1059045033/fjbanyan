@@ -58,12 +58,11 @@ class AdminController extends Controller
     public function logout(Request $request)
     {
 
-        $request->validate([
-            'token'  => 'required',
-        ]);
-        $admin = Admin::where(['remember_token'=>$request->token])->first();
+        $token = $request->header('X-Token');
+        $admin = Admin::where(['remember_token' => $token])->first();
         if(!empty($admin)){
             $admin->remember_token = '';
+            $admin->save();
             return $this->myResponse([],'退出成功',200);
         }else{
             return $this->myResponse([],'用户不存在',423);
