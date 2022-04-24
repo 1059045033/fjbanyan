@@ -87,9 +87,13 @@ Route::get('/admin/info','Admin\AdminController@info');
 Route::post('/admin/logout','Admin\AdminController@logout');
 
 Route::get('/admin/region/regions','Admin\WorkRegionController@regions');// 所有区域列表
-Route::get('/admin/user/unarrange','Admin\WorkRegionController@unArrange');// 未被安排用户
+Route::get('/admin/user/unarrange','Admin\WorkRegionController@unArrange');// 未被安排的2级别人员
 Route::post('/admin/region/create','Admin\WorkRegionController@create');// 创建区域
 
+Route::get('/admin/user/lists','Admin\MemberController@lists');   // 人员列表
+Route::get('/admin/user/create','Admin\MemberController@create');   // 人员列表
+Route::get('/admin/user/edit','Admin\MemberController@edit');   // 人员列表
+Route::get('/admin/user/delete','Admin\MemberController@delete');   // 人员列表
 
 
 
