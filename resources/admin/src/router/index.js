@@ -226,6 +226,39 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/user',
+    component: Layout,
+    redirect: '/user/page',
+    alwaysShow: false, // will always show the root menu
+    hidden: false,
+    name: 'User',
+    meta: {
+      title: '人员管理',
+      icon: 'user',
+      roles: ['admin', 'editor'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/user/index'),
+        name: 'user-list',
+        meta: {
+          title: '人员列表',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'directive',
+        component: () => import('@/views/permission/directive'),
+        name: 'DirectivePermission',
+        hidden: true,
+        meta: {
+          title: 'Directive Permission'
+        }
+      }
+    ]
+  },
+  {
     path: '/icon',
     component: Layout,
     hidden: true,

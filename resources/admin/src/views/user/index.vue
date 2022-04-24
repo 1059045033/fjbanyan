@@ -1,20 +1,20 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.title" placeholder="区域标题" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.name" placeholder="用户名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
 
       <span style="padding-left: 10px" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
-      <!--      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">-->
-      <!--        新增11-->
-      <!--      </el-button>-->
-      <router-link :to="'map-drawing'">
-        <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit">
-          新增
-        </el-button>
-      </router-link>
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
+        新增
+      </el-button>
+<!--      <router-link :to="'add'">-->
+<!--        <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit">-->
+<!--          新增-->
+<!--        </el-button>-->
+<!--      </router-link>-->
     </div>
     <!--  ============= Table 表内容 start =================  -->
     <el-table
@@ -33,33 +33,53 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="区域标题" min-width="150px">
+      <el-table-column label="名字" min-width="150px">
         <template slot-scope="{row}">
-          <span class="link-type">{{ row.name }}</span>
+          <span>{{ row.name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="区域经理" width="110px" align="center">
+      <el-table-column label="手机" min-width="150px">
         <template slot-scope="{row}">
-          <span v-if="row.region_manager">{{ row.region_manager_info.name }}</span>
+          <span>{{ row.phone }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column v-if="false" label="操作" align="center" width="230" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <!--          <el-button type="primary" size="mini" @click="handleUpdate(row)">-->
-          <!--            编辑-->
-          <!--          </el-button>-->
-          <!--          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">-->
-          <!--            删除-->
-          <!--          </el-button>-->
-          <!--          <router-link :to="'map-drawing/'+row.id">-->
-          <!--            <el-button type="primary" size="small" icon="el-icon-edit">-->
-          <!--              Edit-->
-          <!--            </el-button>-->
-          <!--          </router-link>-->
+      <el-table-column label="角色" min-width="150px">
+        <template slot-scope="{row}">
+          <span>{{ row.role | roleFilter }}</span>
         </template>
       </el-table-column>
+
+      <el-table-column label="公司" min-width="150px">
+        <template slot-scope="{row}">
+          <span v-if="row.company">{{ row.company.name }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="所属区域" min-width="150px">
+        <template slot-scope="{row}">
+          <span v-if="row.region">{{ row.region.name }}</span>
+        </template>
+      </el-table-column>
+
+
+
+<!--      <el-table-column v-if="false" label="操作" align="center" width="230" class-name="small-padding fixed-width">-->
+<!--        <template slot-scope="{row,$index}">-->
+<!--          &lt;!&ndash;          <el-button type="primary" size="mini" @click="handleUpdate(row)">&ndash;&gt;-->
+<!--          &lt;!&ndash;            编辑&ndash;&gt;-->
+<!--          &lt;!&ndash;          </el-button>&ndash;&gt;-->
+<!--          &lt;!&ndash;          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">&ndash;&gt;-->
+<!--          &lt;!&ndash;            删除&ndash;&gt;-->
+<!--          &lt;!&ndash;          </el-button>&ndash;&gt;-->
+<!--          &lt;!&ndash;          <router-link :to="'map-drawing/'+row.id">&ndash;&gt;-->
+<!--          &lt;!&ndash;            <el-button type="primary" size="small" icon="el-icon-edit">&ndash;&gt;-->
+<!--          &lt;!&ndash;              Edit&ndash;&gt;-->
+<!--          &lt;!&ndash;            </el-button>&ndash;&gt;-->
+<!--          &lt;!&ndash;          </router-link>&ndash;&gt;-->
+<!--        </template>-->
+<!--      </el-table-column>-->
     </el-table>
     <!--  ============= Table 表内容 end   =================  -->
 
@@ -70,28 +90,26 @@
     <!--  ============= 弹窗 start =================  -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="Type" prop="type">
-          <el-select v-model="temp.type" class="filter-item" placeholder="Please select">
+
+        <el-form-item label="名字" prop="name">
+          <el-input v-model="temp.name" />
+        </el-form-item>
+        <el-form-item label="号码" prop="phone">
+          <el-input v-model="temp.phone" />
+        </el-form-item>
+
+        <el-form-item label="等级" prop="role">
+          <el-select v-model="temp.role" class="filter-item" placeholder="Please select">
             <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
           </el-select>
         </el-form-item>
-        <el-form-item label="Date" prop="timestamp">
-          <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
-        </el-form-item>
-        <el-form-item label="Title" prop="title">
-          <el-input v-model="temp.title" />
-        </el-form-item>
-        <el-form-item label="Status">
-          <el-select v-model="temp.status" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />
+
+        <el-form-item label="公司" prop="company">
+          <el-select v-model="temp.company" class="filter-item" placeholder="Please select">
+            <el-option v-for="item in companyOptions" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
-        <el-form-item label="Imp">
-          <el-rate v-model="temp.importance" :colors="['#99A9BF', '#F7BA2A', '#FF9900']" :max="3" style="margin-top:8px;" />
-        </el-form-item>
-        <el-form-item label="Remark">
-          <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
-        </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
@@ -118,21 +136,33 @@
 </template>
 
 <script>
-import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/regions'
+import { userlist,createUser } from '@/api/users'
+import { companylist } from '@/api/company'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 const calendarTypeOptions = [
-  { key: 'CN', display_name: 'China' },
-  { key: 'US', display_name: 'USA' },
-  { key: 'JP', display_name: 'Japan' },
-  { key: 'EU', display_name: 'Eurozone' }
+  { key: '10', display_name: '三级' },
+  { key: '20', display_name: '二级' },
+  { key: '30', display_name: '一级' },
 ]
 
 // arr to obj, such as { CN : "China", US : "USA" }
 const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
   acc[cur.key] = cur.display_name
+  return acc
+}, {})
+
+
+const companyOptions = [
+  { id: '1', name: '福州手动' },
+  { id: '2', name: '大沙发' }
+]
+
+// arr to obj, such as { CN : "China", US : "USA" }
+const companyKeyValue = companyOptions.reduce((acc, cur) => {
+  acc[cur.id] = cur.name
   return acc
 }, {})
 
@@ -149,7 +179,7 @@ export default {
       }
       return statusMap[status]
     },
-    typeFilter(type) {
+    roleFilter(type) {
       return calendarTypeKeyValue[type]
     }
   },
@@ -165,52 +195,57 @@ export default {
         importance: undefined,
         title: undefined,
         type: undefined,
-        sort: '+id'
+        sort: '+id',
+        name: undefined,
       },
       importanceOptions: [1, 2, 3],
       calendarTypeOptions,
+      companyOptions,
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
       temp: {
         id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        type: '',
+        name: '',
+        role: '',
+        phone: '',
+        company: '',
         status: 'published'
       },
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: 'Edit',
-        create: 'Create'
+        update: '编辑',
+        create: '创建'
       },
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
-        title: [{ required: true, message: 'title is required', trigger: 'blur' }]
+        name: [{ required: true, message: '名字必填', trigger: 'blur' }],
+        phone: [{ required: true, message: '号码必填', trigger: 'blur' }],
+        role: [{ required: true, message: '等级必选', trigger: 'change' }],
+        company: [{ required: true, message: '公司必选', trigger: 'change' }]
       },
       downloadLoading: false
     }
   },
   created() {
-    this.getList()
+    this.getList();
+    this.getCompanies();
   },
   methods: {
     getList() {
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
+      console.log('listQuery = ',this.listQuery)
+      userlist(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
-        console.log('区域列表 : ', this.list)
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
+        this.listLoading = false
+      })
+    },
+    getCompanies(){
+      companylist(this.listQuery).then(response => {
+        this.companyOptions = response.data.items
       })
     },
     handleFilter() {
@@ -260,14 +295,13 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.author = 'vue-element-admin'
-          createArticle(this.temp).then(() => {
+          createUser(this.temp).then((res) => {
+            this.temp.id = res.data.id
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
+              title: '成功',
+              message: '创建成功',
               type: 'success',
               duration: 2000
             })

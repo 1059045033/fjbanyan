@@ -38,4 +38,18 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    public function render($request, Throwable $e)
+    {
+        if($request->expectsJson()){
+            $result = [
+                "code"=>423,
+                "message"=>array_values($e->errors())[0][0],
+                "data"=>""
+            ];
+            return response()->json($result);
+        }
+
+        return parent::render($request, $e);
+    }
 }

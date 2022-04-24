@@ -91,11 +91,11 @@ Route::get('/admin/user/unarrange','Admin\WorkRegionController@unArrange');// �
 Route::post('/admin/region/create','Admin\WorkRegionController@create');// 创建区域
 
 Route::get('/admin/user/lists','Admin\MemberController@lists');   // 人员列表
-Route::get('/admin/user/create','Admin\MemberController@create');   // 人员列表
+Route::post('/admin/user/create','Admin\MemberController@create');   // 人员列表
 Route::get('/admin/user/edit','Admin\MemberController@edit');   // 人员列表
 Route::get('/admin/user/delete','Admin\MemberController@delete');   // 人员列表
 
-
+Route::get('/admin/company/lists','Admin\CompanyController@lists');   // 人员列表
 
 
 //Route::get('/admin/info','TestController@info');

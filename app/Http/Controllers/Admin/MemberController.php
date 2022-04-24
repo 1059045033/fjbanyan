@@ -20,10 +20,25 @@ class MemberController extends Controller
 
     public function lists(Request $request)
     {
+        $search = $request->query('name');
+        $sort = 'asc';
+        $fillter = [];
+        $request->query('name') && $fillter['name'] = $request->query('name');
+
+        $request->query('sort') == '-id' && $sort = 'desc';
+        $page = $request->query('page') ?? 1;
+        $limit = $request->query('limit') ?? 10;
+
+        $total = User::where($fillter)->count();
         $list = User::with(['company','Region:id,name'])
-            ->select('id as user_id','name','avator','created_at','phone','image_base64','company_id','region_id','role')
-            ->get();
-        return $this->myResponse($list,'',200);
+            ->where($fillter)
+            ->select('id','name','avator','created_at','phone','image_base64','company_id','region_id','role')
+            ->orderBy('id',$sort)->forPage($page)->limit($limit)->get();
+        $result = [
+            'total' => $total,
+            'items' => $list
+        ];
+        return $this->myResponse($result,'',200);
     }
 
 
@@ -34,7 +49,31 @@ class MemberController extends Controller
 
     public function create(Request $request)
     {
-        return $this->myResponse([],'创建成功',200);
+        $request->validate([
+            'role'    => 'required|in:10,20,30',
+            'company' => 'required|exists:companies,id',
+            'name'    => 'required',
+            'phone'   => 'required|unique:users,phone'
+        ],[
+            'role.*' => '等级参数错误',
+            'company.*' => '公司参数错误',
+            'name' => '请输入名字',
+            'phone.required' => '号码必填',
+            'phone.unique' => '号码已经存在',
+        ]);
+
+        if($new_id = User::create([
+            'name'=>$request->name,
+            'company_id'=>$request->company,
+            'role'=>$request->role,
+            'phone'=>$request->phone,
+            'password'=>bcrypt('123456'),
+            'image_base64'=>'',
+            'avator'=>''
+            ])->id){
+            return $this->myResponse(['id'=>$new_id],'创建成功',200);
+        }
+        return $this->myResponse([],'创建失败',423);
     }
 
     public function delete(Request $request)
