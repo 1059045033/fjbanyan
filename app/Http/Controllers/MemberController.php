@@ -281,13 +281,13 @@ class MemberController extends Controller
             !empty($temp_user->jpush_reg_id) && $jpush_reg_ids[] = $temp_user->jpush_reg_id;
         }
         #=========== 设置工作区域 start =========
-        JPushService::pushInApp([
-            'reg_id' =>  $jpush_reg_ids,
-            'extras' =>  [
-                'type' => 1,
-            ],
-            'type' =>  JPushService::PUSH_TYPE_REG_ID,
-        ]);
+//        JPushService::pushInApp([
+//            'reg_id' =>  $jpush_reg_ids,
+//            'extras' =>  [
+//                'type' => 1,
+//            ],
+//            'type' =>  JPushService::PUSH_TYPE_REG_ID,
+//        ]);
         #=========== 设置工作区域   end =========
 
 

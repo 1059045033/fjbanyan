@@ -9,7 +9,10 @@ use Illuminate\Support\Facades\DB;
 
 class SmsController extends Controller
 {
-
+    public function domain()
+    {
+        return $this->myResponse(['domain'=>'http://47.110.149.133/api/'],'',200);
+    }
     public function send(StoreSmsRequest $request)
     {
         $sms = Sms::where(['mobile'=>$request->phone,'type'=>$request->type])->where('expire_time','>',time())->first();
