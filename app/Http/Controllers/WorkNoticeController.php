@@ -74,13 +74,16 @@ class WorkNoticeController extends Controller
                 !empty($v['jpush_reg_id']) && $jpush_reg_ids[] = $v['jpush_reg_id'];
             }
             #=========== 派发任务推送 start =========
-            JPushService::pushInApp([
-                'reg_id' =>  $jpush_reg_ids,
-                'extras' =>  [
-                    'type' => 2,
-                ],
-                'type' =>  JPushService::PUSH_TYPE_REG_ID,
-            ]);
+            if(!empty($jpush_reg_ids))
+            {
+                JPushService::pushInApp([
+                    'reg_id' =>  $jpush_reg_ids,
+                    'extras' =>  [
+                        'type' => 2,
+                    ],
+                    'type' =>  JPushService::PUSH_TYPE_REG_ID,
+                ]);
+            }
             #=========== 派发任务推送   end =========
 
             DB::commit();

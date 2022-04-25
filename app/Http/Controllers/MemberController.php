@@ -224,13 +224,16 @@ class MemberController extends Controller
         $work_user->save();
 
         #=========== 设置工作区域 start =========
-        JPushService::pushInApp([
-            'reg_id' =>  $work_user->jpush_reg_id,
-            'extras' =>  [
-                'type' => 1,
-            ],
-            'type' =>  JPushService::PUSH_TYPE_REG_ID,
-        ]);
+        if(!empty($work_user->jpush_reg_id))
+        {
+            JPushService::pushInApp([
+                'reg_id' =>  $work_user->jpush_reg_id,
+                'extras' =>  [
+                    'type' => 1,
+                ],
+                'type' =>  JPushService::PUSH_TYPE_REG_ID,
+            ]);
+        }
         #=========== 设置工作区域   end =========
 
         return $this->myResponse([],'工作人员工作区域设置成功',200);
@@ -281,13 +284,15 @@ class MemberController extends Controller
             !empty($temp_user->jpush_reg_id) && $jpush_reg_ids[] = $temp_user->jpush_reg_id;
         }
         #=========== 设置工作区域 start =========
-        JPushService::pushInApp([
-            'reg_id' =>  $jpush_reg_ids,
-            'extras' =>  [
-                'type' => 1,
-            ],
-            'type' =>  JPushService::PUSH_TYPE_REG_ID,
-        ]);
+        if(!empty($jpush_reg_ids->jpush_reg_id)) {
+            JPushService::pushInApp([
+                'reg_id' => $jpush_reg_ids,
+                'extras' => [
+                    'type' => 1,
+                ],
+                'type' => JPushService::PUSH_TYPE_REG_ID,
+            ]);
+        }
         #=========== 设置工作区域   end =========
 
 
