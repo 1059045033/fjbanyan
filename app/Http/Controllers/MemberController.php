@@ -240,7 +240,7 @@ class MemberController extends Controller
 
     // 添加工作人员到区域
     public function usersToWorkRegion(Request $request)
-    {echo 999;die;
+    {
         $user = $request->user();
 //        $request->validate([
 //            'region_id' => $user['role'] == 30 ? 'required|exists:work_regions,id':'nullable',
