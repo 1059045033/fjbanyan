@@ -1,5 +1,5 @@
 module.exports = {
-  title: '福州共享单车',
+  title: '骑自行车找坑',
 
   /**
    * @type {boolean} true | false

@@ -24,7 +24,7 @@ export default {
   },
   data() {
     return {
-      title: '福州共享单车',
+      title: '骑自行车找坑',
       logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
     }
   }
