@@ -33,7 +33,9 @@ class WorkRegionController extends Controller
         $page = $request->query('page') ?? 1;
         $limit = $request->query('limit') ?? 10;
 
-        $total = WorkRegion::where($fillter)->count();
+        $total = WorkRegion::where($fillter)->when(!empty($search), function ($query) use($search){
+            $query->where('name','like','%'.$search.'%');
+        })->count();
 
         $list = WorkRegion::with('regionManagerInfo:id,name')
             ->where($fillter)
