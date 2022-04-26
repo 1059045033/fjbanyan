@@ -68,7 +68,7 @@ class WorkRegionController extends Controller
 
     public function unArrange()
     {
-        $users = User::where(['role'=>20])->whereNull('region_id')->select('id as user_id','name','phone')->get()->each(function ($data){
+        $users = User::where(['role'=>20])->whereNull('region_id')->orWhere('region_id','')->select('id as user_id','name','phone')->get()->each(function ($data){
             $data->label = $data->name.'('.$data->phone.')';
         })->toArray();
 
