@@ -23,7 +23,8 @@ class MemberController extends Controller
         $search = $request->query('name');
         $sort = 'asc';
         $fillter = [];
-        $request->query('name') && $fillter['name'] = $request->query('name');
+       // $request->query('name') && $fillter['name'] = $request->query('name');
+        $request->query('type') && $fillter['role'] = $request->query('type');
 
         $request->query('sort') == '-id' && $sort = 'desc';
         $page = $request->query('page') ?? 1;
@@ -32,6 +33,9 @@ class MemberController extends Controller
         $total = User::where($fillter)->count();
         $list = User::with(['company','Region:id,name'])
             ->where($fillter)
+            ->when(!empty($search), function ($query) use($search){
+                $query->where('name','like','%'.$search.'%');
+            })
             ->select('id','name','avator','created_at','phone','image_base64','company_id','region_id','role')
             ->orderBy('id',$sort)->forPage($page)->limit($limit)->get();
         $result = [
@@ -69,9 +73,13 @@ class MemberController extends Controller
             'phone'=>$request->phone,
             'password'=>bcrypt('123456'),
             'image_base64'=>'',
+            'region_id'=>$request->region,
             'avator'=>''
             ])->id){
-            return $this->myResponse(['id'=>$new_id],'创建成功',200);
+            $new_user = User::with(['company','Region:id,name'])
+                ->where('id',$new_id)
+                ->first();
+            return $this->myResponse($new_user,'创建成功',200);
         }
         return $this->myResponse([],'创建失败',423);
     }

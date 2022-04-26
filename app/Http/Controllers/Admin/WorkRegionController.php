@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Admin;
 use App\Models\WorkRegion;
 use App\Models\User;
 use App\Http\Requests\StoreWorkRegionRequest;
@@ -12,23 +13,58 @@ use App\Http\Controllers\Controller;
 class WorkRegionController extends Controller
 {
 
-
+    private  $admin = null;
     public function __construct(Request $request)
     {
         // 对数据进行处理 处理完就可以拿到用户信息
         //$this->middleware('auth:api');
+        $token = $request->header('X-Token');
+        $this->admin  =  Admin::where(['remember_token' => $token])->first();
     }
 
-    public function regions()
+    public function regions(Request $request)
     {
-        $regions = WorkRegion::with('regionManagerInfo:id,name')->get()->toArray();
+        $search = $request->query('title');
+        $sort = 'asc';
+        $fillter = [];
+        //$request->query('title') && $fillter['name'] = $request->query('title');
+
+        $request->query('sort') == '-id' && $sort = 'desc';
+        $page = $request->query('page') ?? 1;
+        $limit = $request->query('limit') ?? 10;
+
+        $total = WorkRegion::where($fillter)->count();
+
+        $list = WorkRegion::with('regionManagerInfo:id,name')
+            ->where($fillter)
+            ->when(!empty($search), function ($query) use($search){
+                $query->where('name','like','%'.$search.'%');
+            })
+            ->orderBy('id',$sort)->forPage($page)->limit($limit)->get()->toArray();
         $result = [
-            'total' => count($regions),
-            'items' => $regions
+            'total' => $total,
+            'items' => $list
         ];
+
         return $this->myResponse($result,'获取地图区域成功(all)',200);
     }
 
+    public function regions_all(Request $request)
+    {
+        $search = $request->query('title');
+        $sort = 'asc';
+        $fillter = [];
+
+        $list = WorkRegion::with('regionManagerInfo:id,name')
+            ->where($fillter)
+            ->select('id','name')
+            ->orderBy('id',$sort)->get()->toArray();
+        $result = [
+            'total' => count($list),
+            'items' => $list
+        ];
+        return $this->myResponse($result,'获取地图区域成功(all)',200);
+    }
 
     public function unArrange()
     {

@@ -98,6 +98,7 @@ Route::get('/admin/user/delete','Admin\MemberController@delete');   // 人员列
 
 Route::get('/admin/company/lists','Admin\CompanyController@lists');   // 人员列表
 
+Route::get('/admin/region/regions_all','Admin\WorkRegionController@regions_all');// 所有区域列表
 
 //Route::get('/admin/info','TestController@info');
 //

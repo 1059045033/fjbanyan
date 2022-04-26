@@ -3,6 +3,10 @@
     <div class="filter-container">
       <el-input v-model="listQuery.name" placeholder="用户名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
 
+      <el-select v-model="listQuery.type" placeholder="角色" clearable class="filter-item" style="width: 130px">
+        <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key" />
+      </el-select>
+
       <span style="padding-left: 10px" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
@@ -99,14 +103,20 @@
         </el-form-item>
 
         <el-form-item label="等级" prop="role">
-          <el-select v-model="temp.role" class="filter-item" placeholder="Please select">
+          <el-select v-model="temp.role" class="filter-item" placeholder="请选择">
             <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
           </el-select>
         </el-form-item>
 
         <el-form-item label="公司" prop="company">
-          <el-select v-model="temp.company" class="filter-item" placeholder="Please select">
+          <el-select v-model="temp.company" class="filter-item" placeholder="请选择">
             <el-option v-for="item in companyOptions" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="区域" prop="region">
+          <el-select v-model="temp.region" class="filter-item" placeholder="请选择">
+            <el-option v-for="item in regionOptions" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
 
@@ -137,20 +147,29 @@
 
 <script>
 import { userlist,createUser } from '@/api/users'
+import { getAllRegions } from '@/api/common'
+
 import { companylist } from '@/api/company'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import Pagination from '@/components/Pagination'
+import {fetchList} from "@/api/regions"; // secondary package based on el-pagination
 
 const calendarTypeOptions = [
   { key: '10', display_name: '三级' },
   { key: '20', display_name: '二级' },
   { key: '30', display_name: '一级' },
 ]
+const regionOptions = []
 
 // arr to obj, such as { CN : "China", US : "USA" }
 const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
   acc[cur.key] = cur.display_name
+  return acc
+}, {})
+
+const regionKeyValue = regionOptions.reduce((acc, cur) => {
+  acc[cur.id] = cur.name
   return acc
 }, {})
 
@@ -201,6 +220,7 @@ export default {
       importanceOptions: [1, 2, 3],
       calendarTypeOptions,
       companyOptions,
+      regionOptions,
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
@@ -210,6 +230,7 @@ export default {
         role: '',
         phone: '',
         company: '',
+        region: '',
         status: 'published'
       },
       dialogFormVisible: false,
@@ -232,6 +253,7 @@ export default {
   created() {
     this.getList();
     this.getCompanies();
+    this.getRegions();
   },
   methods: {
     getList() {
@@ -246,6 +268,11 @@ export default {
     getCompanies(){
       companylist(this.listQuery).then(response => {
         this.companyOptions = response.data.items
+      })
+    },
+    getRegions(){
+      getAllRegions(this.listQuery).then(response => {
+        this.regionOptions = response.data.items
       })
     },
     handleFilter() {
@@ -296,7 +323,10 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           createUser(this.temp).then((res) => {
+            console.log(res)
             this.temp.id = res.data.id
+            this.temp.company = res.data.company
+            this.temp.region = res.data.region
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$notify({

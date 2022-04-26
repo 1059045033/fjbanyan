@@ -35,7 +35,7 @@
 
       <el-table-column label="区域标题" min-width="150px">
         <template slot-scope="{row}">
-          <span class="link-type">{{ row.name }}</span>
+          <span >{{ row.name }}</span>
         </template>
       </el-table-column>
 
@@ -210,7 +210,7 @@ export default {
         // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
-        }, 1.5 * 1000)
+        }, 0.5 * 1000)
       })
     },
     handleFilter() {
