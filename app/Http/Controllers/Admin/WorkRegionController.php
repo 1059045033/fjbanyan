@@ -43,6 +43,7 @@ class WorkRegionController extends Controller
                 $query->where('name','like','%'.$search.'%');
             })
             ->orderBy('id',$sort)->forPage($page)->limit($limit)->get()->toArray();
+
         $result = [
             'total' => $total,
             'items' => $list
@@ -76,7 +77,9 @@ class WorkRegionController extends Controller
 
         $regions = WorkRegion::with('regionManagerInfo')
             ->select('id as region_id','name','region_scope','region_manager')
-            ->get()->toArray();
+            ->get()->each(function ($data){
+                $data->zhongxin = 1;
+            })->toArray();
         $res = [
             'users' => $users,
             'regions' => $regions
@@ -106,6 +109,27 @@ class WorkRegionController extends Controller
             'role'     => 20
         ]);
         return $this->myResponse([],'创建新区域成功',200);
+    }
+
+    public function delete(Request $request)
+    {
+
+        $request->validate([
+            'id' => 'required|exists:work_regions,id'
+        ],[
+            'id.required' => '区域ID',
+            'id.unique' => '区域不存在',
+        ]);
+
+//        $users = User::where('company_id',$request->id)->select('id')->get();
+//        if(!empty($users)){
+//            return $this->myResponse([],'公司下还有人员',200);
+//        }
+
+        WorkRegion::where('id',$request->id)->delete();
+        User::where('region_id',$request->id)->update(['region_id'=>null]);
+
+        return $this->myResponse([],'删除成功',200);
     }
 
 

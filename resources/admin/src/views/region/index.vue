@@ -45,19 +45,11 @@
         </template>
       </el-table-column>
 
-      <el-table-column v-if="false" label="操作" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-          <!--          <el-button type="primary" size="mini" @click="handleUpdate(row)">-->
-          <!--            编辑-->
-          <!--          </el-button>-->
-          <!--          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">-->
-          <!--            删除-->
-          <!--          </el-button>-->
-          <!--          <router-link :to="'map-drawing/'+row.id">-->
-          <!--            <el-button type="primary" size="small" icon="el-icon-edit">-->
-          <!--              Edit-->
-          <!--            </el-button>-->
-          <!--          </router-link>-->
+            <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
+              删除
+            </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -118,10 +110,11 @@
 </template>
 
 <script>
-import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/regions'
+import { fetchList, fetchPv, createArticle, updateArticle,deleteRegion } from '@/api/regions'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import Pagination from '@/components/Pagination'
+import {deleteCompany} from "@/api/company"; // secondary package based on el-pagination
 
 const calendarTypeOptions = [
   { key: 'CN', display_name: 'China' },
@@ -304,13 +297,24 @@ export default {
       })
     },
     handleDelete(row, index) {
-      this.$notify({
-        title: 'Success',
-        message: 'Delete Successfully',
-        type: 'success',
-        duration: 2000
+      deleteRegion({id:row.id}).then(($res) => {
+        if($res.code == 200){
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.list.splice(index, 1)
+        }else{
+          this.$notify({
+            title: '失败',
+            message: '删除失败',
+            type: 'error',
+            duration: 2000
+          })
+        }
       })
-      this.list.splice(index, 1)
     },
     handleFetchPv(pv) {
       fetchPv(pv).then(response => {

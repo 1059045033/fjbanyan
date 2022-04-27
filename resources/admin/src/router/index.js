@@ -261,6 +261,30 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/company',
+    component: Layout,
+    redirect: '/company/page',
+    alwaysShow: false, // will always show the root menu
+    hidden: false,
+    name: 'Company',
+    meta: {
+      title: '公司管理',
+      icon: 'user',
+      roles: ['admin', 'editor'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/company/index'),
+        name: 'company-list',
+        meta: {
+          title: '公司列表',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
+  {
     path: '/icon',
     component: Layout,
     hidden: true,

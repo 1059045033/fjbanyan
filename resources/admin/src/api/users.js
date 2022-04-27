@@ -9,9 +9,9 @@ export function userlist(query) {
   })
 }
 
-createUser
+
 export function createUser(data) {
-  console.log('发起用户请求')
+  console.log('发起创建用户请求')
   return request({
     url: '/admin/user/create',
     method: 'post',

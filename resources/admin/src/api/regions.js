@@ -25,6 +25,17 @@ export function createRegion(data) {
   })
 }
 
+
+export function deleteRegion(data) {
+  return request({
+    url: '/admin/region/delete',
+    method: 'post',
+    data
+  })
+}
+
+
+
 export function fetchArticle(id) {
   return request({
     url: '/vue-element-admin/article/detail',

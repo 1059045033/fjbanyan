@@ -90,15 +90,21 @@ Route::post('/admin/logout','Admin\AdminController@logout');
 Route::get('/admin/region/regions','Admin\WorkRegionController@regions');// 所有区域列表
 Route::get('/admin/user/unarrange','Admin\WorkRegionController@unArrange');// 未被安排的2级别人员
 Route::post('/admin/region/create','Admin\WorkRegionController@create');// 创建区域
+Route::post('/admin/region/delete','Admin\WorkRegionController@delete');
 
-Route::get('/admin/user/lists','Admin\MemberController@lists');   // 人员列表
-Route::post('/admin/user/create','Admin\MemberController@create');   // 人员列表
-Route::get('/admin/user/edit','Admin\MemberController@edit');   // 人员列表
-Route::get('/admin/user/delete','Admin\MemberController@delete');   // 人员列表
+Route::get('/admin/user/lists','Admin\MemberController@lists');
+Route::post('/admin/user/create','Admin\MemberController@create');
+Route::get('/admin/user/edit','Admin\MemberController@edit');
+Route::get('/admin/user/delete','Admin\MemberController@delete');
 
-Route::get('/admin/company/lists','Admin\CompanyController@lists');   // 人员列表
+Route::get('/admin/company/lists','Admin\CompanyController@lists');
+Route::post('/admin/company/create','Admin\CompanyController@create');
+Route::post('/admin/company/delete','Admin\CompanyController@delete');
+
+
 
 Route::get('/admin/region/regions_all','Admin\WorkRegionController@regions_all');// 所有区域列表
+Route::get('/admin/company/company_all','Admin\CompanyController@company_all');// 所有区域列表
 
 //Route::get('/admin/info','TestController@info');
 //

@@ -6,7 +6,7 @@
     </aside>
     <baidu-map
       class="map"
-      center="福州"
+      :center="map_center"
       :zoom="16"
       :double-click-zoom="false"
       :keyboard="false"
@@ -27,12 +27,39 @@
       <bm-polygon
         v-for="item of polylines.items"
         :path="item.region_scope"
+        strokeStyle="dashed"
         stroke-color="blue"
+        v-if="chick_id == item.region_id"
+        fillColor="red"
         :stroke-opacity="0.5"
         :stroke-weight="2"
-        :data-region="1"
-        @click="clickOverlay($event)"
+        @click="clickOverlay($event,item)"
       />
+
+      <bm-polygon
+        v-for="item of polylines.items"
+        :path="item.region_scope"
+        strokeStyle="dashed"
+        stroke-color="blue"
+        v-if="chick_id != item.region_id"
+        fillColor="white"
+        :stroke-opacity="0.5"
+        :stroke-weight="2"
+        @click="clickOverlay($event,item)"
+      />
+
+      <bm-label v-for="item of polylines.items" :content="item.name" :position="item.region_scope[1]" :labelStyle="{fontSize : '12px'}" @click="clickOverlay($event,item)"/>
+<!--      <bm-label content="帆帆帆帆" :position="{lng:119.313369, lat: 26.082198}" :labelStyle="{fontSize : '12px'}"/>-->
+
+<!--      <bm-overlay-->
+<!--        pane="labelPane"-->
+<!--        :class="{sample: true, active}"-->
+<!--        @draw="draw($event,111)"-->
+<!--        @mouseover.native="active = true"-->
+<!--        @mouseleave.native="active = false">-->
+<!--        <div>我爱北京天安门</div>-->
+<!--      </bm-overlay>-->
+
     </baidu-map>
 
     <!--  ============= 弹窗 start =================  -->
@@ -107,13 +134,24 @@ export default {
       statusOptions: ['published', 'draft', 'deleted'],
       calendarTypeOptions,
       currLines: [],
-      regionData: ''
+      regionData: '',
+      active: false,
+      map_center:{lng:119.313369, lat: 26.082198},
+      chick_id:undefined
     }
   },
   created() {
     this.getManagerList()
   },
   methods: {
+    draw ({el, BMap, map},t) {
+      console.log(t)
+      const pixel = map.pointToOverlayPixel(new BMap.Point(119.313369, 26.082198))
+      // el.style.left = pixel.x - 60 + 'px'
+      // el.style.top = pixel.y - 2 + 'px'
+      el.style.left = pixel.x + 'px'
+      el.style.top = pixel.y + 'px'
+    },
     // 切换开关
     toggle(name) {
       this[name].editing = !this[name].editing
@@ -178,6 +216,7 @@ export default {
       const { paths } = this.polyline
       !paths.length && paths.push([])
       paths[paths.length - 1].push(e.point)
+      console.log(e.point);
     },
     // 开启弹窗
     handleCreate() {
@@ -238,13 +277,15 @@ export default {
         this.calendarTypeOptions = response.data.users
         // console.log( response.data.regions)
         for (let i = 0; i < response.data.regions.length; i++) {
-          // console.log(response.data.regions[i].region_scope);
+          //console.log(response.data.regions[i]);
           this.polylines.items[i] = response.data.regions[i]
         }
       })
     },
-    clickOverlay(e) {
-      console.log('点击覆盖物 = ', this.$refs.dataRegion)
+    clickOverlay(e,item) {
+      console.log('点击覆盖物 = ', item)
+      this.map_center = item.region_scope[1];
+      this.chick_id = item.region_id;
       // console.log("点击覆盖物 = ",e.target.getAttribute("data-region"))
       // console.log("点击覆盖物 = ",e.currentTarget.getAttribute("data-region"))
     }
@@ -257,4 +298,20 @@ export default {
     width: 100%;
     height: 550px;
   }
+  /*.sample {*/
+  /*  width: 100px;*/
+  /*  height: 40px;*/
+  /*  line-height: 40px;*/
+  /*  background: rgba(0,0,0,0.5);*/
+  /*  overflow: hidden;*/
+  /*  box-shadow: 0 0 5px #000;*/
+  /*  color: #fff;*/
+  /*  text-align: center;*/
+  /*  padding: 1px;*/
+  /*  position: absolute;*/
+  /*}*/
+  /*.sample.active {*/
+  /*  background: rgba(0,0,0,0.75);*/
+  /*  color: #fff;*/
+  /*}*/
 </style>
