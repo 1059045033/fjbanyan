@@ -17,11 +17,16 @@
       @dblclick="newPolyline"
       @rightclick="paintPolyline"
     >
+<!--      <bm-map-type :map-types="['BMAP_NORMAL_MAP', 'BMAP_HYBRID_MAP']" anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-map-type>-->
+<!--      <bm-city-list anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-city-list>-->
+
       <bm-control>
         <button
-          class="el-button el-button--primary el-button--medium"
+          class="el-button el-button--primary"
           @click="toggle('polyline')"
+          style="margin: 5px"
         >{{ polyline.editing ? '停止绘制' : '开始绘制' }}</button>
+<!--        <span data-v-e8ddba3c=""  style="margin-left: 100px" class="tag-item el-tag el-tag&#45;&#45;medium el-tag&#45;&#45;light" @click="toggle('polyline')">{{ polyline.editing ? '停止绘制' : '开始绘制' }}</span>-->
       </bm-control>
       <bm-polygon v-for="path of polyline.paths" :path="path" stroke-color="blue" :stroke-opacity="0.5" :stroke-weight="2" />
       <bm-polygon
@@ -48,7 +53,7 @@
         @click="clickOverlay($event,item)"
       />
 
-      <bm-label v-for="item of polylines.items" :content="item.name" :position="item.region_scope[1]" :labelStyle="{fontSize : '12px'}" @click="clickOverlay($event,item)"/>
+      <bm-label v-for="item of polylines.items" :content="item.name" :position="item.zhongxin" :labelStyle="{fontSize : '12px'}" :offset="{width: -35}"/>
 <!--      <bm-label content="帆帆帆帆" :position="{lng:119.313369, lat: 26.082198}" :labelStyle="{fontSize : '12px'}"/>-->
 
 <!--      <bm-overlay-->
@@ -145,7 +150,6 @@ export default {
   },
   methods: {
     draw ({el, BMap, map},t) {
-      console.log(t)
       const pixel = map.pointToOverlayPixel(new BMap.Point(119.313369, 26.082198))
       // el.style.left = pixel.x - 60 + 'px'
       // el.style.top = pixel.y - 2 + 'px'
@@ -275,7 +279,7 @@ export default {
     getManagerList() {
       fetchManagerList(this.listQuery).then(response => {
         this.calendarTypeOptions = response.data.users
-        // console.log( response.data.regions)
+        console.log( response.data.regions)
         for (let i = 0; i < response.data.regions.length; i++) {
           //console.log(response.data.regions[i]);
           this.polylines.items[i] = response.data.regions[i]
@@ -284,7 +288,7 @@ export default {
     },
     clickOverlay(e,item) {
       console.log('点击覆盖物 = ', item)
-      this.map_center = item.region_scope[1];
+      this.map_center = item.zhongxin;
       this.chick_id = item.region_id;
       // console.log("点击覆盖物 = ",e.target.getAttribute("data-region"))
       // console.log("点击覆盖物 = ",e.currentTarget.getAttribute("data-region"))
@@ -297,6 +301,9 @@ export default {
   .map {
     width: 100%;
     height: 550px;
+  }
+  .el-button .el-button--primary{
+    background:#409EFF !important;
   }
   /*.sample {*/
   /*  width: 100px;*/

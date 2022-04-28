@@ -260,7 +260,8 @@ export default {
     },
     getCompanies(){
       getAllCompany(this.listQuery).then(response => {
-        this.companyOptions = response.data.items
+        console.log("公司列表： ",response)
+        this.companyOptions = response.data
       })
     },
     getRegions(){

@@ -78,7 +78,8 @@ class WorkRegionController extends Controller
         $regions = WorkRegion::with('regionManagerInfo')
             ->select('id as region_id','name','region_scope','region_manager')
             ->get()->each(function ($data){
-                $data->zhongxin = 1;
+
+                $data->zhongxin = $this->getCenterPoint($data->region_scope);
             })->toArray();
         $res = [
             'users' => $users,
@@ -201,5 +202,26 @@ class WorkRegionController extends Controller
     public function destroy(WorkRegion $workRegion)
     {
         //
+    }
+
+
+    public function getCenterPoint($path)
+    {
+        $path = json_decode($path,1);
+        $x = 0.0;
+        $y = 0.0;
+        $leng = count($path);
+        for($i=0 ; $i < $leng ;$i++)
+        {
+            $x = $x + $path[$i]['lng'];
+            $y = $y + $path[$i]['lat'];
+        }
+        $x = $x/$leng;
+        $y = $y/$leng;
+
+        return [
+            'lng'=>$x,
+            'lat'=>$y
+        ];
     }
 }
