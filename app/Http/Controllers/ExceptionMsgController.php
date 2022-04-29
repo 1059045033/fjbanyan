@@ -6,6 +6,7 @@ use App\Models\ExceptionMsg;
 use App\Models\User;
 use App\Models\WorkRegion;
 use App\Services\JPushService;
+use App\Services\SmsFgService;
 use Illuminate\Http\Request;
 
 class ExceptionMsgController extends Controller
@@ -66,7 +67,17 @@ class ExceptionMsgController extends Controller
         # ================ 短信发送  1,2 (不给自己发) start ======
         if(in_array($request->type,[1,2]))
         {
+            $sms= new SmsFgService();
             //发送短信
+            foreach ($all_users as $k => $v)
+            {
+                if(!empty($v['phone']) && $user['id'] != $v['id'])
+                {
+                    $content__ = $user['name']."(".$user['phone'].")"."||".$workRegion['name'].'||'.$workRegion['name']."({$type_enum[$request->type]})";
+                    $sms->sendsms($v['phone'],$content__,146515,122136);
+                }
+            }
+
         }
         # ================ 短信发送  1,2 (不给自己发)   end ======
 

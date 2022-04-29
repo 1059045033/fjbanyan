@@ -6,14 +6,64 @@ use App\Models\Sms;
 use App\Http\Requests\StoreSmsRequest;
 use App\Http\Requests\UpdateSmsRequest;
 use Illuminate\Support\Facades\DB;
+use App\Services\SmsFgService;
 
 class SmsController extends Controller
 {
+    const apiurl='https://api.4321.sh/sms/template';
+    const apikey='N76015130b';
+    const secret='7601553ca32b3068';
+
     public function domain()
     {
         return $this->myResponse(['domain'=>'http://47.110.149.133/api/'],'',200);
     }
     public function send(StoreSmsRequest $request)
+    {
+//        $sms= new SmsFgService();
+//        $content__ = "xiaobao(15860816380)||20220707 12:00:00||上下行(迟到)";
+//        $sms->sendsms(15860816380,$content__,146515,122136);
+//        die;
+        $sms = Sms::where(['mobile'=>$request->phone,'type'=>$request->type])->where('expire_time','>',time())->first();
+        if(!empty($sms)){
+            //return $this->myResponse([],'该号码已经请求过了，请稍后再请求',423);
+        }
+        Sms::where(['mobile'=>$request->phone,'type'=>$request->type])->delete();
+        // 产生验证码
+        $code = str_pad(mt_rand(10, 999999), 6, "0", STR_PAD_BOTH);
+
+        // 发送验证码
+        // 。。。。。 发送代码
+        #================= 发送短信 start ========================
+        $mobile=$request->phone;
+        $result_code = 423 ;
+        $msg = "发送失败";
+        //$result =$this->sendsms($request->phone,$code,146515,122141);
+        $sms= new SmsFgService();
+        $result =$sms->sendsms($request->phone,$code,146515,122141);
+        if(empty($result["code"]) && $result["code"] == 0){
+            $result_code =200 ;
+            $msg = "短信获取成功";
+        }else{
+            //$msg .= "".json_encode($result);
+        }
+
+        #================= 发送短信 end   ========================
+
+
+        // 发送成功 记录验证码
+        if($result_code == 200){
+            Sms::create([
+                'code' => $code,
+                'expire_time'=> time()+(60 * 60 * 72),
+                'mobile' => $request->phone,
+                'type' => $request->type
+            ]);
+            return $this->myResponse(['code'=>$code],$msg,$result_code);
+        }
+        return $this->myResponse([],$msg,$result_code);
+    }
+    public function send_bak(StoreSmsRequest $request)
     {
         $sms = Sms::where(['mobile'=>$request->phone,'type'=>$request->type])->where('expire_time','>',time())->first();
         if(!empty($sms)){
@@ -92,4 +142,5 @@ class SmsController extends Controller
         }
         return $this->myResponse([],$msg,$result_code);
     }
+
 }
