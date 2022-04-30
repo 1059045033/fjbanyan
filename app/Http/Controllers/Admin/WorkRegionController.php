@@ -42,14 +42,16 @@ class WorkRegionController extends Controller
             ->when(!empty($search), function ($query) use($search){
                 $query->where('name','like','%'.$search.'%');
             })
-            ->orderBy('id',$sort)->forPage($page)->limit($limit)->get()->toArray();
+            ->orderBy('id',$sort)->forPage($page,$limit)->get()->each(function ($data){
+                $data->zhongxin = $this->getCenterPoint($data->region_scope);
+            })->toArray();
 
         $result = [
             'total' => $total,
             'items' => $list
         ];
 
-        return $this->myResponse($result,'获取地图区域成功(all)',200);
+        return $this->myResponse($result,'获取地图区域成功(all)'.$page.' - '.$limit,200);
     }
 
     public function regions_all(Request $request)
@@ -78,14 +80,12 @@ class WorkRegionController extends Controller
         $regions = WorkRegion::with('regionManagerInfo')
             ->select('id as region_id','name','region_scope','region_manager')
             ->get()->each(function ($data){
-
                 $data->zhongxin = $this->getCenterPoint($data->region_scope);
             })->toArray();
         $res = [
             'users' => $users,
             'regions' => $regions
         ];
-
         return $this->myResponse($res,'',200);
     }
 

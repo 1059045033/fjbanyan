@@ -4,68 +4,57 @@
     <aside>
       1.点击开始绘制按钮。 2.右键开始绘制。 3.双击结束绘制。 4.给区域取个名字并设置区域经理保存
     </aside>
-    <baidu-map
-      class="map"
-      :center="map_center"
-      :zoom="16"
-      :double-click-zoom="false"
-      :keyboard="false"
-      :pinch-to-zoom="false"
-      :map-click="false"
-      :scroll-wheel-zoom="true"
-      @mousemove="syncPolyline"
-      @dblclick="newPolyline"
-      @rightclick="paintPolyline"
-    >
-<!--      <bm-map-type :map-types="['BMAP_NORMAL_MAP', 'BMAP_HYBRID_MAP']" anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-map-type>-->
-<!--      <bm-city-list anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-city-list>-->
+    <el-row :gutter="8">
+      <el-col :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 5}" :xl="{span: 5}" style="margin-bottom:30px;">
+        <todo-list @selectOverlay="selectOverlay"/>
+      </el-col>
+      <el-col :xs="{span: 24}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 19}" :xl="{span: 19}" style="padding-right:8px;margin-bottom:30px;">
+        <baidu-map
+          class="map"
+          :center="map_center"
+          :zoom="16"
+          :double-click-zoom="false"
+          :keyboard="false"
+          :pinch-to-zoom="false"
+          :map-click="false"
+          :scroll-wheel-zoom="true"
+          @mousemove="syncPolyline"
+          @dblclick="newPolyline"
+          @rightclick="paintPolyline"
+        >
+          <!--<bm-map-type :map-types="['BMAP_NORMAL_MAP', 'BMAP_HYBRID_MAP']" anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-map-type>-->
+          <!--<bm-city-list anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-city-list>-->
 
-      <bm-control>
-        <button
-          class="el-button el-button--primary"
-          @click="toggle('polyline')"
-          style="margin: 5px"
-        >{{ polyline.editing ? '停止绘制' : '开始绘制' }}</button>
-<!--        <span data-v-e8ddba3c=""  style="margin-left: 100px" class="tag-item el-tag el-tag&#45;&#45;medium el-tag&#45;&#45;light" @click="toggle('polyline')">{{ polyline.editing ? '停止绘制' : '开始绘制' }}</span>-->
-      </bm-control>
-      <bm-polygon v-for="path of polyline.paths" :path="path" stroke-color="blue" :stroke-opacity="0.5" :stroke-weight="2" />
-      <bm-polygon
-        v-for="item of polylines.items"
-        :path="item.region_scope"
-        strokeStyle="dashed"
-        stroke-color="blue"
-        v-if="chick_id == item.region_id"
-        fillColor="red"
-        :stroke-opacity="0.5"
-        :stroke-weight="2"
-        @click="clickOverlay($event,item)"
-      />
+          <bm-control>
+            <button class="el-button el-button--primary" @click="toggle('polyline',$event)" style="margin: 5px">{{ polyline.editing ? '停止绘制' : '开始绘制' }}</button>
+          </bm-control>
 
-      <bm-polygon
-        v-for="item of polylines.items"
-        :path="item.region_scope"
-        strokeStyle="dashed"
-        stroke-color="blue"
-        v-if="chick_id != item.region_id"
-        fillColor="white"
-        :stroke-opacity="0.5"
-        :stroke-weight="2"
-        @click="clickOverlay($event,item)"
-      />
+          <bm-polygon v-for="path of polyline.paths" :path="path" stroke-color="blue" :stroke-opacity="0.5" :stroke-weight="2" />
+          <bm-polygon v-for="item of polylines.items" :path="item.region_scope" strokeStyle="dashed" stroke-color="blue" v-if="chick_id == item.region_id"
+                      fillColor="red" :stroke-opacity="0.5" :stroke-weight="2" @click="clickOverlay($event,item)"
+          />
 
-      <bm-label v-for="item of polylines.items" :content="item.name" :position="item.zhongxin" :labelStyle="{fontSize : '12px'}" :offset="{width: -35}"/>
-<!--      <bm-label content="帆帆帆帆" :position="{lng:119.313369, lat: 26.082198}" :labelStyle="{fontSize : '12px'}"/>-->
+          <bm-polygon
+            v-for="item of polylines.items" :path="item.region_scope" strokeStyle="dashed" stroke-color="blue" v-if="chick_id != item.region_id"
+            fillColor="white" :stroke-opacity="0.5" :stroke-weight="2" @click="clickOverlay($event,item)"
+          />
 
-<!--      <bm-overlay-->
-<!--        pane="labelPane"-->
-<!--        :class="{sample: true, active}"-->
-<!--        @draw="draw($event,111)"-->
-<!--        @mouseover.native="active = true"-->
-<!--        @mouseleave.native="active = false">-->
-<!--        <div>我爱北京天安门</div>-->
-<!--      </bm-overlay>-->
+          <bm-label v-for="item of polylines.items" :content="item.name" :position="item.zhongxin" :labelStyle="{fontSize : '12px'}" :offset="{width: -35}"/>
 
-    </baidu-map>
+          <!--<bm-overlay-->
+          <!--pane="labelPane"-->
+          <!--:class="{sample: true, active}"-->
+          <!--@draw="draw($event,111)"-->
+          <!--@mouseover.native="active = true"-->
+          <!--@mouseleave.native="active = false">-->
+          <!--<div>我爱北京天安门</div>-->
+          <!--</bm-overlay>-->
+
+        </baidu-map>
+      </el-col>
+    </el-row>
+
+
 
     <!--  ============= 弹窗 start =================  -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
@@ -91,7 +80,6 @@
         </el-button>
       </div>
     </el-dialog>
-
     <!--  ============= 弹窗 end   =================  -->
   </div>
 </template>
@@ -100,6 +88,9 @@
 import { fetchList, fetchManagerList, createRegion } from '@/api/regions'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
+import BoxCard from './components/BoxCard'
+import TransactionTable from './components/TransactionTable'
+import TodoList from './components/TodoList'
 
 const calendarTypeOptions = []
 
@@ -111,6 +102,7 @@ const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
 
 export default {
   directives: { waves },
+  components:{BoxCard,TransactionTable,TodoList},
   data() {
     return {
       polyline: {
@@ -142,7 +134,8 @@ export default {
       regionData: '',
       active: false,
       map_center:{lng:119.313369, lat: 26.082198},
-      chick_id:undefined
+      chick_id:undefined,
+      dialogVisible:true
     }
   },
   created() {
@@ -157,11 +150,17 @@ export default {
       el.style.top = pixel.y + 'px'
     },
     // 切换开关
-    toggle(name) {
+    toggle(name,{el, BMap, map}) {
+
       this[name].editing = !this[name].editing
     },
     // 同步线
     syncPolyline(e) {
+      if(this['polyline'].editing){
+        e.currentTarget.platform.style.cursor = 'crosshair';
+      }
+      // console.log(e)
+      // e.currentTarget.style.cursor = 'crosshair';
       // 是否处于绘制状态
       if (!this.polyline.editing) {
         return
@@ -185,6 +184,13 @@ export default {
     },
     // 新的线
     newPolyline(e) {
+      if(this['polyline'].editing){
+        e.currentTarget.platform.style.cursor = 'crosshair';
+      }else{
+        e.currentTarget.platform.style.cursor = 'openhand';
+      }
+      // console.log('E 队形',e.currentTarget.platform.style.cursor);// = 'crosshair'
+      // e.currentTarget.platform.style.cursor = 'crosshair';
       console.log('点击右键完成绘制')
       if (!this.polyline.editing) {
         return
@@ -208,6 +214,7 @@ export default {
       this.quyu.push(this.currLines)
       // 弹窗
       setTimeout(() => {
+        this.dialogStatus = 'create'
         this.handleCreate()
       }, 0.5 * 1000)
     },
@@ -225,11 +232,24 @@ export default {
     // 开启弹窗
     handleCreate() {
       // this.resetTemp()
-      this.dialogStatus = 'create'
+
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
+    },
+    // 区域详情弹窗
+    regionDetailsPop(item){
+      this.dialogStatus = 'update'
+      this.temp.id = item.region_id;
+      this.temp.title = item.name;
+      // this.calendarTypeOptions.push({
+      //   'label':item.region_manager_info.name + "("+item.region_manager_info.phone+")",
+      //   'user_id':item.region_manager_info.id
+      // })
+
+      console.log(this.calendarTypeOptions)
+      this.handleCreate()
     },
     // resetTemp() {
     //   this.temp = {
@@ -290,9 +310,23 @@ export default {
       console.log('点击覆盖物 = ', item)
       this.map_center = item.zhongxin;
       this.chick_id = item.region_id;
+
+      // 弹窗详情窗口
+      // this.regionDetailsPop(item);
+
       // console.log("点击覆盖物 = ",e.target.getAttribute("data-region"))
       // console.log("点击覆盖物 = ",e.currentTarget.getAttribute("data-region"))
-    }
+    },
+    selectOverlay(item) {
+      console.log('选择覆盖物 = ', item)
+      this.map_center = item.zhongxin;
+      this.chick_id = item.id;
+      // console.log("点击覆盖物 = ",e.target.getAttribute("data-region"))
+      // console.log("点击覆盖物 = ",e.currentTarget.getAttribute("data-region"))
+    },
+    toggleTodo(val) {
+      console.log('点击了左侧的菜单 ',val)
+    },
   }
 }
 </script>
