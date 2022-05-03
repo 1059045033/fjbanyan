@@ -93,9 +93,24 @@ class WorkRegionController extends Controller
     public function create(Request $request)
     {
 
+        if(empty($request->manager_id))
+        {
+            return $this->myResponse([],'管理人员不能为空',423);
+        }
+
         $res = WorkRegion::where('region_manager',$request->manager_id)->first();
         if(!empty($res)){
             return $this->myResponse([],'该工作人员已经是区域经理了',423);
+        }
+
+        if(empty($request->scope))
+        {
+            return $this->myResponse([],'选择的区域不能为空',423);
+        }
+
+        if(empty($request->title))
+        {
+            return $this->myResponse([],'选择的标题不能为空',423);
         }
 
         $new_id = WorkRegion::create([

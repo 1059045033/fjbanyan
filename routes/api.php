@@ -102,6 +102,7 @@ Route::post('/admin/company/create','Admin\CompanyController@create');
 Route::post('/admin/company/delete','Admin\CompanyController@delete');
 
 
+Route::get('/admin/tracks/all_lists','Admin\TrackController@all_lists');//
 
 Route::get('/admin/region/regions_all','Admin\WorkRegionController@regions_all');// 所有区域列表
 Route::get('/admin/company/company_all','Admin\CompanyController@company_all');// 所有区域列表
