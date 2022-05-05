@@ -16,6 +16,11 @@ class Track extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
+    public function userInfo()
+    {
+        return $this->belongsTo(User::class,'user_id','id');
+    }
+
     public function toArray()
     {
         $array = parent::toArray();
