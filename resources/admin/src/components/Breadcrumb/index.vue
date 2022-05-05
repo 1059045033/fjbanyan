@@ -57,8 +57,8 @@ export default {
     },
     handleLink(item) {
       const { redirect, path } = item
-      if('/dashboard' == path){
-         return;
+      if (path == '/dashboard') {
+        return
       }
 
       if (redirect) {
