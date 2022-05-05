@@ -250,6 +250,16 @@ export const asyncRoutes = [
         }
       },
       {
+        path: 'track',
+        component: () => import('@/views/user/track'),
+        name: 'user-track',
+        hidden: true,
+        meta: {
+          title: '人员轨迹',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
         path: 'directive',
         component: () => import('@/views/permission/directive'),
         name: 'DirectivePermission',
