@@ -34,7 +34,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column v-if="false"  label="员工人数" min-width="150px">
+      <el-table-column v-if="false" label="员工人数" min-width="150px">
         <template slot-scope="{row}">
           <span>{{ row.phone }}</span>
         </template>
@@ -42,9 +42,9 @@
 
       <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-            <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
-              删除
-            </el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
+            删除
+          </el-button>
         </template>
       </el-table-column>
 
@@ -89,19 +89,14 @@
 </template>
 
 <script>
-import { userlist,createUser } from '@/api/users'
+import { userlist, createUser } from '@/api/users'
 import { getAllRegions } from '@/api/common'
 
-import { companyList,createCompany,deleteCompany } from '@/api/company'
+import { companyList, createCompany, deleteCompany } from '@/api/company'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination'
-import {fetchList} from "@/api/regions"; // secondary package based on el-pagination
-
-
-
-
-
+import { fetchList } from '@/api/regions' // secondary package based on el-pagination
 
 export default {
   name: 'ComplexTable',
@@ -133,7 +128,7 @@ export default {
         title: undefined,
         type: undefined,
         sort: '+id',
-        name: undefined,
+        name: undefined
       },
       importanceOptions: [1, 2, 3],
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
@@ -157,13 +152,13 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        name: [{ required: true, message: '名字必填', trigger: 'blur' }],
+        name: [{ required: true, message: '名字必填', trigger: 'blur' }]
       },
       downloadLoading: false
     }
   },
   created() {
-    this.getList();
+    this.getList()
   },
   methods: {
     getList() {
@@ -266,9 +261,9 @@ export default {
       })
     },
     handleDelete(row, index) {
-      deleteCompany({id:row.id}).then(($res) => {
-          console.log($res)
-        if($res.code == 200){
+      deleteCompany({ id: row.id }).then(($res) => {
+        console.log($res)
+        if ($res.code == 200) {
           this.$notify({
             title: '成功',
             message: '删除成功',
@@ -276,7 +271,7 @@ export default {
             duration: 2000
           })
           this.list.splice(index, 1)
-        }else{
+        } else {
           this.$notify({
             title: '失败',
             message: '删除失败',

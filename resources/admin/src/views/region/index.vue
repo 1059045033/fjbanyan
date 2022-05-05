@@ -35,7 +35,7 @@
 
       <el-table-column label="区域标题" min-width="150px">
         <template slot-scope="{row}">
-          <span >{{ row.name }}</span>
+          <span>{{ row.name }}</span>
         </template>
       </el-table-column>
 
@@ -110,11 +110,11 @@
 </template>
 
 <script>
-import { fetchList, fetchPv, createArticle, updateArticle,deleteRegion } from '@/api/regions'
+import { fetchList, fetchPv, createArticle, updateArticle, deleteRegion } from '@/api/regions'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination'
-import {deleteCompany} from "@/api/company"; // secondary package based on el-pagination
+import { deleteCompany } from '@/api/company' // secondary package based on el-pagination
 
 const calendarTypeOptions = [
   { key: 'CN', display_name: 'China' },
@@ -297,8 +297,8 @@ export default {
       })
     },
     handleDelete(row, index) {
-      deleteRegion({id:row.id}).then(($res) => {
-        if($res.code == 200){
+      deleteRegion({ id: row.id }).then(($res) => {
+        if ($res.code == 200) {
           this.$notify({
             title: '成功',
             message: '删除成功',
@@ -306,7 +306,7 @@ export default {
             duration: 2000
           })
           this.list.splice(index, 1)
-        }else{
+        } else {
           this.$notify({
             title: '失败',
             message: '删除失败',

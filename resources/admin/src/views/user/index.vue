@@ -14,11 +14,11 @@
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
         新增
       </el-button>
-<!--      <router-link :to="'add'">-->
-<!--        <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit">-->
-<!--          新增-->
-<!--        </el-button>-->
-<!--      </router-link>-->
+      <!--      <router-link :to="'add'">-->
+      <!--        <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit">-->
+      <!--          新增-->
+      <!--        </el-button>-->
+      <!--      </router-link>-->
     </div>
     <!--  ============= Table 表内容 start =================  -->
     <el-table
@@ -67,15 +67,13 @@
         </template>
       </el-table-column>
 
-
-
       <el-table-column v-if="true" label="操作" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
-              编辑
+            编辑
           </el-button>
           <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
-              删除
+            删除
           </el-button>
         </template>
       </el-table-column>
@@ -141,19 +139,19 @@
 </template>
 
 <script>
-import { userlist,createUser,deleteUser,updateUser } from '@/api/users'
-import { getAllRegions,getAllCompany } from '@/api/common'
+import { userlist, createUser, deleteUser, updateUser } from '@/api/users'
+import { getAllRegions, getAllCompany } from '@/api/common'
 
-import {companylist, deleteCompany} from '@/api/company'
+import { companylist, deleteCompany } from '@/api/company'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination'
-import {fetchList} from "@/api/regions"; // secondary package based on el-pagination
+import { fetchList } from '@/api/regions' // secondary package based on el-pagination
 
 const calendarTypeOptions = [
   { key: '10', display_name: '三级' },
   { key: '20', display_name: '二级' },
-  { key: '30', display_name: '一级' },
+  { key: '30', display_name: '一级' }
 ]
 const regionOptions = []
 
@@ -167,7 +165,6 @@ const regionKeyValue = regionOptions.reduce((acc, cur) => {
   acc[cur.id] = cur.name
   return acc
 }, {})
-
 
 const companyOptions = [
   { id: '1', name: '福州手动' },
@@ -210,7 +207,7 @@ export default {
         title: undefined,
         type: undefined,
         sort: '+id',
-        name: undefined,
+        name: undefined
       },
       importanceOptions: [1, 2, 3],
       calendarTypeOptions,
@@ -246,29 +243,29 @@ export default {
     }
   },
   created() {
-    this.getList();
-    this.getCompanies();
-    this.getRegions();
+    this.getList()
+    this.getCompanies()
+    this.getRegions()
   },
   methods: {
     getList() {
       this.listLoading = true
-      console.log('listQuery = ',this.listQuery)
+      console.log('listQuery = ', this.listQuery)
       userlist(this.listQuery).then(response => {
-        console.log(response);
+        console.log(response)
         this.list = response.data.items
         this.total = response.data.total
         this.listLoading = false
       })
     },
-    getCompanies(){
+    getCompanies() {
       getAllCompany(this.listQuery).then(response => {
-        console.log("公司列表： ",response)
+        console.log('公司列表： ', response)
         this.companyOptions = response.data
       })
     },
-    getRegions(){
-      console.log("获取区域");
+    getRegions() {
+      console.log('获取区域')
       getAllRegions(this.listQuery).then(response => {
         this.regionOptions = response.data.items
       })
@@ -338,14 +335,13 @@ export default {
       })
     },
     handleUpdate(row) {
-
       this.temp = Object.assign({}, row) // copy obj
-      console.log('--------------',this.temp.company)
-      this.temp.company = this.temp.company == null ? '':this.temp.company.id
-      this.temp.role = this.temp.role+"";
-      this.temp.region = this.temp.region == null ? "":this.temp.region.id
+      console.log('--------------', this.temp.company)
+      this.temp.company = this.temp.company == null ? '' : this.temp.company.id
+      this.temp.role = this.temp.role + ''
+      this.temp.region = this.temp.region == null ? '' : this.temp.region.id
 
-      console.log('calendarTypeOptions = ',calendarTypeKeyValue[10]);
+      console.log('calendarTypeOptions = ', calendarTypeKeyValue[10])
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -357,7 +353,6 @@ export default {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
           updateUser(tempData).then((res) => {
-
             this.temp.id = res.data.id
             this.temp.company = res.data.company
             this.temp.region = res.data.region
@@ -376,8 +371,8 @@ export default {
       })
     },
     handleDelete(row, index) {
-      deleteUser({id:row.id}).then(($res) => {
-        if($res.code == 200){
+      deleteUser({ id: row.id }).then(($res) => {
+        if ($res.code == 200) {
           this.$notify({
             title: '成功',
             message: '删除成功',
@@ -385,7 +380,7 @@ export default {
             duration: 2000
           })
           this.list.splice(index, 1)
-        }else{
+        } else {
           this.$notify({
             title: '失败',
             message: '删除失败',

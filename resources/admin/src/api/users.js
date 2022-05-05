@@ -9,7 +9,6 @@ export function userlist(query) {
   })
 }
 
-
 export function createUser(data) {
   console.log('发起创建用户请求')
   return request({
@@ -29,12 +28,11 @@ export function updateUser(data) {
 }
 
 export function deleteUser(data) {
-  console.log('发起删除人员请求');
+  console.log('发起删除人员请求')
   return request({
     url: '/admin/user/delete',
     method: 'post',
     data
   })
 }
-
 
