@@ -18,7 +18,7 @@ class SmsController extends Controller
     {
         return $this->myResponse(['domain'=>'http://47.110.149.133/api/'],'',200);
     }
-    public function send(StoreSmsRequest $request)
+    public function send_bak(StoreSmsRequest $request)
     {
 //        $sms= new SmsFgService();
 //        $content__ = "xiaobao(15860816380)||20220707 12:00:00||上下行(迟到)";
@@ -63,7 +63,7 @@ class SmsController extends Controller
         }
         return $this->myResponse([],$msg,$result_code);
     }
-    public function send_bak(StoreSmsRequest $request)
+    public function send(StoreSmsRequest $request)
     {
         $sms = Sms::where(['mobile'=>$request->phone,'type'=>$request->type])->where('expire_time','>',time())->first();
         if(!empty($sms)){
