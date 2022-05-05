@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\JPushService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class MemberController extends Controller
 {
@@ -50,7 +51,51 @@ class MemberController extends Controller
 
     public function edit(Request $request)
     {
-        return $this->myResponse([],'编辑成功',200);
+        $request->validate([
+            'role'    => 'required|in:10,20,30',
+            'company' => 'required|exists:companies,id',
+            'name'    => 'required',
+            'phone'   => 'required'
+        ],[
+            'role.*' => '等级参数错误',
+            'company.required' => '公司参数错误111',
+            'company.exists' => '公司不存在',
+            'name' => '请输入名字',
+            'phone.required' => '号码必填',
+        ]);
+
+        $userInfo = User::find($request->id);
+        if($request->phone != $userInfo->phone){
+            $res = DB::table('users')->where('phone',$request->phone)->where('id','<>',$request->id)->first();
+            if(empty($res)){
+                $userInfo->phone = $userInfo->phone;
+            }else{
+                return $this->myResponse([],'该号码已经被注册',423);
+            }
+        }
+
+        if($request->name != $userInfo->name){
+            $userInfo->name = $request->name;
+        }
+        if($request->company != $userInfo->company_id){
+            $userInfo->company_id = $request->company;
+        }
+        if($request->role != $userInfo->role){
+            $userInfo->role = intval($request->role);
+        }
+
+        if(!empty($request->region) && $request->region != $userInfo->region_id){
+            $userInfo->region_id = $request->region;
+        }
+
+        if($userInfo->save())
+        {
+            $new_user = User::with(['company','Region:id,name'])
+                ->where('id',$request->id)
+                ->first();
+            return $this->myResponse($new_user,'修改成功',200);
+        }
+        return $this->myResponse([],'修改失败',423);
     }
 
     public function create(Request $request)
@@ -88,7 +133,18 @@ class MemberController extends Controller
 
     public function delete(Request $request)
     {
-        return $this->myResponse([],'删除成功',200);
+        $request->validate([
+            'id' => 'required|exists:users,id'
+        ]);
+
+        $o_user = User::find($request->id);
+        if(empty($o_user)){
+            return $this->myResponse([],'已经删除过了',423);
+        }
+        if($o_user->delete()){
+            return $this->myResponse([],'删除成功',200);
+        }
+        return $this->myResponse([],'删除失败',423);
     }
 
 }

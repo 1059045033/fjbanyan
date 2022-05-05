@@ -68,7 +68,7 @@ class CompanyController extends Controller
 
         $users = User::where('company_id',$request->id)->select('id')->get();
         if(!empty($users)){
-            return $this->myResponse([],'公司下还有人员',200);
+            //return $this->myResponse([],'公司下还有人员',423);
         }
 
         Company::where('id',$request->id)->delete();

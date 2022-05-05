@@ -84,29 +84,71 @@ Route::apiResource('/member','MemberController');
 Route::post('/jpush','RegisterController@jpush');
 
 #  =================== 后台管理接口 ======
+
+// 登入/获取信息/退出
 Route::post('/admin/login','Admin\AdminController@login');
 Route::get('/admin/info','Admin\AdminController@info');
 Route::post('/admin/logout','Admin\AdminController@logout');
 
-Route::get('/admin/region/regions','Admin\WorkRegionController@regions');// 所有区域列表
+// 获取 未被安排的管理人员
 Route::get('/admin/user/unarrange','Admin\WorkRegionController@unArrange');// 未被安排的2级别人员
+
+// 区域管理
+Route::get('/admin/region/regions','Admin\WorkRegionController@regions');// 所有区域列表
 Route::post('/admin/region/create','Admin\WorkRegionController@create');// 创建区域
 Route::post('/admin/region/delete','Admin\WorkRegionController@delete');
 
+
+// 人员管理
 Route::get('/admin/user/lists','Admin\MemberController@lists');
 Route::post('/admin/user/create','Admin\MemberController@create');
-Route::get('/admin/user/edit','Admin\MemberController@edit');
-Route::get('/admin/user/delete','Admin\MemberController@delete');
+Route::post('/admin/user/edit','Admin\MemberController@edit');
+Route::post('/admin/user/delete','Admin\MemberController@delete');
 
+
+// 公司管理
 Route::get('/admin/company/lists','Admin\CompanyController@lists');
 Route::post('/admin/company/create','Admin\CompanyController@create');
 Route::post('/admin/company/delete','Admin\CompanyController@delete');
 
-
+// 轨迹
 Route::get('/admin/tracks/all_lists','Admin\TrackController@all_lists');//
 
+
+// 获取所有数据
 Route::get('/admin/region/regions_all','Admin\WorkRegionController@regions_all');// 所有区域列表
 Route::get('/admin/company/company_all','Admin\CompanyController@company_all');// 所有区域列表
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //Route::get('/admin/info','TestController@info');
 //
@@ -123,7 +165,6 @@ Route::get('/admin/company/company_all','Admin\CompanyController@company_all');/
 //Route::apiResource('/discussions','DiscussionController');
 //Route::apiResource('/likes','LikeController');
 //Route::post('{likeable}/likes','LikeController@store');//likeable 使用占位符
-
 //Route::apiResource('/topics',TopicController::class);
 //Route::apiResources([
 //    'topics'=>'TopicController'

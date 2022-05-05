@@ -19,4 +19,22 @@ export function createUser(data) {
   })
 }
 
+export function updateUser(data) {
+  console.log('发起修改用户请求')
+  return request({
+    url: '/admin/user/edit',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteUser(data) {
+  console.log('发起删除人员请求');
+  return request({
+    url: '/admin/user/delete',
+    method: 'post',
+    data
+  })
+}
+
 

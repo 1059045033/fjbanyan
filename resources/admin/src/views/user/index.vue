@@ -69,11 +69,14 @@
 
 
 
-      <el-table-column v-if="false" label="操作" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column v-if="true" label="操作" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-            <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
+          <el-button type="primary" size="mini" @click="handleUpdate(row)">
+              编辑
+          </el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
               删除
-            </el-button>
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -115,10 +118,10 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
-          Cancel
+          取消
         </el-button>
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          Confirm
+          确认
         </el-button>
       </div>
     </el-dialog>
@@ -138,7 +141,7 @@
 </template>
 
 <script>
-import { userlist,createUser } from '@/api/users'
+import { userlist,createUser,deleteUser,updateUser } from '@/api/users'
 import { getAllRegions,getAllCompany } from '@/api/common'
 
 import {companylist, deleteCompany} from '@/api/company'
@@ -335,8 +338,14 @@ export default {
       })
     },
     handleUpdate(row) {
+
       this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
+      console.log('--------------',this.temp.company)
+      this.temp.company = this.temp.company == null ? '':this.temp.company.id
+      this.temp.role = this.temp.role+"";
+      this.temp.region = this.temp.region == null ? "":this.temp.region.id
+
+      console.log('calendarTypeOptions = ',calendarTypeKeyValue[10]);
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -347,14 +356,18 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateArticle(tempData).then(() => {
+          updateUser(tempData).then((res) => {
+
+            this.temp.id = res.data.id
+            this.temp.company = res.data.company
+            this.temp.region = res.data.region
+
             const index = this.list.findIndex(v => v.id === this.temp.id)
             this.list.splice(index, 1, this.temp)
             this.dialogFormVisible = false
             this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
+              title: '成功',
+              message: '更新成功',
               type: 'success',
               duration: 2000
             })
@@ -363,24 +376,24 @@ export default {
       })
     },
     handleDelete(row, index) {
-      // deleteRegion({id:row.id}).then(($res) => {
-      //   if($res.code == 200){
-      //     this.$notify({
-      //       title: '成功',
-      //       message: '删除成功',
-      //       type: 'success',
-      //       duration: 2000
-      //     })
-      //     this.list.splice(index, 1)
-      //   }else{
-      //     this.$notify({
-      //       title: '失败',
-      //       message: '删除失败',
-      //       type: 'error',
-      //       duration: 2000
-      //     })
-      //   }
-      // })
+      deleteUser({id:row.id}).then(($res) => {
+        if($res.code == 200){
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.list.splice(index, 1)
+        }else{
+          this.$notify({
+            title: '失败',
+            message: '删除失败',
+            type: 'error',
+            duration: 2000
+          })
+        }
+      })
     },
     handleFetchPv(pv) {
       fetchPv(pv).then(response => {
