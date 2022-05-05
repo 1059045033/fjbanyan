@@ -43,18 +43,13 @@ class SmsController extends Controller
         $result =$sms->sendsms($request->phone,$code,146515,122141);
         if(empty($result["code"]) && $result["code"] == 0){
             $result_code =200 ;
-            $msg = "短信获取成功";
+            $msg = "短信获取成功。".json_encode($result);
         }else{
             //$msg .= "".json_encode($result);
         }
 
         #================= 发送短信 end   ========================
 
-
-
-
-
-        
 
         // 发送成功 记录验证码
         if($result_code == 200){
