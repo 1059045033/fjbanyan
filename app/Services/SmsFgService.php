@@ -17,7 +17,7 @@ class SmsFgService
             'template_id' => $template_id
         );
         $result = $this->curlPost( config('sms.fg.url') ,$postData);
-        Log::info('duanxin ==============  '.$result);
+        //Log::info('duanxin ==============  '.$result);
         return json_decode($result,1);
     }
 
