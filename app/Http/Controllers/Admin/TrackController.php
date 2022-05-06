@@ -44,18 +44,14 @@ class TrackController extends Controller
         ->where('created_at','<',$end_date)->get();
 
         $items = [];
-        //1、红色red，绿色green，白色white，黑色black，黄色yellow。 2、灰色gray，粉红色pink，褐色茶色brown，银色silver，栗色maroon。 3、金色gold，黄绿色greenyellow，蓝色blue，藏青色navy，薄荷色mintcream
-        $index = ['0'=>'red','1'=>'green','3'=>'yellow','4'=>'pink'];
-        $ind = 0;
         foreach ($list as $k=>$v)
         {
             $item = json_decode($v['position'],1);
             if(!empty($item))
             {
                 if(empty($items[$v['user_id']])){
-                    $items[$v['user_id']] = ['user_id'=>$v['user_id'],'name'=>$v['userInfo']['name'],'color'=>$index[$ind]];
+                    $items[$v['user_id']] = ['user_id'=>$v['user_id'],'name'=>$v['userInfo']['name']];
                     $items[$v['user_id']]['positions'][] = $item;
-                    $ind ++;
                 }else{
                     $items[$v['user_id']]['positions'][] = $item;
                 }
