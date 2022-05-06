@@ -16,6 +16,16 @@ class TaskLog extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
+    public function userInfo()
+    {
+        return $this->belongsTo(User::class,'user_id','id');
+    }
+
+    public function workRegionInfo()
+    {
+        return $this->belongsTo(WorkRegion::class,'work_region_id','id');
+    }
+
     public function toArray()
     {
         $array = parent::toArray();

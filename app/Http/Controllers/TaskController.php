@@ -127,7 +127,8 @@ class TaskController extends Controller
             'task_id'           => ($request->type == 1 ) ? null:$request->task_id,
             'is_effective'      => $is_effective,
             'content'           => $request->content_,
-            'business_district' => $request->business_district
+            'business_district' => $request->business_district,
+            'work_region_id'    => empty($user['work_region_id']) ? null:$user['work_region_id']
         ])->id;
 
         // 修改 指派任务的任务状态

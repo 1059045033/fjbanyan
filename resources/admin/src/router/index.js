@@ -295,6 +295,38 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/track',
+    component: Layout,
+    redirect: '/track/page',
+    hidden: false,
+    name: 'Track',
+    meta: {
+      title: '轨迹',
+      icon: 'user',
+      roles: ['admin', 'editor'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'task',
+        component: () => import('@/views/track/task'),
+        name: 'task-list',
+        meta: {
+          title: '任务列表',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'whereabouts',
+        component: () => import('@/views/track/whereabouts'),
+        name: 'whereabouts-list',
+        meta: {
+          title: '行踪轨迹',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
+  {
     path: '/icon',
     component: Layout,
     hidden: true,

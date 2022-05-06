@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Admin;
+use App\Models\TaskLog;
 use App\Models\Track;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -71,6 +72,39 @@ class TrackController extends Controller
 
         return $this->myResponse($result,'',200);
     }
+
+    /**
+     * 任务轨迹
+     */
+    public function track(Request $request)
+    {
+        $search = $request->query('name');
+        $fillter = [];
+
+        $page = $request->query('page') ?? 1;
+        $limit = $request->query('limit') ?? 10;
+
+        $count = User::where($fillter)
+            ->when(!empty($search), function ($query) use($search){
+                $query->where('name','like','%'.$search.'%');
+            })
+            ->count();
+
+        $list  = User::where($fillter)
+            ->when(!empty($search), function ($query) use($search){
+                $query->where('name','like','%'.$search.'%');
+            })
+            ->forpage($page,$limit)
+            ->get();
+
+        $result = [
+            'total' => $count,
+            'items' => $list
+        ];
+
+        return $this->myResponse($result,'',200);
+    }
+
 
 
 }

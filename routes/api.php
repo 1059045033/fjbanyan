@@ -117,6 +117,11 @@ Route::post('/admin/company/delete','Admin\CompanyController@delete');
 // 轨迹
 Route::get('/admin/tracks/all_lists','Admin\TrackController@all_lists');//
 
+Route::get('/admin/tracks/track','Admin\TrackController@track');//
+
+// 任务列表
+Route::get('/admin/task/logs','Admin\TaskLogController@logs');//
+
 
 // 获取所有数据
 Route::get('/admin/region/regions_all','Admin\WorkRegionController@regions_all');// 所有区域列表
