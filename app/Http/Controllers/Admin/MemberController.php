@@ -68,7 +68,7 @@ class MemberController extends Controller
         if($request->phone != $userInfo->phone){
             $res = DB::table('users')->where('phone',$request->phone)->where('id','<>',$request->id)->first();
             if(empty($res)){
-                $userInfo->phone = $userInfo->phone;
+                $userInfo->phone = $request->phone;
             }else{
                 return $this->myResponse([],'该号码已经被注册',423);
             }
