@@ -34,13 +34,14 @@ class MemberController extends Controller
         $total = User::where($fillter)->when(!empty($search), function ($query) use($search){
             $query->where('name','like','%'.$search.'%');
         })->count();
+
         $list = User::with(['company','Region:id,name'])
             ->where($fillter)
             ->when(!empty($search), function ($query) use($search){
                 $query->where('name','like','%'.$search.'%');
             })
             ->select('id','name','avator','created_at','phone','image_base64','company_id','region_id','role')
-            ->orderBy('id',$sort)->forPage($page)->limit($limit)->get();
+            ->orderBy('id',$sort)->forPage($page,$limit)->get();
         $result = [
             'total' => $total,
             'items' => $list

@@ -28,7 +28,7 @@ class CompanyController extends Controller
 
         $list = Company::select('id','name')->when(!empty($search), function ($query) use($search){
             $query->where('name','like','%'.$search.'%');
-        })->orderBy('id',$sort)->forPage($page)->limit($limit)->get();
+        })->orderBy('id',$sort)->forPage($page,$limit)->get();
 
         $result = [
             'total' => $total,
