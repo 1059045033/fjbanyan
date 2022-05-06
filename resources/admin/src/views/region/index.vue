@@ -41,12 +41,15 @@
 
       <el-table-column label="区域经理" width="110px" align="center">
         <template slot-scope="{row}">
-          <span v-if="row.region_manager">{{ row.region_manager_info.name }}</span>
+          <span v-if="row.region_manager_info">{{ row.region_manager_info.name }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
+          <el-button type="primary" size="mini" @click="handleUpdate(row)">
+            编辑
+          </el-button>
           <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
             删除
           </el-button>
@@ -62,76 +65,61 @@
     <!--  ============= 弹窗 start =================  -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="Type" prop="type">
-          <el-select v-model="temp.type" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+
+        <el-form-item label="管理员" prop="manager_id">
+          <el-select v-model="temp.manager_id" class="filter-item" placeholder="请选择">
+            <el-option v-for="item in calendarTypeOptions" :key="item.user_id" :label="item.label" :value="item.user_id" />
           </el-select>
         </el-form-item>
-        <el-form-item label="Date" prop="timestamp">
-          <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
-        </el-form-item>
-        <el-form-item label="Title" prop="title">
+
+        <el-form-item label="区域名" prop="title">
           <el-input v-model="temp.title" />
         </el-form-item>
-        <el-form-item label="Status">
-          <el-select v-model="temp.status" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />
-          </el-select>
+
+
+        <el-form-item label="三级" prop="works">
+          <el-drag-select v-model="works" style="width:500px;" multiple placeholder="请选择">
+            <el-option v-for="item in works_options" :key="item.user_id" :label="item.label" :value="item.user_id" />
+          </el-drag-select>
         </el-form-item>
-        <el-form-item label="Imp">
-          <el-rate v-model="temp.importance" :colors="['#99A9BF', '#F7BA2A', '#FF9900']" :max="3" style="margin-top:8px;" />
-        </el-form-item>
-        <el-form-item label="Remark">
-          <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
-        </el-form-item>
+
+
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          Cancel
+        <el-button  @click="cancelData()">
+          取消
         </el-button>
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          Confirm
+          确认
         </el-button>
       </div>
     </el-dialog>
 
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-      <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
-      </span>
-    </el-dialog>
+
     <!--  ============= 弹窗 end   =================  -->
 
   </div>
 </template>
 
 <script>
-import { fetchList, fetchPv, createArticle, updateArticle, deleteRegion } from '@/api/regions'
+  import {fetchList, fetchPv, createArticle, updateArticle, deleteRegion,fetchManagerList,fetchRole10List,updateWorksUser} from '@/api/regions'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination'
 import { deleteCompany } from '@/api/company' // secondary package based on el-pagination
+import ElDragSelect from '@/components/DragSelect'
 
-const calendarTypeOptions = [
-  { key: 'CN', display_name: 'China' },
-  { key: 'US', display_name: 'USA' },
-  { key: 'JP', display_name: 'Japan' },
-  { key: 'EU', display_name: 'Eurozone' }
-]
+const calendarTypeOptions = []
 
 // arr to obj, such as { CN : "China", US : "USA" }
 const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name
+  acc[cur.user_id] = cur.label
   return acc
 }, {})
 
 export default {
   name: 'ComplexTable',
-  components: { Pagination },
+  components: { Pagination,ElDragSelect },
   directives: { waves },
   filters: {
     statusFilter(status) {
@@ -167,36 +155,36 @@ export default {
       showReviewer: false,
       temp: {
         id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
+        manager_id: undefined,
         title: '',
-        type: '',
-        status: 'published'
       },
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: 'Edit',
-        create: 'Create'
+        update: '编辑',
+        create: '创建'
       },
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
-        title: [{ required: true, message: 'title is required', trigger: 'blur' }]
+        manager_id: [{ required: true, message: '请选择区域管理员', trigger: 'change' }],
+        title: [{ required: true, message: '请填写区域名称', trigger: 'blur' }]
       },
-      downloadLoading: false
+      downloadLoading: false,
+
+      works: [],
+      works_options: []
     }
   },
   created() {
     this.getList()
+    this.getManagerList()
   },
   methods: {
     getList() {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
+
         this.list = response.data.items
         this.total = response.data.total
         console.log('区域列表 : ', this.list)
@@ -205,6 +193,33 @@ export default {
           this.listLoading = false
         }, 0.5 * 1000)
       })
+    },
+    getManagerList() {
+      fetchManagerList(this.listQuery).then(response => {
+
+        this.calendarTypeOptions = response.data.users
+        console.log("response === ",this.calendarTypeOptions)
+      })
+    },
+    getRole10List(region_id) {
+
+      fetchRole10List({has_region:2,region_id:region_id}).then(response => {
+        this.works_options = response.data.old
+        for (let i=0;i<response.data.old.length;i++)
+        {
+          this.works.push(response.data.old[i].user_id)
+        }
+
+        for (let j=0;j<response.data.users.length;j++)
+        {
+          this.works_options.push(response.data.users[j])
+        }
+
+        console.log("三级人员 === ",this.works_options)
+      })
+    },
+    cancelData() {
+      this.dialogFormVisible = false
     },
     handleFilter() {
       this.listQuery.page = 1
@@ -239,7 +254,8 @@ export default {
         timestamp: new Date(),
         title: '',
         status: 'published',
-        type: ''
+        type: '',
+        manager_id: undefined,
       }
     },
     handleCreate() {
@@ -269,26 +285,40 @@ export default {
       })
     },
     handleUpdate(row) {
+      if(row.region_manager_info != null){
+        row.manager_id = row.region_manager_info.id;
+      }
+      row.title =  row.name;
+      this.getRole10List(row.id);
       this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
+
     },
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateArticle(tempData).then(() => {
+          tempData.works = this.works
+          console.log("选择的三级人员 ",tempData)
+
+          updateWorksUser(tempData).then((res) => {
             const index = this.list.findIndex(v => v.id === this.temp.id)
+            //this.temp
+            this.temp.title = res.data.name
+            if(res.data.region_manager_info != null)
+            {
+              this.temp.region_manager_info = res.data.region_manager_info
+            }
             this.list.splice(index, 1, this.temp)
             this.dialogFormVisible = false
+            this.works = [];
             this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
+              title: '成功',
+              message: '更新成功',
               type: 'success',
               duration: 2000
             })

@@ -92,11 +92,14 @@ Route::post('/admin/logout','Admin\AdminController@logout');
 
 // 获取 未被安排的管理人员
 Route::get('/admin/user/unarrange','Admin\WorkRegionController@unArrange');// 未被安排的2级别人员
+// 获取 三级人员
+Route::get('/admin/user/role_one','Admin\WorkRegionController@roleOne');//
 
 // 区域管理
 Route::get('/admin/region/regions','Admin\WorkRegionController@regions');// 所有区域列表
 Route::post('/admin/region/create','Admin\WorkRegionController@create');// 创建区域
 Route::post('/admin/region/delete','Admin\WorkRegionController@delete');
+Route::post('/admin/region/belong_to','Admin\WorkRegionController@belongTo');//分配人员的所属区域
 
 
 // 人员管理

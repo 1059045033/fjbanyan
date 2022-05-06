@@ -9,6 +9,7 @@ use App\Http\Requests\StoreWorkRegionRequest;
 use App\Http\Requests\UpdateWorkRegionRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class WorkRegionController extends Controller
 {
@@ -73,7 +74,11 @@ class WorkRegionController extends Controller
 
     public function unArrange()
     {
-        $users = User::where(['role'=>20])->whereNull('region_id')->orWhere('region_id','')->select('id as user_id','name','phone')->get()->each(function ($data){
+        $users = User::where(['role'=>20])
+//            ->whereNull('region_id')
+//            ->orWhere('region_id','')
+            ->select('id as user_id','name','phone')
+            ->get()->each(function ($data){
             $data->label = $data->name.'('.$data->phone.')';
         })->toArray();
 
@@ -89,6 +94,80 @@ class WorkRegionController extends Controller
         return $this->myResponse($res,'',200);
     }
 
+    public function roleOne(Request $request)
+    {
+        $has_region = empty($request->has_region) ? 0 :$request->has_region;
+
+        $users = User::where(['role'=>10])->when(!empty($has_region), function ($query) use($has_region){
+            if($has_region == 1){
+                $query->where('region_id','>',0);
+            }elseif ($has_region == 2)
+            {
+                $query->whereNull('region_id');
+            }
+            })->select('id as user_id','name','phone','region_id','role')
+            ->get()->each(function ($data){
+                $data->label = $data->name.'('.$data->phone.')';
+            })->toArray();
+
+        $old = [];
+        if(!empty($request->region_id)){
+            $old_ = WorkRegion::with('regionUsers')->where(['id'=>$request->region_id])->first();
+            if(!empty($old_->regionUsers)){
+                foreach ($old_->regionUsers as $v){
+                    if($v['role'] == 10){
+                        $old[] = ['user_id'=>$v['id'],'name'=>$v['name'],'phone'=>$v['phone'],'label'=>$v['name'].'('.$v['phone'].')'];
+                    }
+
+                }
+            }
+        }
+
+        $res = [
+            'users' => $users,
+            'old' => $old,
+        ];
+        return $this->myResponse($res,'',200);
+    }
+
+    public function belongTo(Request $request   ){
+        $request->validate([
+            'id' => 'required|exists:work_regions,id',
+            'manager_id' => 'required|exists:users,id',
+            'title'    => 'required',
+        ],[
+            'manager_id.*' => '管理员参数错误',
+            'title' => '请输入名字',
+        ]);
+
+        $regInfo = WorkRegion::find($request->id);
+
+        if($request->id != $regInfo->region_manager){
+            $regInfo->region_manager = $request->manager_id;
+        }
+
+        if($request->title != $regInfo->name){
+            $regInfo->name = $request->title;
+        }
+
+
+        if(empty($request->works)){
+            User::where(['region_id'=>$request->id,'role'=>10])->update(['region_id'=>null]);
+        }else{
+            User::where(['region_id'=>$request->id,'role'=>10])->update(['region_id'=>null]);
+            User::whereIn('id',$request->works)->update(['region_id'=>$request->id]);
+        }
+
+        if($regInfo->save())
+        {
+            $new_user = WorkRegion::with(['regionManagerInfo:id,name'])
+                ->where('id',$request->id)
+                ->first();
+            return $this->myResponse($new_user,'修改成功',200);
+        }
+        return $this->myResponse([],'修改失败',423);
+    }
+
 
     public function create(Request $request)
     {
@@ -100,7 +179,7 @@ class WorkRegionController extends Controller
 
         $res = WorkRegion::where('region_manager',$request->manager_id)->first();
         if(!empty($res)){
-            return $this->myResponse([],'该工作人员已经是区域经理了',423);
+            //return $this->myResponse([],'该工作人员已经是区域经理了',423);
         }
 
         if(empty($request->scope))
@@ -120,10 +199,10 @@ class WorkRegionController extends Controller
         ])->id;
 
         // 修改所属的区域
-        User::where('id',$request->manager_id)->update([
-            'region_id'=> $new_id,
-            'role'     => 20
-        ]);
+//        User::where('id',$request->manager_id)->update([
+//            'region_id'=> $new_id,
+//            'role'     => 20
+//        ]);
         return $this->myResponse([],'创建新区域成功',200);
     }
 
@@ -143,7 +222,10 @@ class WorkRegionController extends Controller
 //        }
 
         WorkRegion::where('id',$request->id)->delete();
+
+        // 删除区域 解除对应的区域绑定 (归属/工作 )
         User::where('region_id',$request->id)->update(['region_id'=>null]);
+        User::where('work_region_id',$request->id)->update(['work_region_id'=>null]);
 
         return $this->myResponse([],'删除成功',200);
     }
@@ -238,5 +320,10 @@ class WorkRegionController extends Controller
             'lng'=>$x,
             'lat'=>$y
         ];
+    }
+
+    public function getRegionUser($region_id)
+    {
+
     }
 }

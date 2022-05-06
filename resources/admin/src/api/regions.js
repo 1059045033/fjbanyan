@@ -16,10 +16,28 @@ export function fetchManagerList(query) {
   })
 }
 
+export function fetchRole10List(query) {
+  console.log('发起获取三级人员请求')
+  return request({
+    url: '/admin/user/role_one',
+    method: 'get',
+    params: query
+  })
+}
+
 
 export function createRegion(data) {
   return request({
     url: '/admin/region/create',
+    method: 'post',
+    data
+  })
+}
+
+export function updateWorksUser(data) {
+  console.log('发起修改区域归属人员请求')
+  return request({
+    url: '/admin/region/belong_to',
     method: 'post',
     data
   })

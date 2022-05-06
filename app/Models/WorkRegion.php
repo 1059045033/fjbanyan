@@ -29,4 +29,10 @@ class WorkRegion extends Model
     {
         return $this->hasOne(User::class,'id','region_manager');
     }
+
+    public function regionUsers()
+    {
+        return $this->hasMany(User::class,'region_id','id');
+    }
+
 }

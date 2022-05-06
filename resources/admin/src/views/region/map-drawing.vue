@@ -73,10 +73,10 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancelData()">
-          Cancel
+          取消
         </el-button>
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          Confirm
+          确认
         </el-button>
       </div>
     </el-dialog>
@@ -114,8 +114,8 @@ export default {
       },
       quyu: [],
       textMap: {
-        update: 'Edit',
-        create: 'Create'
+        update: '编辑',
+        create: '创建'
       },
       dialogFormVisible: false, // 弹窗是否表单验证
       dialogStatus: '', // 弹窗状态
