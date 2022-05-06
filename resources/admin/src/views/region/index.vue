@@ -205,6 +205,7 @@ export default {
 
       fetchRole10List({has_region:2,region_id:region_id}).then(response => {
         this.works_options = response.data.old
+        this.works.splice(0);
         for (let i=0;i<response.data.old.length;i++)
         {
           this.works.push(response.data.old[i].user_id)
