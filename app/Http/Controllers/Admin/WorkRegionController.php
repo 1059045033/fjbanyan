@@ -130,7 +130,7 @@ class WorkRegionController extends Controller
         return $this->myResponse($res,'',200);
     }
 
-    public function belongTo(Request $request   ){
+    public function belongTo(Request $request){
         $request->validate([
             'id' => 'required|exists:work_regions,id',
             'manager_id' => 'required|exists:users,id',
