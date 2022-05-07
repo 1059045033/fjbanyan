@@ -60,8 +60,12 @@ class AttendanceLog extends Command
             $start = Carbon::now()->startOfDay()->timestamp;
             $end   = Carbon::now()->endOfDay()->timestamp;
 
+
+
             $usersDatas = [];
             foreach ($users as $k=>$v){
+                $money   = 0;
+                $money_desc = '';
                 $usersDatas[$v->id] = [
                     'user_id' => $v->id,
                     'user_name' => $v->name,
@@ -104,9 +108,9 @@ class AttendanceLog extends Command
 
                 //迟到次数 半小时15元，1小时30元  上班时间 早 7:03  下午 15:03
                 $late_num = 0;
+                $online_temp = ['z_1'=>0,'z_2'=>0,'x_1'=>0,'x_2'=>0,'z'=>0,'x'=>0];
                 if(!empty($online_times))
                 {
-                    $online_temp = ['z_1'=>0,'z_2'=>0,'x_1'=>0,'x_2'=>0,'z'=>0,'x'=>0];
                     // 所有的上线时间循环
                     foreach ($online_times as $vv)
                     {
@@ -149,16 +153,21 @@ class AttendanceLog extends Command
                         $online_temp['x'] = 1;
                     }
                     $late_num = $online_temp['z'] +  $online_temp['x'] ;
+
+                    $money_desc .= "迟到{$late_num}次共扣".($late_num * 30)."元(早上{$online_temp['z']}*30，下午{$online_temp['x']}*30)|";
                 }else{
                     $late_num = 2 ;
+                    $money_desc .= "迟到{$late_num}次共扣".($late_num * 15)."元(没有上线记录)|";
                 }
-                $usersDatas[$v->id]['late_nums'] = $late_num;
+                $money += $late_num * 30;
+
+                $usersDatas[$v->id]['late_nums'] = round($late_num);
 
                 //早退次数
                 $early_num = 0;
+                $_temp = ['z_1'=>0,'z_2'=>0,'x_1'=>0,'x_2'=>0,'z'=>0,'x'=>0];
                 if(!empty($offline_times))
                 {
-                    $_temp = ['z_1'=>0,'z_2'=>0,'x_1'=>0,'x_2'=>0,'z'=>0,'x'=>0];
                     foreach ($offline_times as $vv)
                     {
                         // 打卡时间
@@ -199,10 +208,13 @@ class AttendanceLog extends Command
                         $_temp['x'] = 1;
                     }
                     $early_num = $_temp['z'] +  $_temp['x'] ;
+                    $money_desc .= "早退{$early_num}次共扣".($early_num * 30)."元(早上{$_temp['z']}*30，下午{$_temp['x']}*30)|";
                 }else{
                     $early_num = 2;
+                    $money_desc .= "早退{$early_num}次共扣".($early_num * 30)."元(没有下线记录)|";
                 }
-                $usersDatas[$v->id]['early_nums'] = $early_num;
+                $money += $early_num * 30;
+                $usersDatas[$v->id]['early_nums'] = round($early_num);
 
 
                 //任务段档次数
@@ -229,6 +241,8 @@ class AttendanceLog extends Command
                 }else{
                     $dd = 8;//如果一天都做任务最多断档8次 24/3=8
                 }
+                $money += $dd * 30;
+                $money_desc .= "断档{$dd}次共扣".($dd * 30)."元|";
                 $usersDatas[$v->id]['task_dd_nums'] = $dd;
 
                 //网格无人员出勤
@@ -247,7 +261,11 @@ class AttendanceLog extends Command
                         }
                     }
                 }
+                $money += $region_not_user_nums * 140;
+                $money_desc .= "网格无人员出勤{$region_not_user_nums}次共扣".($region_not_user_nums * 140)."元|";
                 $usersDatas[$v->id]['region_not_user_nums'] = $region_not_user_nums;
+                $usersDatas[$v->id]['money'] = $money;
+                $usersDatas[$v->id]['money_details'] = $money_desc;
             }
 
             // 插入考勤记录

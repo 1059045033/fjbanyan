@@ -31,6 +31,8 @@ class CreateAttendancesTable extends Migration
             $table->integer('early_nums')->comment("早退次数")->nullable();
             $table->integer('task_dd_nums')->comment("任务段档次数")->nullable();
             $table->integer('region_not_user_nums')->comment("网格无人员出勤 ")->nullable();
+            $table->float('money')->comment("扣款金额 ")->nullable();
+            $table->string('money_details')->comment("扣款详情")->nullable();
             $table->unsignedInteger('created_at');
             $table->unsignedInteger('updated_at');
         });

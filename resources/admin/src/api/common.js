@@ -17,5 +17,13 @@ export function getAllCompany(query) {
     params: query
   })
 }
+export function fetchAttendanceAllList(query) {
+  console.log('发起获取考勤明细的请求')
+  return request({
+    url: '/admin/attendance/lists',
+    method: 'get',
+    params: query
+  })
+}
 
 

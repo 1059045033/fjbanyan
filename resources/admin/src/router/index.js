@@ -327,6 +327,29 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/attendance',
+    component: Layout,
+    redirect: '/attendance/page',
+    hidden: false,
+    name: 'Attendance',
+    meta: {
+      title: '考勤',
+      icon: 'user',
+      roles: ['admin', 'editor'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/attendance/index'),
+        name: 'attendance-list',
+        meta: {
+          title: '考勤列表',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
+  {
     path: '/icon',
     component: Layout,
     hidden: true,
