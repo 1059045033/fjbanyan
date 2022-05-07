@@ -6,6 +6,7 @@ use App\Http\Requests\StoreActivityMsgRequest;
 use App\Http\Requests\UpdateActivityMsgRequest;
 use App\Models\ActivityMsg;
 use App\Models\User;
+use App\Models\WorkRegion;
 use App\Services\JPushService;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -25,6 +26,12 @@ class MemberController extends Controller
         $user = User::with(['company','region:id,name','workRegion:id,name'])->find($request->user()->id);
         if(!empty($request->user_id) && in_array($user['role'],[20,30])){
             $user = User::with(['company','region:id,name','workRegion:id,name'])->find($request->user_id);
+        }
+        $user['manager_regions'] = null;
+        if(!empty($user) && $user['role'] == 20)
+        {
+            $regions = WorkRegion::where('region_manager',$user['id'])->get()->toArray();
+            $user['manager_regions'] = $regions;
         }
 
         return $this->myResponse($user,'得到用户信息',200);
@@ -134,23 +141,33 @@ class MemberController extends Controller
     {
         $user = $request->user();
         $request->validate([
-            //'region_id' => 'required|exists:work_regions,id',
+            'region_id' => 'required|exists:work_regions,id',
             'user_id'   => 'required|exists:users,id'
         ]);
+
         if(!in_array($user['role'],[20])){
             return $this->myResponse([],'只有区域管理员才能设置归属区域',423);
         }
+
         $o_user = User::find($request->user_id);
         if(!empty($o_user->region_id)){
             return $this->myResponse([],'该对象已经设置了归属区域',423);
         }
 
-        $o_user->region_id = $user['region_id'];
+        $region = WorkRegion::where('id',$request->region_id)->first();
+        if(empty($region['region_manager'])){
+            return $this->myResponse([],'传的区域还未安排管理人员',423);
+        }
+
+        if(!empty($region['region_manager']) && $region['region_manager']!=$user['id']){
+            return $this->myResponse([],'传的区域管理人员不是你',423);
+        }
+
+        $o_user->region_id = $request->region_id;
         $o_user->save();
 
         return $this->myResponse([],'归属区域设置成功',200);
     }
-
 
     # ===================== 作业安排
     // 作业队伍列表
@@ -167,19 +184,22 @@ class MemberController extends Controller
         }
 
 
-        if($user['role']==20 && empty($user['region_id'])){
-            return $this->myResponse([],'区域管理员需先配置所属区域',423);
-        }
-        $region_id = 0;
+        //if($user['role']==20 && empty($user['region_id'])){
+            //return $this->myResponse([],'区域管理员需先配置所属区域',423);
+        //}
+
+        $region_id = [];
         if($user['role']==20){
-            $region_id = $user['region_id'];
+            // $region_id = $user['region_id'];
+            // 获取该区域管理人员的所有区域
+            $region_id = WorkRegion::where('region_manager',$user['id'])->pluck('id')->toArray();
         }
 
         $list = User::with(['company','region:id,name','workRegion:id,name'])
             ->when(!empty($region_id), function ($query) use($region_id){
-                $query->where('region_id',$region_id);
+                $query->whereIn('region_id',$region_id);
             })
-            //->where('id','<>',$user['id'])
+            ->where('id','<>',$user['id'])
             ->whereIn('role',[10,20])
             ->select('id as user_id','name','avator','created_at','phone','company_id','region_id','work_region_id')->get();
 
@@ -358,7 +378,4 @@ class MemberController extends Controller
 
         return $this->myResponse($res,"安全课堂",200);
     }
-
-
-
 }

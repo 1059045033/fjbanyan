@@ -39,6 +39,8 @@ Route::post('/task/execute_list','TaskController@executeList');//任务执行列
 Route::post('/task/distribute_list','TaskController@distributeList');//任务执行列表
 Route::post('/task/today/progress','TaskController@todayProgress');//
 
+Route::post('/task/logs','TaskLogController@logs');//
+
 
 // 团队
 Route::post('/teams','MemberController@teamList');
