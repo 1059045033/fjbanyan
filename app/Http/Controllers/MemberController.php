@@ -94,39 +94,31 @@ class MemberController extends Controller
     {
         $user = $request->user();
 
-        if(!in_array($user['role'],[20])){
-            // return $this->myResponse([],'只有区域管理员才有团队列表',423);
-        }
-        $params = [];
-        if($user['role'] == 20 && empty($user['region_id'])){
-            return $this->myResponse([],'还未配置所属区域',423);
+        if(!in_array($user['role'],[20,30])){
+            return $this->myResponse([],'只有管理理员才有团队列表',423);
         }
 
+        $region_ids = [];
         if($user['role'] == 20)
         {
-            $params['region_id'] = $user['region_id'];
+            $region_ids = WorkRegion::where('region_manager',$user['id'])->pluck('id')->toArray();
+            !empty($region_ids) && $region_ids = [-1];
         }
 
         $res = [];
         $list = User::with(['company','Region:id,name'])
-            ->when(!empty($params), function ($query) use($params){
-            $query->where('region_id',$params['region_id']);
-        })->when(!empty($user), function ($query) use($user){
-                if($user['role'] == 20){
-                    $query->where('role',10);
-                }elseif ($user['role'] == 20)
-                {
-                    $query->whereIn('role',[10,20]);
-                }
-
-
-            })->where('id','<>',$user['id'])
+            ->when(!empty($region_ids), function ($query) use($region_ids){
+                $query->whereIn('region_id',$region_ids);
+            })
             ->whereNotNull('region_id')
-            ->select('id as user_id','name','avator','created_at','phone','image_base64','company_id','region_id','role')->get();
+            ->where('role',10)
+            ->where('id','<>',$user['id'])
+            ->select('id as user_id','name','avator','created_at','phone','image_base64','company_id','region_id','role')
+            ->get();
         $res['belonging'] = $list;
 
-        $list = User::with(['company','Region:id,name'])->whereNull('region_id')
-            ->where('id','>',1)
+        $list = User::with(['company','Region:id,name'])
+            ->whereNull('region_id')
             ->where('role',10)
             ->select('id as user_id','name','avator','created_at','phone','image_base64','company_id','region_id','role')->get();
 
