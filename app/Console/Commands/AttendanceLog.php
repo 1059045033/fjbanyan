@@ -72,8 +72,8 @@ class AttendanceLog extends Command
                     'user_phone' => $v->phone,
                     'user_company' => empty($v->company_id) ? null:$v->user_company."(ID:{$v->company_id})",
                     'user_role' => $v->role,
-                    'user_region' => empty($v->region_id) ? null: $v->region_id."(ID:{$v->region_id})",
-                    'user_work_region' => empty($v->work_region_id) ? null: $v->work_region_id."(ID:{$v->work_region_id})",
+                    'user_region' => empty($v->region_id) ? null: $v->user_region."(ID:{$v->region_id})",
+                    'user_work_region' => empty($v->work_region_id) ? null: $v->user_work_region."(ID:{$v->work_region_id})",
                     'created_at'=>$time,
                     'updated_at' => $time
                 ];
