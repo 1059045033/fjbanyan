@@ -1,7 +1,11 @@
 <template>
 
   <div>
+
     <div class="filter-container" style="margin: 5px">
+      <div>
+        提醒 ： 人员是三级人员(是已经有归属区域的三级人员)
+      </div>
 <!--      <el-input v-model="listQuery.name" placeholder="用户名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter"  />-->
 
       <el-select v-model="listQuery.user_id" placeholder="选择人员" clearable class="filter-item" style="width: 250px;margin-top: 8px">

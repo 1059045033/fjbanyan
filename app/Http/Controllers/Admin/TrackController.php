@@ -46,7 +46,7 @@ class TrackController extends Controller
             ->where('created_at','>',$start_date)
             ->where('created_at','<',$end_date)->count();
 
-        $list  = Track::with('userInfo:id,name')
+        $list  = Track::with('userInfo:id,name,role')
             ->where($fillter)
             ->when(!empty($search), function ($query) use($search){
                 $query->where('name','like','%'.$search.'%');
@@ -59,7 +59,7 @@ class TrackController extends Controller
         foreach ($list as $k=>$v)
         {
             $item = json_decode($v['position'],1);
-            if(!empty($item))
+            if(!empty($item) && $v['userInfo']['role'] == 10)
             {
                 if(empty($items[$v['user_id']])){
                     $items[$v['user_id']] = ['user_id'=>$v['user_id'],'name'=>$v['userInfo']['name']];
