@@ -6,6 +6,7 @@ use App\Models\Track;
 use App\Http\Requests\StoreTrackRequest;
 use App\Http\Requests\UpdateTrackRequest;
 use App\Models\User;
+use App\Models\WorkRegion;
 use Illuminate\Http\Request;
 
 class TrackController extends Controller
@@ -55,13 +56,17 @@ class TrackController extends Controller
         }
 
         // 如果当前操作的是 区域管理员 ,那这个区域管理员要先被设置所属区域
-        if($user['role'] == 20 && empty($user['region_id'])){
-            return $this->myResponse([],'区域管理员请先先给设置下自己的所属区域',423);
-        }
+//        if($user['role'] == 20 && empty($user['region_id'])){
+//            //return $this->myResponse([],'区域管理员请先先给设置下自己的所属区域',423);
+//        }
 
         // 如果传的user_id 不是属于该区域的不让查询
-        if($user['role'] == 20 && $temp_user->region_id != $user['region_id']){
-            return $this->myResponse([],'区域管理员只能查看属于自己区域的人员的轨迹',423);
+        if($user['role'] == 20 ){//&& $temp_user->region_id != $user['region_id']
+            // 获取该区域管理员的所有区域
+            $region_ids = WorkRegion::where('region_manager',$user['id'])->pluck('id')->toArray();
+            if(!in_array($temp_user->region_id,$region_ids)){
+                return $this->myResponse([],'区域管理员只能查看属于自己区域的人员的轨迹',423);
+            }
         }
 
         // 如果没传 start_date 默认就是今天

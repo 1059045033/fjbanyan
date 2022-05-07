@@ -195,7 +195,7 @@ class MemberController extends Controller
             })
             ->where('id','<>',$user['id'])
             ->whereIn('role',[10,20])
-            ->select('id as user_id','name','avator','created_at','phone','company_id','region_id','work_region_id')->get();
+            ->select('id as user_id','name','avator','created_at','phone','company_id','region_id','work_region_id','image_base64')->get();
 
         return $this->myResponse($list,'获取作业队伍列表',200);
     }
