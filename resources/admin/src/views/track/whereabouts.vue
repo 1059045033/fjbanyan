@@ -115,11 +115,11 @@
         this.BMap = BMap;
         this.map = map;
         // 获取下来人员列表
-        this.getRole10List()
+        this.getRole10List(1)
 
       },
       getRole10List(region_id) {
-        fetchRole10List({has_region:2,region_id:region_id}).then(response => {
+        fetchRole10List({has_region:1,region_id:region_id}).then(response => {
           this.userOptions = response.data.users
           console.log("三级人员 === ",this.works_options)
         })
