@@ -1,21 +1,9 @@
 <template>
 
   <div>
-    <div class="filter-container" style="margin: 5px">
-<!--      <el-input v-model="listQuery.name" placeholder="用户名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter"  />-->
-
-      <el-select v-model="listQuery.user_id" placeholder="选择人员" clearable class="filter-item" style="width: 250px;margin-top: 8px">
-        <el-option v-for="item in userOptions" :key="item.user_id" :label="item.label" :value="item.user_id" />
-      </el-select>
-
-      <el-date-picker v-model="listQuery.start_date" type="date" value-format="yyyy-MM-dd" placeholder="请选择一个时间" style="margin-left: 5px;margin-top: -10px"/>
-      <span style="padding-left: 10px" />
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter" >
-        查看轨迹
-      </el-button>
-    </div>
-
-    <el-row :gutter="8" style="margin-left: 3px;">
+    <aside>
+    </aside>
+    <el-row :gutter="8">
 <!--      <el-col :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 5}" :xl="{span: 5}" style="margin-bottom:30px;">-->
 <!--        <todo-list @selectOverlay="selectOverlay" :pageType="pageType"/>-->
 <!--      </el-col>-->
@@ -50,15 +38,7 @@
   import waves from '@/directive/waves' // waves directive
   import TodoList from './components/TodoList'
   import { BaiduMap, BmNavigation } from 'vue-baidu-map/components';
-  import {fetchRole10List} from "@/api/regions";
-  import {parseTime} from "@/utils";
-  const userOptions = []
 
-  // arr to obj, such as { CN : "China", US : "USA" }
-  const userKeyValue = userOptions.reduce((acc, cur) => {
-    acc[cur.user_id] = cur.label
-    return acc
-  }, {})
 
   export default {
     directives: { waves },
@@ -81,17 +61,6 @@
           {lineColor:'#5370DD',icon:require('@/assets/icon/icon-circle3.png')},
           {lineColor:'#8349AD',icon:require('@/assets/icon/icon-circle4.png')}
         ],
-        listQuery: {
-          page: 1,
-          limit: 20,
-          importance: undefined,
-          title: undefined,
-          type: undefined,
-          sort: '-id',
-          name: undefined,
-          start_date: new Date(),
-          user_id:undefined
-        },
         // 存放数据点
         mapList : [
           [
@@ -106,25 +75,23 @@
         ],
         mapListUser : {
           items: []
-        },
-        userOptions
+        }
       }
     },
     methods: {
       mapReady ({ BMap, map }) {
         this.BMap = BMap;
         this.map = map;
-        // 获取下来人员列表
-        this.getRole10List()
-
-      },
-      getRole10List(region_id) {
-        fetchRole10List({has_region:2,region_id:region_id}).then(response => {
-          this.userOptions = response.data.users
-          console.log("三级人员 === ",this.works_options)
+        fetchAllList(this.listQuery).then(response => {
+          this.mapList.slice(0)
+          for (let i = 0; i < response.data.items.length; i++) {
+            this.mapList[i] = response.data.items[i].positions;
+            this.mapListUser.items[i] = response.data.items[i];
+          }
+          console.log('this.mapList = ',this.mapList);
+          this.drawMap()
         })
       },
-
       // 绘制图形
       drawMap () {
         let BMap = this.BMap;
@@ -176,6 +143,7 @@
           this.addMarker(BMap, map, new BMap.Point(data[index][j].lng, data[index][j].lat), j + 1, index);
         }
       },
+
       // 添加标注
       addMarker (BMap, map, point, number, index) {
         let marker = '';
@@ -207,22 +175,12 @@
         marker.setLabel(label); // 为标注添加文本标注
       },
 
-      handleFilter() {
-        this.listQuery.page = 1
-        this.listQuery.start_date = parseTime(this.listQuery.start_date);
-        console.log("请求轨迹用的参数 ",this.listQuery)
-        fetchAllList(this.listQuery).then(response => {
-          this.mapList.length = 0
-          console.log("获取 页面数据 ",response.data.items)
-          for (let i = 0; i < response.data.items.length; i++) {
-            this.mapList[i] = response.data.items[i].positions;
-            this.mapListUser.items[i] = response.data.items[i];
-          }
-          console.log('this.mapList = ',this.mapList.length);
-          if(this.mapList.length > 0) {
-            this.drawMap()
-          }
-        })
+      selectOverlay(item) {
+        console.log('选择覆盖物 = ', item)
+        console.log('选择了用户 = ',item.id)
+        this.center = item.zhongxin;
+        this.chick_id = item.id;
+        this.zoom = 16;
       },
     }
   }

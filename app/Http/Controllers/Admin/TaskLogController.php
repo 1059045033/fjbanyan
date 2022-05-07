@@ -57,6 +57,6 @@ class TaskLogController extends Controller
             'items' => $list
         ];
 
-        return $this->myResponse($result,''.$start_date.' -- '.$end_date." == ".json_encode($user_ids),200);
+        return $this->myResponse($result,''.$start_date.' -- '.$end_date." == ".$day,200);
     }
 }

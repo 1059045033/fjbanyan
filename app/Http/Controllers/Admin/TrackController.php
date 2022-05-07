@@ -32,16 +32,28 @@ class TrackController extends Controller
         $page = $request->query('page') ?? 1;
         $limit = $request->query('limit') ?? 10;
 
-        $total = Track::where($fillter)->when(!empty($search), function ($query) use($search){
-            $query->where('name','like','%'.$search.'%');
-        })->count();
-        $start_date = Carbon::parse('2022-01-01')->startOfDay()->timestamp;
-        $end_date   = Carbon::parse('2022-05-01')->endOfDay()->timestamp;
+        !empty($request->query('user_id')) && $fillter['user_id'] = $request->query('user_id');
 
-        $list  = Track::with('userInfo:id,name')->where($fillter)->when(!empty($search), function ($query) use($search){
-            $query->where('name','like','%'.$search.'%');
-        })->where('created_at','>',$start_date)
-        ->where('created_at','<',$end_date)->get();
+        $day = empty($request->query('start_date')) ? date('Y-m-d'):$request->query('start_date');
+
+        $start_date = Carbon::parse($day)->startOfDay()->timestamp;
+        $end_date   = Carbon::parse($day)->endOfDay()->timestamp;
+
+        $total = Track::where($fillter)
+            ->when(!empty($search), function ($query) use($search){
+                $query->where('name','like','%'.$search.'%');
+            })
+            ->where('created_at','>',$start_date)
+            ->where('created_at','<',$end_date)->count();
+
+        $list  = Track::with('userInfo:id,name')
+            ->where($fillter)
+            ->when(!empty($search), function ($query) use($search){
+                $query->where('name','like','%'.$search.'%');
+            })
+            ->where('created_at','>',$start_date)
+            ->where('created_at','<',$end_date)
+            ->get();
 
         $items = [];
         foreach ($list as $k=>$v)
@@ -56,7 +68,6 @@ class TrackController extends Controller
                     $items[$v['user_id']]['positions'][] = $item;
                 }
             }
-
         }
 
         $items = array_values($items);

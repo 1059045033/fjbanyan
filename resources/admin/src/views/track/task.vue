@@ -55,7 +55,7 @@
 
       <el-table-column label="图集" min-width="150px">
         <template slot-scope="{row}">
-          <span v-for="item of row.atlas"><img :src="item" width="40px"></span>
+          <span v-for="item of row.atlas"><a class="document-btn" target="_blank" :href="item"><img :src="item"></a></span>
         </template>
       </el-table-column>
 
@@ -248,6 +248,7 @@
     methods: {
       getList() {
         this.listLoading = true
+        this.listQuery.start_date = parseTime(this.listQuery.start_date);
         console.log('listQuery = ', this.listQuery)
         fetchTaskLogAllList(this.listQuery).then(response => {
           this.list = response.data.items
@@ -427,3 +428,13 @@
     }
   }
 </script>
+
+<style>
+
+  img{
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    padding: 2px;
+  }
+</style>
