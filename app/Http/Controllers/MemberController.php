@@ -102,7 +102,7 @@ class MemberController extends Controller
         if($user['role'] == 20)
         {
             $region_ids = WorkRegion::where('region_manager',$user['id'])->pluck('id')->toArray();
-            !empty($region_ids) && $region_ids = [-1];
+            empty($region_ids) && $region_ids = [-1];
         }
 
         $res = [];
