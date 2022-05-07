@@ -103,6 +103,8 @@ class MemberController extends Controller
         {
             $region_ids = WorkRegion::where('region_manager',$user['id'])->pluck('id')->toArray();
             empty($region_ids) && $region_ids = [-1];
+            //
+
         }
 
         $res = [];
