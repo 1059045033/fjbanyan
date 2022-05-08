@@ -16,6 +16,7 @@ Route::post('/register','RegisterController@register');
 Route::post('/login','RegisterController@login');
 Route::post('/version','RegisterController@version');
 Route::post('/sms','SmsController@send');
+Route::post('/email','MailController@send');
 Route::post('/sms_test','SmsController@send_bak');
 Route::post('/banner','BannerController@index');
 Route::post('/online','OnlineOfflineController@online');
