@@ -41,6 +41,7 @@ class AttendanceLog extends Command
      */
     public function handle()
     {
+
         DB::transaction(function () {
             $companies = DB::table('companies')->pluck('name','id')->toArray();
             $regions = DB::table('work_regions')->pluck('name','id')->toArray();
@@ -78,173 +79,7 @@ class AttendanceLog extends Command
                     'updated_at' => $time
                 ];
 
-                //上线时间集合
-                $online_times = DB::table('online_offlines')
-                    ->where(['user_id'=>$v->id,'type'=>1])
-                    ->whereBetWeen('created_at',[$start,$end])
-                    ->pluck('created_at')->toArray();
-                $usersDatas[$v->id]['online_times'] = empty($online_times) ? null:json_encode($online_times);
-
-                //下线时间集合
-                $offline_times = DB::table('online_offlines')
-                    ->where(['user_id'=>$v->id,'type'=>1])
-                    ->whereBetWeen('created_at',[$start,$end])
-                    ->pluck('created_at')->toArray();
-                $usersDatas[$v->id]['offline_times'] = empty($offline_times) ? null:json_encode($offline_times);
-
-                //任务完成量/任务完进度
-                $total = 24;
-                $effective = DB::table('task_logs')->where(['user_id'=>$v->id])
-                    ->where('is_effective','>',0)->whereBetWeen('created_at',[$start,$end])
-                    ->get()->count();
-                $task_complete_nums   = DB::table('task_logs')
-                    ->where(['user_id'=>$v->id])
-                    //->whereBetWeen('created_at',[$start,$end])
-                    ->select('id','created_at')
-                    ->get()->toArray();
-                $usersDatas[$v->id]['task_complete_nums'] = count($task_complete_nums);
-                $task_progress = (round($effective/$total,2)*100).'%';
-                $usersDatas[$v->id]['task_progress'] = $task_progress;
-
-                //迟到次数 半小时15元，1小时30元  上班时间 早 7:03  下午 15:03
-                $late_num = 0;
-                $online_temp = ['z_1'=>0,'z_2'=>0,'x_1'=>0,'x_2'=>0,'z'=>0,'x'=>0];
-                if(!empty($online_times))
-                {
-                    // 所有的上线时间循环
-                    foreach ($online_times as $vv)
-                    {
-                        // 打卡时间
-                        $Hi = date('H:i',$vv);
-                        //  ------------ 早上 -----------
-                        // 迟到 半小时未满一小时
-                        if(($Hi > '07:30' && $Hi < '8:00'))
-                        {
-                            $online_temp['z_1']++ ; //早上 迟到半小时到一小时内的次数
-                        }
-                        // 迟到 一小时及以上
-                        if(($Hi >= '08:00' && $Hi < '11:00'))
-                        {
-                            $online_temp['z_2']++ ; //早上 迟到一小时以上的次数
-                        }
-                        //  ------------ 下午 -----------
-                        // 迟到 半小时未满一小时
-                        if(($Hi > '15:30' && $Hi < '16:00'))
-                        {
-                            $online_temp['x_1']++ ; //下午 迟到半小时到一小时内的次数
-                        }
-                        // 迟到 一小时及以上
-                        if(($Hi >= '16:00' && $Hi < '19:00'))
-                        {
-                            $online_temp['x_2']++ ; //下午 迟到一小时以上的次数
-                        }
-                    }
-
-                    if($online_temp['z_1'] > 0){
-                        $online_temp['z'] = 0.5;
-                    }
-                    if($online_temp['z_2'] > 0){
-                        $online_temp['z'] = 1;
-                    }
-                    if($online_temp['x_1'] > 0){
-                        $online_temp['x'] = 0.5;
-                    }
-                    if($online_temp['x_2'] > 0){
-                        $online_temp['x'] = 1;
-                    }
-                    $late_num = $online_temp['z'] +  $online_temp['x'] ;
-
-                    $money_desc .= "迟到{$late_num}次共扣".($late_num * 30)."元(早上{$online_temp['z']}*30，下午{$online_temp['x']}*30)|";
-                }else{
-                    $late_num = 2 ;
-                    $money_desc .= "迟到{$late_num}次共扣".($late_num * 15)."元(没有上线记录)|";
-                }
-                $money += $late_num * 30;
-
-                $usersDatas[$v->id]['late_nums'] = round($late_num);
-
-                //早退次数
-                $early_num = 0;
-                $_temp = ['z_1'=>0,'z_2'=>0,'x_1'=>0,'x_2'=>0,'z'=>0,'x'=>0];
-                if(!empty($offline_times))
-                {
-                    foreach ($offline_times as $vv)
-                    {
-                        // 打卡时间
-                        $Hi = date('H:i',$vv);
-                        //  ------------ 早上 -----------
-                        // 早退 半小时未满一小时
-                        if(($Hi > '10:00' && $Hi <= '10:30'))
-                        {
-                            $_temp['z_1']++ ;
-                        }
-                        // 早退 一小时及以上
-                        if(($Hi >= '07:00' && $Hi <= '10:00'))
-                        {
-                            $_temp['z_2']++ ;
-                        }
-                        //  ------------ 下午 -----------
-                        // 早退 半小时未满一小时
-                        if(($Hi > '18:00' && $Hi <= '18:30'))
-                        {
-                            $_temp['x_1']++ ;
-                        }
-                        // 早退 一小时及以上
-                        if(($Hi >= '13:00' && $Hi <= '18:00'))
-                        {
-                            $_temp['x_2']++ ;
-                        }
-                    }
-                    if($_temp['z_1'] > 0){
-                        $_temp['z'] = 0.5;
-                    }
-                    if($_temp['z_2'] > 0){
-                        $_temp['z'] = 1;
-                    }
-                    if($_temp['x_1'] > 0){
-                        $_temp['x'] = 0.5;
-                    }
-                    if($_temp['x_2'] > 0){
-                        $_temp['x'] = 1;
-                    }
-                    $early_num = $_temp['z'] +  $_temp['x'] ;
-                    $money_desc .= "早退{$early_num}次共扣".($early_num * 30)."元(早上{$_temp['z']}*30，下午{$_temp['x']}*30)|";
-                }else{
-                    $early_num = 2;
-                    $money_desc .= "早退{$early_num}次共扣".($early_num * 30)."元(没有下线记录)|";
-                }
-                $money += $early_num * 30;
-                $usersDatas[$v->id]['early_nums'] = round($early_num);
-
-
-                //任务段档次数
-                $dd = 0 ; //断档次数
-                if(!empty($task_complete_nums))
-                {
-                    $old_time = 0 ;
-                    // 1. 所有的任务列表 时间从早到晚
-                    foreach ($task_complete_nums as $vv)
-                    {
-                        if(empty($old_time))
-                        {
-                            $old_time = $vv->created_at;
-                            continue;
-                        }else{
-                            $diff = $vv->created_at - $old_time;
-                            // 2.如果前后两个任务的时间大于 1 小时 则计一次断档
-                            if($diff > 3600){
-                                $dd ++;
-                            }
-                            $old_time = $vv->created_at;
-                        }
-                    }
-                }else{
-                    $dd = 8;//如果一天都做任务最多断档8次 24/3=8
-                }
-                $money += $dd * 30;
-                $money_desc .= "断档{$dd}次共扣".($dd * 30)."元|";
-                $usersDatas[$v->id]['task_dd_nums'] = $dd;
-
+                # ================  考勤的人员是 二级人员 start ============
                 //网格无人员出勤
                 $region_not_user_nums = 0;
                 if($v->role == 20){
@@ -259,21 +94,281 @@ class AttendanceLog extends Command
                             // 3. 每存在一个区域没有没有作为工作区域安排给人员 计数就 +1
                             empty($temp) && $region_not_user_nums++;
                         }
+
+                        $usersDatas[$v->id]['online_times'] = null;
+                        $usersDatas[$v->id]['offline_times'] = null;
+                        $usersDatas[$v->id]['task_complete_nums'] = null;
+                        $usersDatas[$v->id]['task_progress'] = null;
+                        $usersDatas[$v->id]['late_nums'] = null;
+                        $usersDatas[$v->id]['early_nums'] = null;
+                        $usersDatas[$v->id]['task_dd_nums'] = null;
+
+                        $money += $region_not_user_nums * 140;
+                        $money_desc .= "网格无人员出勤{$region_not_user_nums}次共扣".($region_not_user_nums * 140)."元|";
+                        $usersDatas[$v->id]['region_not_user_nums'] = $region_not_user_nums;
+                        $usersDatas[$v->id]['money'] = $money;
+                        $usersDatas[$v->id]['money_details'] = $money_desc;
                     }
+                    continue;
                 }
-                $money += $region_not_user_nums * 140;
-                $money_desc .= "网格无人员出勤{$region_not_user_nums}次共扣".($region_not_user_nums * 140)."元|";
-                $usersDatas[$v->id]['region_not_user_nums'] = $region_not_user_nums;
-                $usersDatas[$v->id]['money'] = $money;
-                $usersDatas[$v->id]['money_details'] = $money_desc;
+                # ================  考勤的人员是 二级人员 start ============
+                # ================  考勤的人员是 三级人员 start ============
+                if(empty($v->work_region_id)){
+                    // 没有安排工作区
+
+                    $usersDatas[$v->id]['online_times'] = null;
+                    $usersDatas[$v->id]['offline_times'] = null;
+                    $usersDatas[$v->id]['task_complete_nums'] = null;
+                    $usersDatas[$v->id]['task_progress'] = null;
+
+                    $usersDatas[$v->id]['late_nums'] = 2;
+                    $usersDatas[$v->id]['early_nums'] = 2;
+                    $usersDatas[$v->id]['task_dd_nums'] = 8;
+                    $usersDatas[$v->id]['region_not_user_nums'] = null;
+                    $usersDatas[$v->id]['money'] = (4*30) + 8*30;
+                    $money_desc = "没有安排工作区域:算迟到2次(2x30)|算早退2次(2x30)|算断档8次(8x30)";
+                    $usersDatas[$v->id]['money_details'] = $money_desc;
+                }else{
+                    // 当天所有的上线时间集合
+                    $online_times = DB::table('online_offlines')
+                        ->where(['user_id'=>$v->id,'type'=>1])
+                        //->whereBetWeen('created_at',[$start,$end])
+                        ->pluck('created_at')->toArray();
+                    $usersDatas[$v->id]['online_times'] = empty($online_times) ? null:json_encode($online_times);
+
+                    // 当天所有的下线时间集合
+                    $offline_times = DB::table('online_offlines')
+                        ->where(['user_id'=>$v->id,'type'=>1])
+                        //->whereBetWeen('created_at',[$start,$end])
+                        ->pluck('created_at')->toArray();
+                    $usersDatas[$v->id]['offline_times'] = empty($offline_times) ? null:json_encode($offline_times);
+
+                    //任务完成量/任务完进度
+                    $total = 24;
+                    $effective = DB::table('task_logs')->where(['user_id'=>$v->id])
+                        ->where('is_effective','>',0)->whereBetWeen('created_at',[$start,$end])
+                        ->get()->count();
+                    $task_complete_nums   = DB::table('task_logs')
+                        ->where(['user_id'=>$v->id])
+                        //->whereBetWeen('created_at',[$start,$end])
+                        ->select('id','created_at')
+                        ->get()->toArray();
+                    $usersDatas[$v->id]['task_complete_nums'] = count($task_complete_nums);
+                    $task_progress = (round($effective/$total,2)*100).'%';
+                    $usersDatas[$v->id]['task_progress'] = $task_progress;
+
+                    //迟到次数
+                    $temp_late= $this->countLate($online_times);
+                    $usersDatas[$v->id]['late_nums'] = round($temp_late['nums']);
+                    $money +=$temp_late['money'];
+                    $money_desc .= $temp_late['desc']."|";
+                    //早退次数
+                    $temp_early= $this->countEarly($offline_times);
+                    $usersDatas[$v->id]['early_nums'] = round($temp_early['nums']);
+                    $money +=$temp_early['money'];
+                    $money_desc .= $temp_early['desc']."|";
+
+
+                    //任务段档次数
+                    $dd = 0 ; //断档次数
+                    if(!empty($task_complete_nums))
+                    {
+                        $old_time = 0 ;
+                        // 1. 所有的任务列表 时间从早到晚
+                        foreach ($task_complete_nums as $vv)
+                        {
+                            if(empty($old_time))
+                            {
+                                $old_time = $vv->created_at;
+                                continue;
+                            }else{
+                                $diff = $vv->created_at - $old_time;
+                                // 2.如果前后两个任务的时间大于 1 小时 则计一次断档
+                                if($diff > 3600){
+                                    $dd ++;
+                                }
+                                $old_time = $vv->created_at;
+                            }
+                        }
+                    }else{
+                        $dd = 8;//如果一天都做任务最多断档8次 24/3=8
+                    }
+                    $money += $dd * 30;
+                    $money_desc .= "断档{$dd}次共扣".($dd * 30)."元|";
+                    $usersDatas[$v->id]['task_dd_nums'] = $dd;
+                    $usersDatas[$v->id]['region_not_user_nums'] = null;
+                    $usersDatas[$v->id]['money'] = $money;
+                    $usersDatas[$v->id]['money_details'] = $money_desc;
+                }
+                # ================  考勤的人员是 三级人员 end   ============
             }
 
             // 插入考勤记录
             $res = DB::table('attendances')->insert($usersDatas);
 
-
-
         });
         return 0;
+    }
+
+    // 计算迟到
+    public function countLate($online_times=[])
+    {
+        if(!empty($online_times))
+        {
+            $time_07 = strtotime(date('Y-m-d 07:00:00')); //07:00 的时间戳
+            $time_15 = strtotime(date('Y-m-d 15:00:00')); //15:00 的时间戳
+            $late_num = 0;//迟到次数
+            $online_times_00_11 = [];//取出 00:00 ~ 11:00 点的上线数据
+            $online_times_11_19 = [];//取出 11:00 ~ 19:00 点的上线数据
+            // 所有的上线时间循环
+            foreach ($online_times as $vv)
+            {
+                // 打卡时间
+                $Hi = date('H:i',$vv);
+                if($Hi < '11:00'){
+                    $online_times_00_11[] = $vv;
+                }elseif ($Hi >= '11:00' && $Hi < '19:00'){
+                    $online_times_11_19[] = $vv;
+                }
+            }
+
+            // 早上上线情况
+            $zaoshang = $this->countLateNumsAndMoney($online_times_00_11,$time_07);
+            // 下午上线情况
+            $xiawu = $this->countLateNumsAndMoney($online_times_11_19,$time_15);
+
+            return [
+                'nums'=>$zaoshang['nums']+$xiawu['nums'],
+                'money'=>$zaoshang['money']+$xiawu['money'],
+                'desc'=>"早上".$zaoshang['desc']."下午".$xiawu['desc'],
+            ];
+        }else{
+            return [
+                'nums'=>2,
+                'money'=>60,
+                'desc'=>"全天没有上线数据，扣款60元",
+            ];
+        }
+    }
+    // 计算迟到的次数和扣款的钱
+    public function countLateNumsAndMoney($online_times_spoce,$start_time)
+    {
+        if(empty($online_times_spoce)){
+            return ['nums'=>1,'money'=>30,'desc'=>"没有上线数据,扣款30元"];
+        }
+
+        // 迟到次数
+        $late_num = 0;
+        // 迟到扣的钱
+        $_money = 0 ;
+        $desc = "没迟到";
+        // 对数组进行升序排列
+        sort($online_times_spoce);
+        // 取出最大的时间
+        $max_times = array_pop($online_times_spoce);
+        // 最大的打卡时间 - 上班时间 = 迟到时间
+        $diff_second = ($max_times - $start_time);
+        if($diff_second > 0)
+        {
+            $late_num = 1;
+            if($diff_second >= 1800 && $diff_second < 3600)
+            {
+                $_money = 15;
+            }elseif ($diff_second > 3600)
+            {
+                $_money = 30;
+            }
+
+            $t = '';
+            if($diff_second < 60)
+            {
+                $t = $diff_second."秒";
+            }else{
+                $t = intval($diff_second/60)."分钟";
+            }
+            $desc = "迟到".$t."扣款{$_money}元";
+        }
+        return ['nums'=>$late_num,'money'=>$_money,'desc'=>$desc];
+    }
+
+    // 计算早退
+    public function countEarly($offline_times=[])
+    {
+        if(!empty($offline_times))
+        {
+            $time_11 = strtotime(date('Y-m-d 11:00:00')); //07:00 的时间戳
+            $time_19 = strtotime(date('Y-m-d 19:00:00')); //15:00 的时间戳
+            $late_num = 0;//迟到次数
+            $online_times_07_11 = []; //取出 07:00 ~ 11:00 点的下线数据
+            $online_times_15_19 = []; //取出 15:00 ~ 19:00 点的下线数据
+            // 所有的上线时间循环
+            foreach ($offline_times as $vv)
+            {
+                // 打卡时间
+                $Hi = date('H:i',$vv);
+                if( $Hi >= '07:00' && $Hi < '11:00'){
+                    $online_times_07_11[] = $vv;
+                }elseif ($Hi >= '15:00' && $Hi < '19:00'){
+                    $online_times_15_19[] = $vv;
+                }
+            }
+
+            // 早上下线情况
+            $zaoshang = $this->countEarlyNumsAndMoney($online_times_07_11,$time_11);
+            // 下午下线情况
+            $xiawu = $this->countEarlyNumsAndMoney($online_times_15_19,$time_19);
+
+            return [
+                'nums'=>$zaoshang['nums']+$xiawu['nums'],
+                'money'=>$zaoshang['money']+$xiawu['money'],
+                'desc'=>"早上".$zaoshang['desc']."下午".$xiawu['desc'],
+            ];
+        }else{
+            return [
+                'nums'=>2,
+                'money'=>60,
+                'desc'=>"全天没有下线数据，扣款60元",
+            ];
+        }
+    }
+    // 计算早退的次数和扣款的钱
+    public function countEarlyNumsAndMoney($online_times_spoce,$start_time)
+    {
+        if(empty($online_times_spoce)){
+            return ['nums'=>1,'money'=>30,'desc'=>"没有下线数据,扣款30元"];
+        }
+
+        // 迟到次数
+        $late_num = 0;
+        // 迟到扣的钱
+        $_money = 0 ;
+        $desc = "没早退";
+        // 对数组进行降序排列
+        rsort($online_times_spoce);
+        // 取出最大的时间
+        $last_times = array_pop($online_times_spoce);
+        // 最大的打卡时间 - 上班时间 = 迟到时间
+        $diff_second = ($start_time - $last_times);
+        if($diff_second > 0)
+        {
+            $late_num = 1;
+            if($diff_second >= 1800 && $diff_second < 3600)
+            {
+                $_money = 15;
+            }elseif ($diff_second > 3600)
+            {
+                $_money = 30;
+            }
+
+            $t = '';
+            if($diff_second < 60)
+            {
+                $t = $diff_second."秒";
+            }else{
+                $t = intval($diff_second/60)."分钟";
+            }
+            $desc = "早退".$t."扣款{$_money}元";
+        }
+        return ['nums'=>$late_num,'money'=>$_money,'desc'=>$desc];
     }
 }
