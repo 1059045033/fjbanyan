@@ -15,7 +15,7 @@ class AttendanceLog extends Command
      *
      * @var string
      */
-    protected $signature = 'attendance:record';
+    protected $signature = 'attendance:record {--day=}';
 
     /**
      * The console command description.
@@ -41,8 +41,10 @@ class AttendanceLog extends Command
      */
     public function handle()
     {
+        $date_day = empty($this->option('day')) ? date('Y-m-d'):$this->option('day');
 
-        DB::transaction(function () {
+
+        DB::transaction(function () use ($date_day){
             $companies = DB::table('companies')->pluck('name','id')->toArray();
             $regions = DB::table('work_regions')->pluck('name','id')->toArray();
             $time = time();
@@ -58,9 +60,12 @@ class AttendanceLog extends Command
                 });
 
             // 获取当天时间戳
-            $start = Carbon::now()->startOfDay()->timestamp;
-            $end   = Carbon::now()->endOfDay()->timestamp;
+            //$start = Carbon::now()->startOfDay()->timestamp;
+            //$end   = Carbon::now()->endOfDay()->timestamp;
 
+            $day = empty($date_day) ? date('Y-m-d'):$date_day;
+            $start = Carbon::parse($day)->startOfDay()->timestamp;
+            $end   = Carbon::parse($day)->endOfDay()->timestamp;
 
 
             $usersDatas = [];
@@ -132,26 +137,27 @@ class AttendanceLog extends Command
                     // 当天所有的上线时间集合
                     $online_times = DB::table('online_offlines')
                         ->where(['user_id'=>$v->id,'type'=>1])
-                        //->whereBetWeen('created_at',[$start,$end])
+                        ->whereBetWeen('created_at',[$start,$end])
                         ->pluck('created_at')->toArray();
                     $usersDatas[$v->id]['online_times'] = empty($online_times) ? null:json_encode($online_times);
 
                     // 当天所有的下线时间集合
                     $offline_times = DB::table('online_offlines')
                         ->where(['user_id'=>$v->id,'type'=>1])
-                        //->whereBetWeen('created_at',[$start,$end])
+                        ->whereBetWeen('created_at',[$start,$end])
                         ->pluck('created_at')->toArray();
                     $usersDatas[$v->id]['offline_times'] = empty($offline_times) ? null:json_encode($offline_times);
 
                     //任务完成量/任务完进度
                     $total = 24;
                     $effective = DB::table('task_logs')->where(['user_id'=>$v->id])
-                        ->where('is_effective','>',0)->whereBetWeen('created_at',[$start,$end])
+                        ->where('is_effective','>',0)
+                        ->whereBetWeen('created_at',[$start,$end])
                         ->get()->count();
                     $task_complete_nums   = DB::table('task_logs')
                         ->where(['user_id'=>$v->id])
-                        //->whereBetWeen('created_at',[$start,$end])
-                        ->select('id','created_at')
+                        ->whereBetWeen('created_at',[$start,$end])
+                        ->select('id','created_at','is_effective')
                         ->get()->toArray();
                     $usersDatas[$v->id]['task_complete_nums'] = count($task_complete_nums);
                     $task_progress = (round($effective/$total,2)*100).'%';
@@ -177,6 +183,7 @@ class AttendanceLog extends Command
                         // 1. 所有的任务列表 时间从早到晚
                         foreach ($task_complete_nums as $vv)
                         {
+                            /*
                             if(empty($old_time))
                             {
                                 $old_time = $vv->created_at;
@@ -189,7 +196,14 @@ class AttendanceLog extends Command
                                 }
                                 $old_time = $vv->created_at;
                             }
+                            */
+                            if(!empty($vv->is_effective) && $vv->is_effective == 1)
+                            {
+                                $dd ++;
+                            }
                         }
+                        $dd > 8 && $dd = 8;
+                        $dd = 8 - $dd;
                     }else{
                         $dd = 8;//如果一天都做任务最多断档8次 24/3=8
                     }
