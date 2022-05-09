@@ -113,7 +113,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="省份证" prop="ID_Card">
+        <el-form-item label="身份证" prop="ID_Card">
           <el-input v-model="temp.ID_Card" />
         </el-form-item>
 
