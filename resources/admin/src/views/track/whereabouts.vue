@@ -220,6 +220,9 @@
           console.log("获取 页面数据 ",response.data.items)
           for (let i = 0; i < response.data.items.length; i++) {
             this.mapList[i] = response.data.items[i].positions;
+            if(i == 0){
+              this.center = response.data.items[i].positions[0];
+            }
             this.mapListUser.items[i] = response.data.items[i];
           }
           console.log('this.mapList = ',this.mapList.length);

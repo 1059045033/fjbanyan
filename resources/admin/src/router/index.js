@@ -279,7 +279,7 @@ export const asyncRoutes = [
     name: 'Company',
     meta: {
       title: '公司管理',
-      icon: 'user',
+      icon: 'tree-table',
       roles: ['admin', 'editor'] // you can set roles in root nav
     },
     children: [
@@ -302,7 +302,7 @@ export const asyncRoutes = [
     name: 'Track',
     meta: {
       title: '轨迹',
-      icon: 'user',
+      icon: 'guide',
       roles: ['admin', 'editor'] // you can set roles in root nav
     },
     children: [
@@ -334,7 +334,7 @@ export const asyncRoutes = [
     name: 'Attendance',
     meta: {
       title: '考勤',
-      icon: 'user',
+      icon: 'education',
       roles: ['admin', 'editor'] // you can set roles in root nav
     },
     children: [
