@@ -36,7 +36,9 @@
           :map-click="false"
           :scroll-wheel-zoom="true"
           @ready="mapReady">
-
+          <bm-control>
+            <button @click="dingwei" v-if="show_btn.dingwei"><i class="el-icon-location-outline" /></button>
+          </bm-control>
         </baidu-map>
       </el-col>
     </el-row>
@@ -73,7 +75,7 @@
         map:'',
         mapAk:'WYl8agaHEG0pVYBOQxlO9RBKekU3zbzT',
         drawerShow:false,
-        zoom:15,
+        zoom:18,
         // 地图中心
         center:{ lng:119.30688799999997,lat:26.08764198888898 },
         centerPoint:{ lng:119.30688799999997,lat:26.08764198888898 },
@@ -111,10 +113,17 @@
         mapListUser : {
           items: []
         },
-        userOptions
+        userOptions,
+        show_btn:{
+          dingwei:false
+        }
       }
     },
     methods: {
+      dingwei(){
+        console.log("当前zoom = ",this.zoom)
+          this.center.lng = this.center.lng+ 0.00000000000001;
+        },
       mapReady ({ BMap, map }) {
         this.BMap = BMap;
         this.map = map;
@@ -221,13 +230,29 @@
           for (let i = 0; i < response.data.items.length; i++) {
             this.mapList[i] = response.data.items[i].positions;
             if(i == 0){
+
               this.center = response.data.items[i].positions[0];
             }
             this.mapListUser.items[i] = response.data.items[i];
           }
           console.log('this.mapList = ',this.mapList.length);
           if(this.mapList.length > 0) {
+            this.show_btn.dingwei = true;
+            this.$notify({
+              title: '轨迹查看',
+              message: parseTime(this.listQuery.start_date,'{y}-{m}-{d}') + '找到'+this.mapList.length+"条轨迹数据",
+              type: 'success',
+              duration: 2000
+            })
             this.drawMap()
+          }else{
+            this.show_btn.dingwei = false;
+            this.$notify({
+              title: '轨迹查看',
+              message: parseTime(this.listQuery.start_date,'{y}-{m}-{d}') + '没有找到轨迹数据',
+              type: 'success',
+              duration: 2000
+            })
           }
         })
       },
