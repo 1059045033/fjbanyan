@@ -86,7 +86,7 @@
 
     <!--  ============= 弹窗 start =================  -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="110px" style="width: 400px; margin-left:50px;">
 
         <el-form-item label="名字" prop="name">
           <el-input v-model="temp.name" />
@@ -111,6 +111,26 @@
           <el-select v-model="temp.region" class="filter-item" placeholder="请选择">
             <el-option v-for="item in regionOptions" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
+        </el-form-item>
+
+        <el-form-item label="省份证" prop="ID_Card">
+          <el-input v-model="temp.ID_Card" />
+        </el-form-item>
+
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="temp.email" />
+        </el-form-item>
+
+        <el-form-item label="地址" prop="address">
+          <el-input v-model="temp.address" />
+        </el-form-item>
+
+        <el-form-item label="紧急联系人" prop="emergency_contact">
+          <el-input v-model="temp.emergency_contact" />
+        </el-form-item>
+
+        <el-form-item label="紧急联系人电话" prop="emergency_contact_phone">
+          <el-input v-model="temp.emergency_contact_phone" />
         </el-form-item>
 
       </el-form>
@@ -146,7 +166,8 @@ import { companylist, deleteCompany } from '@/api/company'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination'
-import { fetchList } from '@/api/regions' // secondary package based on el-pagination
+import { fetchList } from '@/api/regions'
+import {validUsername} from "@/utils/validate"; // secondary package based on el-pagination
 
 const calendarTypeOptions = [
   { key: '10', display_name: '三级' },
@@ -195,6 +216,46 @@ export default {
     }
   },
   data() {
+    const validateEmail = (rule, value, callback) => {
+      var reg=/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+      console.log("邮箱 = ",value)
+      if(value ==  undefined || value == ""){
+        callback()
+      }else{
+        if(!reg.test(value) ){
+          callback(new Error('请输入有效的邮箱'));
+        }else {
+          callback()
+        }
+      }
+
+    }
+    const validatePhone = (rule, value, callback) => {
+      var reg=/^1[3456789]\d{9}$/;
+        if(value ==  undefined || value == ""){
+          callback()
+        }else{
+          if(value != "" && !reg.test(value)){
+            callback(new Error('请输入有效的手机号码'));
+          }else {
+            callback()
+          }
+        }
+
+    }
+    const validatePhoneNotnull = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('负责人手机号不可为空'));
+      } else {
+        if (value !== '') {
+          var reg=/^1[3456789]\d{9}$/;
+          if(!reg.test(value)){
+            callback(new Error('请输入有效的手机号码'));
+          }
+        }
+        callback();
+      }
+    }
     return {
       tableKey: 0,
       list: null,
@@ -223,7 +284,12 @@ export default {
         phone: '',
         company: '',
         region: '',
-        status: 'published'
+        status: 'published',
+        ID_Card:'',
+        email:'',
+        address:'',
+        emergency_contact:'',
+        emergency_contact_phone:'',
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -235,9 +301,10 @@ export default {
       pvData: [],
       rules: {
         name: [{ required: true, message: '名字必填', trigger: 'blur' }],
-        phone: [{ required: true, message: '号码必填', trigger: 'blur' }],
+        phone: [{ required: true, trigger: 'blur',validator: validatePhoneNotnull }],
         role: [{ required: true, message: '等级必选', trigger: 'change' }],
-        company: [{ required: true, message: '公司必选', trigger: 'change' }]
+        email: [{ trigger: 'blur',validator: validateEmail }],
+        emergency_contact_phone: [{ trigger: 'blur',validator: validatePhone }]
       },
       downloadLoading: false
     }

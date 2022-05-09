@@ -40,7 +40,7 @@ class MemberController extends Controller
             ->when(!empty($search), function ($query) use($search){
                 $query->where('name','like','%'.$search.'%');
             })
-            ->select('id','name','avator','created_at','phone','image_base64','company_id','region_id','role')
+            ->select('id','name','avator','created_at','phone','image_base64','company_id','region_id','role','ID_Card','email','address','emergency_contact','emergency_contact_phone')
             ->orderBy('id',$sort)->forPage($page,$limit)->get();
         $result = [
             'total' => $total,
@@ -122,7 +122,13 @@ class MemberController extends Controller
             'password'=>bcrypt('123456'),
             'image_base64'=>'',
             'region_id'=>$request->region,
-            'avator'=>''
+            'avator'=>'',
+            'ID_Card'=>$request->ID_Card,
+            'email'=>$request->email,
+            'address'=>$request->address,
+            'emergency_contact'=>$request->emergency_contact,
+            'emergency_contact_phone'=>$request->emergency_contact_phone,
+
             ])->id){
             $new_user = User::with(['company','Region:id,name'])
                 ->where('id',$new_id)
