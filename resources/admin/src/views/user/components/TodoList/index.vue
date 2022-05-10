@@ -103,7 +103,7 @@ export default {
   },
   methods: {
     getList() {
-      console.log("地图左侧获取 区域列表");
+      console.log("地图左侧获取 网格列表");
 
       fetchAllList(this.listQuery).then(response => {
         // 1.将列表数据置空

@@ -72,7 +72,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="所属区域" min-width="150px">
+      <el-table-column label="所属网格" min-width="150px">
         <template slot-scope="{row}">
           <span v-if="row.work_region_info">{{ row.work_region_info.name }}</span>
         </template>
@@ -115,7 +115,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="区域" prop="region">
+        <el-form-item label="网格" prop="region">
           <el-select v-model="temp.region" class="filter-item" placeholder="请选择">
             <el-option v-for="item in regionOptions" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
@@ -264,7 +264,7 @@
         })
       },
       getRegions() {
-        console.log('获取区域')
+        console.log('获取网格')
         getAllRegions(this.listQuery).then(response => {
           this.regionOptions = response.data.items
         })

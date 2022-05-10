@@ -2,7 +2,7 @@
   <section class="todoapp">
     <!-- header -->
     <header class="header">
-      <input class="new-todo" autocomplete="no" placeholder="区域列表" @keyup.enter="addTodo">
+      <input class="new-todo" autocomplete="no" placeholder="网格列表" @keyup.enter="addTodo">
     </header>
 <!--    <footer v-show="todos.length" class="sub_header">-->
 <!--      <ul class="filters">-->
@@ -105,7 +105,7 @@ export default {
   },
   methods: {
     getList() {
-      console.log("地图左侧获取 区域列表");
+      console.log("地图左侧获取 网格域列表");
 
       fetchList(this.listQuery).then(response => {
         // 1.将列表数据置空

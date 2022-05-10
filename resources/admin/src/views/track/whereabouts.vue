@@ -4,7 +4,7 @@
 
     <div class="filter-container" style="margin: 5px">
       <div>
-        提醒 ： 人员是三级人员(是已经有归属区域的三级人员)
+        提醒 ： 人员是三级人员(是已经有归属网格的三级人员)
       </div>
 <!--      <el-input v-model="listQuery.name" placeholder="用户名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter"  />-->
 
@@ -193,7 +193,7 @@
       addMarker (BMap, map, point, number, index) {
         let marker = '';
         let label = '';
-        // url: 图标地址, Size: 图标可视区域大小, anchor: 图标定位点相对于图标左上角的偏移值
+        // url: 图标地址, Size: 图标可视网格大小, anchor: 图标定位点相对于图标左上角的偏移值
         let myIcon = new BMap.Icon(
           this.colorList[index % 8].icon,
           new BMap.Size(20, 20),

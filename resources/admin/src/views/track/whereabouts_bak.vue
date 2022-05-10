@@ -148,7 +148,7 @@
       addMarker (BMap, map, point, number, index) {
         let marker = '';
         let label = '';
-        // url: 图标地址, Size: 图标可视区域大小, anchor: 图标定位点相对于图标左上角的偏移值
+        // url: 图标地址, Size: 图标可视网格大小, anchor: 图标定位点相对于图标左上角的偏移值
         let myIcon = new BMap.Icon(
           this.colorList[index % 8].icon,
           new BMap.Size(20, 20),

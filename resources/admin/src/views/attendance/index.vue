@@ -46,13 +46,13 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="所属区域" min-width="150px">
+      <el-table-column label="所属网格" min-width="150px">
         <template slot-scope="{row}">
           <span>{{ row.user_region }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="工作区域" min-width="150px">
+      <el-table-column label="工作网格" min-width="150px">
         <template slot-scope="{row}">
           <span>{{ row.user_work_region }}</span>
         </template>

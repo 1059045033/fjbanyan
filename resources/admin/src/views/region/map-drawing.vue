@@ -2,7 +2,7 @@
 
   <div>
     <aside>
-      1.点击开始绘制按钮。 2.右键开始绘制。 3.双击结束绘制。 4.给区域取个名字并设置区域经理保存
+      1.点击开始绘制按钮。 2.右键开始绘制。 3.双击结束绘制。 4.给网格取个名字并设置网格经理保存
     </aside>
     <el-row :gutter="8">
       <el-col :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 5}" :xl="{span: 5}" style="margin-bottom:30px;">
@@ -66,7 +66,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="区域名" prop="title">
+        <el-form-item label="网格名" prop="title">
           <el-input v-model="temp.title" />
         </el-form-item>
 
@@ -120,8 +120,8 @@ export default {
       dialogFormVisible: false, // 弹窗是否表单验证
       dialogStatus: '', // 弹窗状态
       rules: {
-        manager_id: [{ required: true, message: '请选择区域管理员', trigger: 'change' }],
-        title: [{ required: true, message: '请填写区域名称', trigger: 'blur' }]
+        manager_id: [{ required: true, message: '请选择网格管理员', trigger: 'change' }],
+        title: [{ required: true, message: '请填写网格名称', trigger: 'blur' }]
       },
       temp: {
         id: undefined,
@@ -238,7 +238,7 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
-    // 区域详情弹窗
+    // 网格详情弹窗
     regionDetailsPop(item){
       this.dialogStatus = 'update'
       this.temp.id = item.region_id;
@@ -263,7 +263,7 @@ export default {
     //   }
     // },
     createData() {
-      console.log('创建新的区域 = ', this.temp)
+      console.log('创建新的网格 = ', this.temp)
 
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {

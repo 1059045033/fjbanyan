@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.title" placeholder="区域标题" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.title" placeholder="网格标题" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
 
       <span style="padding-left: 10px" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
@@ -33,13 +33,13 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="区域标题" min-width="150px">
+      <el-table-column label="网格标题" min-width="150px">
         <template slot-scope="{row}">
           <span>{{ row.name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="区域经理" width="110px" align="center">
+      <el-table-column label="网格经理" width="110px" align="center">
         <template slot-scope="{row}">
           <span v-if="row.region_manager_info">{{ row.region_manager_info.name }}</span>
         </template>
@@ -72,7 +72,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="区域名" prop="title">
+        <el-form-item label="网格名" prop="title">
           <el-input v-model="temp.title" />
         </el-form-item>
 
@@ -167,8 +167,8 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        manager_id: [{ required: true, message: '请选择区域管理员', trigger: 'change' }],
-        title: [{ required: true, message: '请填写区域名称', trigger: 'blur' }]
+        manager_id: [{ required: true, message: '请选择网格管理员', trigger: 'change' }],
+        title: [{ required: true, message: '请填写网格名称', trigger: 'blur' }]
       },
       downloadLoading: false,
 
@@ -187,7 +187,7 @@ export default {
 
         this.list = response.data.items
         this.total = response.data.total
-        console.log('区域列表 : ', this.list)
+        console.log('网格列表 : ', this.list)
         // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false

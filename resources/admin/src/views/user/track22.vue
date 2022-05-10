@@ -2,7 +2,7 @@
 
   <div>
     <aside>
-      1.点击开始绘制按钮。 2.右键开始绘制。 3.双击结束绘制。 4.给区域取个名字并设置区域经理保存
+      1.点击开始绘制按钮。 2.右键开始绘制。 3.双击结束绘制。 4.给网格取个名字并设置网格经理保存
     </aside>
     <el-row :gutter="8">
       <el-col :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 5}" :xl="{span: 5}" style="margin-bottom:30px;">
@@ -189,7 +189,7 @@
       },
 
       createData() {
-        console.log('创建新的区域 = ', this.temp)
+        console.log('创建新的网格 = ', this.temp)
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.temp.scope = this.currLines

@@ -32,13 +32,13 @@ class MemberController extends Controller
         $limit = $request->query('limit') ?? 10;
 
         $total = User::where($fillter)->when(!empty($search), function ($query) use($search){
-            $query->where('name','like','%'.$search.'%');
+            $query->where('name','like','%'.$search.'%')->orWhere('phone','like','%'.$search.'%');
         })->count();
 
         $list = User::with(['company','Region:id,name'])
             ->where($fillter)
             ->when(!empty($search), function ($query) use($search){
-                $query->where('name','like','%'.$search.'%');
+                $query->where('name','like','%'.$search.'%')->orWhere('phone','like','%'.$search.'%');
             })
             ->select('id','name','avator','created_at','phone','image_base64','company_id','region_id','role','ID_Card','email','address','emergency_contact','emergency_contact_phone')
             ->orderBy('id',$sort)->forPage($page,$limit)->get();
@@ -105,7 +105,7 @@ class MemberController extends Controller
             'role'    => 'required|in:10,20,30',
             'company' => 'required|exists:companies,id',
             'name'    => 'required',
-            'phone'   => 'required|unique:users,phone'
+            'phone'   => 'required'
         ],[
             'role.*' => '等级参数错误',
             'company.*' => '公司参数错误',
@@ -113,6 +113,11 @@ class MemberController extends Controller
             'phone.required' => '号码必填',
             'phone.unique' => '号码已经存在',
         ]);
+
+        $res = User::where(['phone'=>$request->phone])->first();
+        if(!empty($res)){
+            return $this->myResponse([],'号码已经存在',423);
+        }
 
         if($new_id = User::create([
             'name'=>$request->name,

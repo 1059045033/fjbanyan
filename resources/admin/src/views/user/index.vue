@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.name" placeholder="用户名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.name" placeholder="用户名/手机号" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
 
       <el-select v-model="listQuery.type" placeholder="角色" clearable class="filter-item" style="width: 130px">
         <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key" />
@@ -61,7 +61,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="所属区域" min-width="150px">
+      <el-table-column label="所属网格" min-width="150px">
         <template slot-scope="{row}">
           <span v-if="row.region">{{ row.region.name }}</span>
         </template>
@@ -107,7 +107,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="区域" prop="region">
+        <el-form-item label="网格" prop="region">
           <el-select v-model="temp.region" class="filter-item" placeholder="请选择">
             <el-option v-for="item in regionOptions" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
@@ -332,7 +332,7 @@ export default {
       })
     },
     getRegions() {
-      console.log('获取区域')
+      console.log('获取网格')
       getAllRegions(this.listQuery).then(response => {
         this.regionOptions = response.data.items
       })
