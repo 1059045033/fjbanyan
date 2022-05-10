@@ -165,6 +165,7 @@ class MemberController extends Controller
 
     # ===================== 作业安排
     // 作业队伍列表
+    // 一级账号: 只返回三级账号人员
     public function workTeams(Request $request)
     {
         $user = $request->user();
@@ -194,7 +195,7 @@ class MemberController extends Controller
                 $query->whereIn('region_id',$region_id);
             })
             ->where('id','<>',$user['id'])
-            ->whereIn('role',[10,20])
+            ->whereIn('role',[10])
             ->select('id as user_id','name','avator','created_at','phone','company_id','region_id','work_region_id','image_base64')->get();
 
         return $this->myResponse($list,'获取作业队伍列表',200);
