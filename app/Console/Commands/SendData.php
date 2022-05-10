@@ -64,7 +64,7 @@ class SendData extends Command
 
             // 获取当天时间戳
             $day = empty($date_day) ? date('Y-m-d'):$date_day;
-            $start = Carbon::parse('2022-04-01')->startOfDay()->timestamp;
+            $start = Carbon::parse($day)->startOfDay()->timestamp;
             $end   = Carbon::parse($day)->endOfDay()->timestamp;
 
 
@@ -214,7 +214,7 @@ class SendData extends Command
             $rowHeights[$i] = 100;
         }
 
-        $columnWidth = ['A'=>20,'B'=>20,'C'=>35,'D'=>20,'E'=>20,'F'=>40,'G'=>40,'H'=>30,'J'=>40];
+        $columnWidth = ['A'=>20,'B'=>20,'C'=>35,'D'=>20,'E'=>20,'F'=>55,'G'=>40,'H'=>30,'J'=>40];
 
         // 执行导出
         $header = $row;//导出表头
@@ -258,7 +258,7 @@ class SendData extends Command
             $rowHeights[$i] = 100;
         }
 
-        $columnWidth = ['A'=>20,'B'=>20,'C'=>35,'D'=>20,'E'=>20,'F'=>40,'G'=>40,'H'=>30];
+        $columnWidth = ['A'=>20,'B'=>20,'C'=>35,'D'=>20,'E'=>20,'F'=>55,'G'=>40,'H'=>30];
 
         // 执行导出
         $header = $row;//导出表头
