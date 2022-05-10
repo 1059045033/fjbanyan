@@ -139,8 +139,8 @@ class MemberController extends Controller
             'user_id'   => 'required|exists:users,id'
         ]);
 
-        if(!in_array($user['role'],[20])){
-            return $this->myResponse([],'只有区域管理员才能设置归属区域',423);
+        if(!in_array($user['role'],[20,30])){
+            return $this->myResponse([],'只有二级或三级才能设置归属区域',423);
         }
 
         $o_user = User::find($request->user_id);
@@ -148,14 +148,14 @@ class MemberController extends Controller
             return $this->myResponse([],'该对象已经设置了归属区域',423);
         }
 
-        $region = WorkRegion::where('id',$request->region_id)->first();
-        if(empty($region['region_manager'])){
-            return $this->myResponse([],'传的区域还未安排管理人员',423);
-        }
-
-        if(!empty($region['region_manager']) && $region['region_manager']!=$user['id']){
-            return $this->myResponse([],'传的区域管理人员不是你',423);
-        }
+//        $region = WorkRegion::where('id',$request->region_id)->first();
+//        if(empty($region['region_manager'])){
+//            return $this->myResponse([],'传的区域还未安排管理人员',423);
+//        }
+//
+//        if(!empty($region['region_manager']) && $region['region_manager']!=$user['id']){
+//            return $this->myResponse([],'传的区域管理人员不是你',423);
+//        }
 
         $o_user->region_id = $request->region_id;
         $o_user->save();
