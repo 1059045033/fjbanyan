@@ -68,7 +68,7 @@ class MemberController extends Controller
         $code = str_pad(mt_rand(10, 999999), 6, "0", STR_PAD_BOTH);
         $imageName = $user['id'].'_'.$code.'_'.time().'.'.$request->image->extension();
 
-        $request->image->move(public_path('task_atlas'),$imageName);
+        $request->image->move(public_path('task_atlas').DIRECTORY_SEPARATOR.date('Ymd'),$imageName);
         $r_path = public_path('task_atlas').date('Ymd').'/'.$imageName;
 
         $face_url = '/task_atlas/'.date('Ymd').'/'.$imageName;
