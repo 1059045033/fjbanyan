@@ -350,6 +350,30 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/optrecord',
+    component: Layout,
+    redirect: '/optrecord/page',
+    alwaysShow: false, // will always show the root menu
+    hidden: false,
+    name: 'Optrecord',
+    meta: {
+      title: '操作日志',
+      icon: 'tree-table',
+      roles: ['admin', 'editor'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/optrecord/index'),
+        name: 'recordlogs-list',
+        meta: {
+          title: '操作日志',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
+  {
     path: '/icon',
     component: Layout,
     hidden: true,

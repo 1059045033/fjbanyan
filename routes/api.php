@@ -133,7 +133,8 @@ Route::get('/admin/region/regions_all','Admin\WorkRegionController@regions_all')
 Route::get('/admin/company/company_all','Admin\CompanyController@company_all');// 所有区域列表
 
 
-
+// 操作日志
+Route::get('/admin/optrecord/lists','Admin\OptRecordController@lists');
 
 
 
