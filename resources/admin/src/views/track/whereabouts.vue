@@ -132,7 +132,7 @@
 
       },
       getRole10List(region_id) {
-        fetchRole10List({has_region:1,region_id:region_id}).then(response => {
+        fetchRole10List({has_region:0,region_id:region_id}).then(response => {
           this.userOptions = response.data.users
           console.log("三级人员 === ",this.works_options)
         })
