@@ -69,9 +69,9 @@ class MemberController extends Controller
         $imageName = $user['id'].'_'.$code.'_'.time().'.'.$request->image->extension();
 
         $request->image->move(public_path('task_atlas'),$imageName);
-        $r_path = public_path('task_atlas').$imageName;
+        $r_path = public_path('task_atlas').date('Ymd').'/'.$imageName;
 
-        $face_url = '/task_atlas/'.$imageName;
+        $face_url = '/task_atlas/'.date('Ymd').'/'.$imageName;
 
         return $this->myResponse([
             'url' => config('app.url').$face_url,
