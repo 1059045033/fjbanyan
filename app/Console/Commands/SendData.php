@@ -46,7 +46,7 @@ class SendData extends Command
      */
     public function handle()
     {
-
+        ini_set("memory_limit","1024M");
         DB::transaction(function (){
             $companies = DB::table('companies')->pluck('name','id')->toArray();
             $regions = DB::table('work_regions')->pluck('name','id')->toArray();
