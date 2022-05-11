@@ -19,8 +19,8 @@ class CreateOptRecordsTable extends Migration
             $table->string('opt_user_name')->comment("操作人员账号名")->nullable();
             $table->string('ip')->comment("登入的ip")->nullable();
             $table->string('agent')->comment("请求的User-Agent")->nullable();
-            $table->integer('type')->comment("操作类型[1:新增 2:编辑 3:删除]")->nullable();
-            $table->string('desc')->comment("相关描述")->nullable();
+            $table->integer('type')->comment("操作类型[1:新增 2:编辑 3:删除 4:登入 5:退出]")->nullable();
+            $table->text('desc')->comment("相关描述")->nullable();
             $table->unsignedInteger('created_at');
             $table->unsignedInteger('updated_at');
         });

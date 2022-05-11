@@ -94,6 +94,12 @@ class MemberController extends Controller
             $new_user = User::with(['company','Region:id,name'])
                 ->where('id',$request->id)
                 ->first();
+
+            # ======== 记录操作 start ===============
+            $desc = "【{$this->admin['name']}】 于 ".date('Y-m-d H:i:s')."【人员】模块【编辑】人员【{$new_user['name']}】";
+            $this->recordLogs($request,2,$this->admin,$desc);
+            # ======== 记录操作 end   ===============
+
             return $this->myResponse($new_user,'修改成功',200);
         }
         return $this->myResponse([],'修改失败',423);
@@ -138,6 +144,11 @@ class MemberController extends Controller
             $new_user = User::with(['company','Region:id,name'])
                 ->where('id',$new_id)
                 ->first();
+
+            # ======== 记录操作 start ===============
+            $desc = "【{$this->admin['name']}】 于 ".date('Y-m-d H:i:s')."【人员】模块【新增】人员【{$new_user['name']}】";
+            $this->recordLogs($request,1,$this->admin,$desc);
+            # ======== 记录操作 end   ===============
             return $this->myResponse($new_user,'创建成功',200);
         }
         return $this->myResponse([],'创建失败',423);
@@ -154,6 +165,11 @@ class MemberController extends Controller
             return $this->myResponse([],'已经删除过了',423);
         }
         if($o_user->delete()){
+            # ======== 记录操作 start ===============
+            $desc = "【{$this->admin['name']}】 于 ".date('Y-m-d H:i:s')."【人员】模块【删除】人员【{$o_user['name']}】";
+            $this->recordLogs($request,3,$this->admin,$desc);
+            # ======== 记录操作 end   ===============
+
             return $this->myResponse([],'删除成功',200);
         }
         return $this->myResponse([],'删除失败',423);

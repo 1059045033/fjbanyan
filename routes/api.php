@@ -89,9 +89,9 @@ Route::post('/jpush','RegisterController@jpush');
 #  =================== 后台管理接口 ======
 
 // 登入/获取信息/退出
-Route::post('/admin/login','Admin\AdminController@login');
-Route::get('/admin/info','Admin\AdminController@info');
-Route::post('/admin/logout','Admin\AdminController@logout');
+Route::post('/admin/login','Admin\AdminController@login');// -- recordlogs  1
+Route::get('/admin/info','Admin\AdminController@info');//->middleware('opt_record');;
+Route::post('/admin/logout','Admin\AdminController@logout');// -- recordlogs  1
 
 // 获取 未被安排的管理人员
 Route::get('/admin/user/unarrange','Admin\WorkRegionController@unArrange');// 未被安排的2级别人员
@@ -100,22 +100,22 @@ Route::get('/admin/user/role_one','Admin\WorkRegionController@roleOne');//
 
 // 区域管理
 Route::get('/admin/region/regions','Admin\WorkRegionController@regions');// 所有区域列表
-Route::post('/admin/region/create','Admin\WorkRegionController@create');// 创建区域
-Route::post('/admin/region/delete','Admin\WorkRegionController@delete');
-Route::post('/admin/region/belong_to','Admin\WorkRegionController@belongTo');//分配人员的所属区域
+Route::post('/admin/region/create','Admin\WorkRegionController@create');// 创建区域  // -- recordlogs  1
+Route::post('/admin/region/delete','Admin\WorkRegionController@delete'); // -- recordlogs 1
+Route::post('/admin/region/belong_to','Admin\WorkRegionController@belongTo');//分配人员的所属区域  // -- recordlogs 1 (修改)
 
 
 // 人员管理
 Route::get('/admin/user/lists','Admin\MemberController@lists');
-Route::post('/admin/user/create','Admin\MemberController@create');
-Route::post('/admin/user/edit','Admin\MemberController@edit');
-Route::post('/admin/user/delete','Admin\MemberController@delete');
+Route::post('/admin/user/create','Admin\MemberController@create'); // -- recordlogs
+Route::post('/admin/user/edit','Admin\MemberController@edit');  // -- recordlogs
+Route::post('/admin/user/delete','Admin\MemberController@delete'); // -- recordlogs
 
 
 // 公司管理
 Route::get('/admin/company/lists','Admin\CompanyController@lists');
-Route::post('/admin/company/create','Admin\CompanyController@create');
-Route::post('/admin/company/delete','Admin\CompanyController@delete');
+Route::post('/admin/company/create','Admin\CompanyController@create'); // -- recordlogs 1
+Route::post('/admin/company/delete','Admin\CompanyController@delete'); // -- recordlogs 1
 
 // 轨迹
 Route::get('/admin/tracks/all_lists','Admin\TrackController@all_lists');//

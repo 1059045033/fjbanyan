@@ -163,6 +163,11 @@ class WorkRegionController extends Controller
             $new_user = WorkRegion::with(['regionManagerInfo:id,name'])
                 ->where('id',$request->id)
                 ->first();
+
+            # ======== 记录操作 start ===============
+            $desc = "【{$this->admin['name']}】 于 ".date('Y-m-d H:i:s')."【网格】模块【编辑】网格【{$regInfo['name']}】";
+            $this->recordLogs($request,2,$this->admin,$desc);
+            # ======== 记录操作 end   ===============
             return $this->myResponse($new_user,'修改成功',200);
         }
         return $this->myResponse([],'修改失败',423);
@@ -203,6 +208,11 @@ class WorkRegionController extends Controller
 //            'region_id'=> $new_id,
 //            'role'     => 20
 //        ]);
+
+        # ======== 记录操作 start ===============
+        $desc = "【{$this->admin['name']}】 于 ".date('Y-m-d H:i:s')."【网格】模块【新增】网格【{$request->title}】";
+        $this->recordLogs($request,1,$this->admin,$desc);
+        # ======== 记录操作 end   ===============
         return $this->myResponse([],'创建新区域成功',200);
     }
 
@@ -221,11 +231,18 @@ class WorkRegionController extends Controller
 //            return $this->myResponse([],'公司下还有人员',200);
 //        }
 
-        WorkRegion::where('id',$request->id)->delete();
+        //WorkRegion::where('id',$request->id)->delete();
 
+        $workregion = WorkRegion::findOrFail($request->id);
+        $workregion->delete();
         // 删除区域 解除对应的区域绑定 (归属/工作 )
         User::where('region_id',$request->id)->update(['region_id'=>null]);
         User::where('work_region_id',$request->id)->update(['work_region_id'=>null]);
+
+        # ======== 记录操作 start ===============
+        $desc = "【{$this->admin['name']}】 于 ".date('Y-m-d H:i:s')."【网格】模块【删除】网格【{$workregion['name']}】";
+        $this->recordLogs($request,3,$this->admin,$desc);
+        # ======== 记录操作 end   ===============
 
         return $this->myResponse([],'删除成功',200);
     }

@@ -2,14 +2,22 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Admin;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 //header('Access-Control-Allow-Origin: *');
+
 class CompanyController extends Controller
 {
+    private  $admin = null;
+    public function __construct(Request $request)
+    {
+        $token = $request->header('X-Token');
+        $this->admin  =  Admin::where(['remember_token' => $token])->first();
 
+    }
 
     public function lists(Request $request)
     {
@@ -51,6 +59,11 @@ class CompanyController extends Controller
             'name'=>$request->title,
         ])->id){
             $new_user = Company::where('id',$new_id)->first();
+            # ======== 记录操作 start ===============
+            $desc = "【{$this->admin['name']}】 于 ".date('Y-m-d H:i:s')."【公司】模块【新增】公司【{$new_user['name']}】";
+            $this->recordLogs($request,1,$this->admin,$desc);
+            # ======== 记录操作 end   ===============
+
             return $this->myResponse($new_user,'创建成功',200);
         }
         return $this->myResponse([],'创建失败',423);
@@ -71,9 +84,15 @@ class CompanyController extends Controller
             //return $this->myResponse([],'公司下还有人员',423);
         }
 
-        Company::where('id',$request->id)->delete();
+        $company = Company::findOrFail($request->id);
+        $company->delete();
+        //Company::where('id',$request->id)->delete();
         User::where('company_id',$request->id)->update(['company_id'=>null]);
 
+        # ======== 记录操作 start ===============
+        $desc = "【{$this->admin['name']}】 于 ".date('Y-m-d H:i:s')."【公司】模块【删除】公司【{$company['name']}】";
+        $this->recordLogs($request,3,$this->admin,$desc);
+        # ======== 记录操作 end   ===============
         return $this->myResponse([],'删除成功',200);
     }
 
