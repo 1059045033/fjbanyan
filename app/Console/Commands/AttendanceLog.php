@@ -118,7 +118,7 @@ class AttendanceLog extends Command
                 }
                 # ================  考勤的人员是 二级人员 start ============
                 # ================  考勤的人员是 三级人员 start ============
-                if(empty($v->work_region_id)){
+                /*if(empty($v->work_region_id)){
                     // 没有安排工作区
 
                     $usersDatas[$v->id]['online_times'] = null;
@@ -133,7 +133,7 @@ class AttendanceLog extends Command
                     $usersDatas[$v->id]['money'] = (4*30) + 8*30;
                     $money_desc = "没有安排工作区域:算迟到2次(2x30)|算早退2次(2x30)|算断档8次(8x30)";
                     $usersDatas[$v->id]['money_details'] = $money_desc;
-                }else{
+                }else{*/
                     // 当天所有的上线时间集合
                     $online_times = DB::table('online_offlines')
                         ->where(['user_id'=>$v->id,'type'=>1])
@@ -213,7 +213,7 @@ class AttendanceLog extends Command
                     $usersDatas[$v->id]['region_not_user_nums'] = null;
                     $usersDatas[$v->id]['money'] = $money;
                     $usersDatas[$v->id]['money_details'] = $money_desc;
-                }
+                //}
                 # ================  考勤的人员是 三级人员 end   ============
             }
 
