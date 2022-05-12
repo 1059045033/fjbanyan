@@ -20,6 +20,16 @@ export function getInfo(token) {
   })
 }
 
+
+export function updateInfo(data) {
+  console.log('发起updateInfo请求')
+  return request({
+    url: '/admin/update',
+    method: 'post',
+    data
+  })
+}
+
 export function logout() {
   return request({
     url: '/admin/logout',

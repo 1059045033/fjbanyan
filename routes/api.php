@@ -92,6 +92,7 @@ Route::post('/jpush','RegisterController@jpush');
 Route::post('/admin/login','Admin\AdminController@login');// -- recordlogs  1
 Route::get('/admin/info','Admin\AdminController@info');//->middleware('opt_record');;
 Route::post('/admin/logout','Admin\AdminController@logout');// -- recordlogs  1
+Route::post('/admin/update','Admin\AdminController@update');//->middleware('opt_record');;
 
 // 获取 未被安排的管理人员
 Route::get('/admin/user/unarrange','Admin\WorkRegionController@unArrange');// 未被安排的2级别人员

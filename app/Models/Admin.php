@@ -15,4 +15,8 @@ class Admin extends Model
     {
         return $date->format('Y-m-d H:i:s');
     }
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
 }

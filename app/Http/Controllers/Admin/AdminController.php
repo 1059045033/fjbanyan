@@ -25,7 +25,7 @@ class AdminController extends Controller
 
         if(!empty($admin)){
             if(password_verify($request->password,$admin->password)){
-                $admin->remember_token = 'admin-token1314626';
+                $admin->remember_token = md5('admin-'.$admin['id']);
                 $admin->save();
 
                 # ======== 记录操作 start ===============
@@ -47,12 +47,13 @@ class AdminController extends Controller
         $request->validate([
             'token'  => 'required',
         ]);
-        $admin = Admin::where(['remember_token'=>$request->token])->first();
+        $admin = Admin::with('company')->where(['remember_token'=>$request->token])->first();
         if(!empty($admin)){
             $data = [
                 'avatar' =>config('app.url').$admin->avator,
-                'introduction' => 'I am a super administrator',
+                'introduction' => '一个管理者',
                 'name' =>$admin->name,
+                'company' =>$admin->company,
                 'roles' => ['admin'],
             ];
             return $this->myResponse($data,'获取用户信息成功',200);
@@ -80,6 +81,32 @@ class AdminController extends Controller
             return $this->myResponse([],'用户不存在',423);
         }
     }
+    public function update(Request $request)
+    {
+
+        $request->validate([
+            'password'  => 'required',
+        ]);
+
+        $token = $request->header('X-Token');
+        $admin = Admin::where(['remember_token' => $token])->first();
+
+        if(!empty($admin)){
+            //$admin->remember_token = '';
+            $admin->password = bcrypt($request->password);
+            $admin->save();
+
+            # ======== 记录操作 start ===============
+            $desc = "【{$admin['name']}】 在 ".date('Y-m-d H:i:s')."【修改密码】";
+            $this->recordLogs($request,6,$admin,$desc);
+            # ======== 记录操作 end   ===============
+
+            return $this->myResponse([],'更新成功',200);
+        }else{
+            return $this->myResponse([],'用户不存在',423);
+        }
+    }
+
 
 
 
