@@ -41,23 +41,33 @@ class ExceptionMsgController extends Controller
         }
 
 
-        // 工作区域
+        #=============== 找寻要通知二级管理员 start ===========================
+        // 工作网格
         $workRegion    = WorkRegion::find($request->region_id);
+        // 找到这个工作网格 管理人员
         $role_20_users = !empty($workRegion['region_manager']) ? [$workRegion['region_manager']]:[];
+
         if($request->region_id == $user['region_id']){
-            // 工作区和所属区相同
+            // 该员工所属于得工作网格
             $region    = $workRegion;
         }else{
-            // 所属区域 和 工作区不同
+            // 传上来得工作网格不是当前员工所属网格不一样 找到员工自己今天得工作网格
             $region    = WorkRegion::find($user['region_id']);
             !empty($region['region_manager']) && $role_20_users[] = $region['region_manager'];
         }
 
-        // 找到所以一级管理员
+        #=============== 找寻要通知二级管理员 end   ===========================
+
+        #=============== 找寻要通知一级管理员 start ===========================
+
         $role_30_users = User::where('role',30)->select('id')->get()->pluck('id')->toArray();
+
+        #=============== 找寻要通知一级管理员 end   ===========================
+
+        # 所有需要通知得人  2级+3级+再加自己
         $all_user_ids  = (array_merge($role_20_users,$role_30_users));
         array_push($all_user_ids,$user['id']);
-        $all_user_ids = array_unique($all_user_ids);
+        $all_user_ids = array_unique($all_user_ids); // 去重
         $all_users     = User::whereIn('id',$all_user_ids)->select('id','phone','jpush_reg_id')->get()->toArray();
 
         // 【郭伟文】于【2022.04.19 15.09】在【软件园F区】【迟到打卡/早退打卡/跑出工作区域】
@@ -66,11 +76,13 @@ class ExceptionMsgController extends Controller
 
         # ================ 短信发送  1,2 (不给自己发) start ======
         if(in_array($request->type,[1,2]))
-        {    $ddd = date('Y.m.d H:i');
+        {
+            $ddd = date('Y.m.d H:i');
             $sms= new SmsFgService();
             //发送短信
             foreach ($all_users as $k => $v)
             {
+                // 号码不为空 且不发自己
                 if(!empty($v['phone']) && $user['id'] != $v['id'])
                 {
                     $content__ = $user['name']."(".$user['phone'].")"."||".$ddd.'||'.$workRegion['name']."({$type_enum[$request->type]})";

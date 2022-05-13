@@ -10,24 +10,10 @@
 </template>
 
 <script>
-import {validUsername} from "@/utils/validate";
-import {updateInfo} from "@/api/user";
+import { validUsername } from '@/utils/validate'
+import { updateInfo } from '@/api/user'
 
 export default {
-  data() {
-      const validatePassword = (rule, value, callback) => {
-        if (value.length < 6) {
-          callback(new Error('密码不能少于6位'))
-        } else {
-          callback()
-        }
-      }
-      return {
-        updateRules: {
-          password: [{ trigger: 'blur', validator: validatePassword }]
-        }
-    }
-  },
   props: {
     user: {
       type: Object,
@@ -35,18 +21,32 @@ export default {
         return {
           name: '',
           email: '',
-          password: '',
+          password: ''
         }
+      }
+    }
+  },
+  data() {
+    const validatePassword = (rule, value, callback) => {
+      if (value.length < 6) {
+        callback(new Error('密码不能少于6位'))
+      } else {
+        callback()
+      }
+    }
+    return {
+      updateRules: {
+        password: [{ trigger: 'blur', validator: validatePassword }]
       }
     }
   },
   methods: {
     submit() {
       this.$refs.loginForm.validate(valid => {
-        console.log('handleLogin = ',this.user)
+        console.log('handleLogin = ', this.user)
         if (valid) {
           const tempData = Object.assign({}, this.user)
-          console.log('tempData = ',tempData)
+          console.log('tempData = ', tempData)
           updateInfo(tempData).then((res) => {
             this.$notify({
               title: '成功',
@@ -55,7 +55,7 @@ export default {
               duration: 2000
             })
 
-            //await this.$store.dispatch('user/logout')
+            // await this.$store.dispatch('user/logout')
             // console.log('--=更新密成功 退出当前登入=---',this.$route.fullPath)
             // this.$store.dispatch('user/logout')
             // this.$router.push({ path: '/login'})

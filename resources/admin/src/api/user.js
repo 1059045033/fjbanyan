@@ -20,7 +20,6 @@ export function getInfo(token) {
   })
 }
 
-
 export function updateInfo(data) {
   console.log('发起updateInfo请求')
   return request({
