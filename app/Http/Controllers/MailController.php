@@ -18,7 +18,7 @@ class MailController extends Controller
             ]
         ];
         Mail::send('email',['params'=>$params],function($message){
-            $to = ['190507753@qq.com','1059045033@qq.com','359448144@qq.com'];
+            $to = ['190507753@qq.com','359448144@qq.com'];
             $message ->to($to)->subject(date('Y-m-d')."打包数据");
         });
         // 返回的一个错误数组，利用此可以判断是否发送成功
