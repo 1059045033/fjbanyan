@@ -48,6 +48,18 @@ class TaskLogController extends Controller
             }
         }
 
+        if(!empty($request->user_ids))
+        {
+            if(is_array($request->user_ids)){
+                $user_ids = $request->user_ids;
+            }else{
+                return $this->myResponse([],'user_ids请传数组',423);
+            }
+
+        }
+
+
+
         $list = TaskLog::with(['userInfo:id,name,phone','workRegionInfo:id,name'])->where($fillter)
             ->when(!empty($user_ids), function ($query) use($user_ids){
                 $query->whereIn('user_id',$user_ids);
