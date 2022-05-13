@@ -6,6 +6,7 @@ use App\Models\OnlineOffline;
 use App\Http\Requests\StoreOnlineOfflineRequest;
 use App\Http\Requests\UpdateOnlineOfflineRequest;
 use App\Models\User;
+use App\Models\WorkingTime;
 use Illuminate\Http\Request;
 
 class OnlineOfflineController extends Controller
@@ -19,14 +20,26 @@ class OnlineOfflineController extends Controller
 
     public function online(StoreOnlineOfflineRequest $request)
     {
+        $workingTimes = WorkingTime::where('user_id',$request->user()['id'])->select('name','start_time','end_time')->get()->toArray();
+        if(empty($workingTimes)){
+            return $this->myResponse([],'没有配置上班时间',423);
+        }
+
         $position = ['lng'=>$request->lng,'lat'=>$request->lat];
         // 判断上线时间是否有效 7:03-11:00  15:03-23:00
         $Hi = date('H:i');
         $is_late = 0 ;  //迟到
-        if(($Hi > '07:03' && $Hi < '11:00') ||  ($Hi > '15:03' && $Hi < '19:00'))
+        /*if(($Hi > '07:03' && $Hi < '11:00') ||  ($Hi > '15:03' && $Hi < '19:00'))
         {
             $is_late = 1;
 
+        }*/
+        foreach ($workingTimes as $k=>$v)
+        {
+            if(($Hi > $v['start_time'] && $Hi < $v['end_time']))
+            {
+                $is_late = 1;
+            }
         }
 
         OnlineOffline::create([
@@ -48,14 +61,27 @@ class OnlineOfflineController extends Controller
 
     public  function offline(StoreOnlineOfflineRequest $request)
     {
+        $workingTimes = WorkingTime::where('user_id',$request->user()['id'])->select('name','start_time','end_time')->get()->toArray();
+        if(empty($workingTimes)){
+            return $this->myResponse([],'没有配置上班时间',423);
+        }
         $position = ['lng'=>$request->lng,'lat'=>$request->lat];
         $Hi = date('H:i');
+
         $is_early = 0 ;  //早退
-        if(($Hi > '07:03' && $Hi < '11:00') ||  ($Hi > '15:03' && $Hi < '19:00'))
+        /*if(($Hi > '07:03' && $Hi < '11:00') ||  ($Hi > '15:03' && $Hi < '19:00'))
         {
             $is_early = 1;
-
+        }*/
+        foreach ($workingTimes as $k=>$v)
+        {
+            if(($Hi > $v['start_time'] && $Hi < $v['end_time']))
+            {
+                $is_early = 1;
+            }
         }
+
+
 
         OnlineOffline::create([
             'user_id'   => $request->user()['id'],
