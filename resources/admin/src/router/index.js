@@ -260,6 +260,16 @@ export const asyncRoutes = [
         }
       },
       {
+        path: 'working-time/:id(\\d+)',
+        component: () => import('@/views/user/working-time'),
+        name: 'working-time',
+        hidden: true,
+        meta: {
+          title: '人员上班时间',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
         path: 'directive',
         component: () => import('@/views/permission/directive'),
         name: 'DirectivePermission',

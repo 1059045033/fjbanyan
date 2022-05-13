@@ -142,7 +142,10 @@ Route::get('/admin/optrecord/lists','Admin\OptRecordController@lists');
 
 
 
-
+// 人员时间集合
+Route::get('/admin/workingtime/lists','Admin\WorkingTimeController@lists');
+Route::post('/admin/workingtime/delete','Admin\WorkingTimeController@delete');
+Route::post('/admin/workingtime/create','Admin\WorkingTimeController@create');
 
 
 

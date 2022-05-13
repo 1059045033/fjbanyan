@@ -32,11 +32,13 @@ class MemberController extends Controller
         $page = $request->query('page') ?? 1;
         $limit = $request->query('limit') ?? 10;
 
+        !empty( $request->query('id')) && $fillter['id'] = $request->query('id');
+
         $total = User::where($fillter)->when(!empty($search), function ($query) use($search){
             $query->where('name','like','%'.$search.'%')->orWhere('phone','like','%'.$search.'%');
         })->count();
 
-        $list = User::with(['company','Region:id,name'])
+        $list = User::with(['company','Region:id,name','workingTime'])
             ->where($fillter)
             ->when(!empty($search), function ($query) use($search){
                 $query->where('name','like','%'.$search.'%')->orWhere('phone','like','%'.$search.'%');
