@@ -97,6 +97,11 @@ class User extends Authenticatable
         return $this->hasMany(WorkNotice::class,'id','user_id');
     }
 
+    public function workingTime()
+    {
+        return $this->hasMany(WorkingTime::class,'user_id','id');
+    }
+
     public function company()
     {
         return $this->belongsTo(Company::class);

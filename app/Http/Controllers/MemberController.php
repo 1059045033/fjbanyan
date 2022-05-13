@@ -6,6 +6,7 @@ use App\Http\Requests\StoreActivityMsgRequest;
 use App\Http\Requests\UpdateActivityMsgRequest;
 use App\Models\ActivityMsg;
 use App\Models\User;
+use App\Models\WorkingTime;
 use App\Models\WorkRegion;
 use App\Services\JPushService;
 use Illuminate\Http\Request;
@@ -34,7 +35,12 @@ class MemberController extends Controller
             $user['manager_regions'] = $regions;
         }
 
-        return $this->myResponse($user,'得到用户信息',200);
+
+        $workingTime = WorkingTime::where('user_id',$user['id'])->select('start_time','end_time')->get()->toArray();
+
+        $user['working_time'] = empty($workingTime) ? null:$workingTime;
+
+        return $this->myResponse($user,'得到用户信息'.$user['id'],200);
     }
 
     // 上传人脸

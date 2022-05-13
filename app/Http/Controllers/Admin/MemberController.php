@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Admin;
 use App\Models\User;
+use App\Models\WorkingTime;
 use App\Services\JPushService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -149,6 +150,24 @@ class MemberController extends Controller
             $desc = "【{$this->admin['name']}】 于 ".date('Y-m-d H:i:s')."【人员】模块【新增】人员【{$new_user['name']}】";
             $this->recordLogs($request,1,$this->admin,$desc);
             # ======== 记录操作 end   ===============
+
+            # ======== 创建默认上班时间 start ===============
+            WorkingTime::create([
+                'user_id' => $new_id,
+                'name' => '早班',
+                'start_time' => '07:00',
+                'end_time' => '11:00',
+            ]);
+
+            WorkingTime::create([
+                'user_id' => $new_id,
+                'name' => '午班',
+                'start_time' => '15:00',
+                'end_time' => '17:00',
+            ]);
+            # ======== 创建默认上班时间 end   ===============
+
+
             return $this->myResponse($new_user,'创建成功',200);
         }
         return $this->myResponse([],'创建失败',423);

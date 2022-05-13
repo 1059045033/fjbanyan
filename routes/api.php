@@ -7,7 +7,10 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+    $user = $request->user();
+    $workingTime = \App\Models\WorkingTime::where('user_id',$user['id'])->select('name','start_time','end_time')->get()->toArray();
+    $user['working_time'] = $workingTime;
+    return $user;
 });
 
 Route::post('/domain','SmsController@domain');
@@ -154,7 +157,7 @@ Route::get('/admin/optrecord/lists','Admin\OptRecordController@lists');
 
 
 
-
+Route::get('/test','TestController@test');
 
 
 
