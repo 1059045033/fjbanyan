@@ -143,7 +143,7 @@ class AttendanceLog extends Command
 
                     // 当天所有的下线时间集合
                     $offline_times = DB::table('online_offlines')
-                        ->where(['user_id'=>$v->id,'type'=>1])
+                        ->where(['user_id'=>$v->id,'type'=>2])
                         ->whereBetWeen('created_at',[$start,$end])
                         ->pluck('created_at')->toArray();
                     $usersDatas[$v->id]['offline_times'] = empty($offline_times) ? null:json_encode($offline_times);
