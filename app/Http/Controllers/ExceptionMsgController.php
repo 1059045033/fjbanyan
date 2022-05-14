@@ -28,7 +28,7 @@ class ExceptionMsgController extends Controller
         $request->validate([
             'type'=> 'required|in:1,2,3,4',
             'user_id' => 'required|exists:users,id',
-            'region_id' => 'required|exists:work_regions,id'
+            //'region_id' => 'required|exists:work_regions,id'
         ]);
         $type_enum = ['1'=>'迟到','2'=>'早退','3'=>'出圈','4'=>'滞留过久'];
         if($request->user_id != $user['id'])
@@ -67,7 +67,7 @@ class ExceptionMsgController extends Controller
         # 所有需要通知得人  2级+3级+再加自己
         $all_user_ids  = (array_merge($role_20_users,$role_30_users));
         array_push($all_user_ids,$user['id']);
-        $all_user_ids = array_unique($all_user_ids); // 去重
+        $all_user_ids  = array_unique($all_user_ids); // 去重
         $all_users     = User::whereIn('id',$all_user_ids)->select('id','phone','jpush_reg_id')->get()->toArray();
 
         // 【郭伟文】于【2022.04.19 15.09】在【软件园F区】【迟到打卡/早退打卡/跑出工作区域】
