@@ -155,4 +155,22 @@ class WorkNoticeController extends Controller
         $tips['work_region_info'] = $user_n['workRegion'];
         return $this->myResponse($tips,'获取未读提醒消息',200);
     }
+
+    public function readAll(Request $request)
+    {
+        $user = $request->user();
+        $notice_ids = WorkNotice::where(['user_id'=>$user['id'],'is_read'=>0])->pluck('id')->toArray();
+        $exception_ids = ExceptionMsg::where(['user_id'=>$user['id'],'is_read'=>0])->pluck('id')->toArray();
+
+        if(!empty($notice_ids))
+        {
+            WorkNotice::whereIn('id',$notice_ids)->update(['is_read'=>1]);
+        }
+        if(!empty($exception_ids))
+        {
+            ExceptionMsg:whereIn('id',$exception_ids)->update(['is_read'=>1]);
+        }
+
+        return $this->myResponse([],'一键阅读完成',200);
+    }
 }

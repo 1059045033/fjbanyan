@@ -114,13 +114,13 @@
         </el-form-item>
 
         <el-form-item label="公司" prop="company">
-          <el-select v-model="temp.company" class="filter-item" placeholder="请选择">
+          <el-select v-model="temp.company"  class="filter-item" placeholder="请选择">
             <el-option v-for="item in companyOptions" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
 
         <el-form-item label="网格" prop="region">
-          <el-select v-model="temp.region" class="filter-item" placeholder="请选择">
+          <el-select v-model="temp.region" filterable class="filter-item" placeholder="请选择">
             <el-option v-for="item in regionOptions" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>

@@ -26,8 +26,8 @@ class TestController extends Controller
             WorkingTime::create([
                 'user_id' => $v['id'],
                 'name' => '午班',
-                'start_time' => '15:00',
-                'end_time' => '17:00',
+                'start_time' => '14:00',
+                'end_time' => '18:00',
             ]);
         }
 
