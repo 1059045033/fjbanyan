@@ -39,7 +39,10 @@ class ResetWrokRegion extends Command
     public function handle()
     {
         DB::transaction(function () {
-            DB::table('users')->where('role',10)->update(['work_region_id'=>null]);
+            DB::table('users')->where('role',10)->update([
+                'work_region_id'=>null,
+                'is_online'=>0
+            ]);
         });
         return 0;
     }
