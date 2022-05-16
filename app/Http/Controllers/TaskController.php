@@ -145,6 +145,7 @@ class TaskController extends Controller
     public function executeList(Request $request)
     {
         $user = $request->user();
+
         $list = TaskLog::getlist($request->all(),$user['id']);
         return $this->myResponse($list,'执行任务列表',200);
 
