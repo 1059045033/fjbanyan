@@ -47,6 +47,7 @@ class TaskLog extends Model
     {
         $fillter = [];
         !empty($user_id) && $fillter['user_id'] = $user_id;
+        !empty($params['user_id']) && $fillter['user_id'] = $params['user_id'];
         return self::where($fillter)->when(!empty($params['start_date']), function ($query) use($params){
                 $tt = strtotime($params['start_date']);
                 $data['start'] = strtotime(date('Y-m-d 00:00:00',$tt));
