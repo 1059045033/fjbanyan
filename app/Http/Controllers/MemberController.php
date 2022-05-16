@@ -379,4 +379,37 @@ class MemberController extends Controller
 
         return $this->myResponse($res,"安全课堂",200);
     }
+
+    public function oneClickArrange(Request $request)
+    {
+        $user = $request->user();
+        $request->validate([
+            'user_ids'  => 'required|array'
+        ]);
+
+        if(!in_array($user['role'],[20,30])){
+            return $this->myResponse([],'只有区域管理员/总管理员才能操作',423);
+        }
+
+        $users = User::whereIn('id',$request->user_ids)->get()->toArray();
+
+        foreach ($users as $k=>$v)
+        {
+            if(!empty($v['region_id'])){
+                User::where('id',$v['id'])->update(['work_region_id'=>$v['region_id']]);
+                #=========== 设置工作区域 start =========
+                if(!empty(jpush_reg_id)) {
+                    JPushService::pushInApp([
+                        'reg_id' => jpush_reg_id,
+                        'extras' => [
+                            'type' => 1,
+                        ],
+                        'type' => JPushService::PUSH_TYPE_REG_ID,
+                    ]);
+                }
+                #=========== 设置工作区域   end =========
+            }
+        }
+        return $this->myResponse([],'一键排班完成',200);
+    }
 }

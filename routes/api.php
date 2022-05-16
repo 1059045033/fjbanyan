@@ -56,6 +56,7 @@ Route::post('/work/teams','MemberController@workTeams');//作业队伍列表
 Route::post('/work/region/set','MemberController@workRegionSet');//设置工作人员的工作区域
 Route::post('/work/to_work_region','MemberController@usersToWorkRegion');//设置工作人员的工作区域
 Route::post('/work/remove_user','MemberController@removeUser');//
+Route::post('/work/one_click_arrange','MemberController@oneClickArrange');//
 
 
 // 公共
