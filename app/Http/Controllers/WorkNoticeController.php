@@ -168,7 +168,7 @@ class WorkNoticeController extends Controller
         }
         if(!empty($exception_ids))
         {
-            ExceptionMsg:whereIn('id',$exception_ids)->update(['is_read'=>1]);
+            ExceptionMsg::whereIn('id',$exception_ids)->update(['is_read'=>1]);
         }
 
         return $this->myResponse([],'一键阅读完成',200);
