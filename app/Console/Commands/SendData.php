@@ -173,7 +173,7 @@ class SendData extends Command
 
             $params = [
                 'to_name' => "尊敬的领导",
-                'message' => date('Y-m-d').'的数据',
+                'message' => '福州共享单车 '.date('Y-m-d').'打包数据',//福州共享单车 2022-05-16 打包数据
                 'data' =>[
                     'task_url' => $task_res['url'],
                     'track_url' => $track_res['url'],
