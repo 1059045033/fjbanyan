@@ -287,9 +287,8 @@ class AttendanceLog extends Command
                     'offline_time'=>$last_time->offline_time,
                     'name'=>$name,
                     'working_time_id'=>$working_time_id,
-                    'start_time'=>$working_times[$k]->online_time,
-                    'end_time'=>$working_times[$k]->offline_time,
-
+                    'start_time'=>strtotime(date('Y-m-d '.$working_times[$k]->start_time.':00',$start)), //$working_times[$k]->start_time,
+                    'end_time'=>strtotime(date('Y-m-d '.$working_times[$k]->end_time.':00',$start)),//$working_times[$k]->end_time,
                 ];
             }
         }
