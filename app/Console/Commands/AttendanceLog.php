@@ -306,7 +306,6 @@ class AttendanceLog extends Command
         if(count($new_data['effective']) == count($working_times)){
             $new_data['un_effective'] = [];
         }else{
-
             foreach ($working_times as $k=>$v){
                 if(!in_array($v->id,$effective_ids)){
                     # 当前班次的上班时间
@@ -331,7 +330,7 @@ class AttendanceLog extends Command
                     }
 
                     $tt = $this->descTime($diff_second);
-                    $desc = "{$v->name}缺勤{$tt}扣款{$money}元,";
+                    $desc = "{$v->name}缺勤:{$tt}扣款{$money}元.,";
                     $new_data['un_effective'][] = [
                             'nums' => null,
                             'money' => $money,
@@ -471,7 +470,7 @@ class AttendanceLog extends Command
             }
             $total_money += $money;
             $tt = $this->descTime($diff_second);
-            $desc .= "{$name}缺勤{$tt}扣款{$money}元,";
+            $desc .= "{$name}缺勤:{$tt}扣款{$money}元,";
         }
 
 
