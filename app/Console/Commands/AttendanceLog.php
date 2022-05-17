@@ -446,10 +446,10 @@ class AttendanceLog extends Command
             $time  = 0;
             $time_total =0;
             $name  = "";
-            dd($v);
+            
             foreach ($v as $k_k=>$v_v)
             {
-                if($k == 0){
+                if($k_k == 0){
                     $time_total = ($v_v['end_time'] - $v_v['start_time']); // 上班总时长
                     $name = $v_v['name']; //班次名称
                 }
