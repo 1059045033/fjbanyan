@@ -153,10 +153,10 @@ class AttendanceLog extends Command
 
             }
 
-            dd($usersDatas);
+            //dd($usersDatas);
 
             // 插入考勤记录
-            //$res = DB::table('attendances')->insert($usersDatas);
+            $res = DB::table('attendances')->insert($usersDatas);
 
         });
         return 0;
