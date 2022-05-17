@@ -488,7 +488,7 @@ class AttendanceLog extends Command
 
         }
         #======= 补充没有打卡的班次 ==========
-
+        dd($desc);
         return [
             'nums'=>null,
             'money'=>$total_money,
