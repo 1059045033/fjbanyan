@@ -435,7 +435,7 @@ class AttendanceLog extends Command
         }
 
         $new_data = $datas['effective'];
-        dd($new_data);
+
         $total_money = 0;
         $desc = "";
         foreach ($new_data as $k=>$v)
@@ -446,8 +446,11 @@ class AttendanceLog extends Command
             $name  = "";
             foreach ($v as $k=>$v)
             {
-                $k == 0 && $time_total = ($v['end_time'] - $v['start_time']);
-                $k == 0 && $name = $v['name'];
+                if($k == 0){
+                    $time_total = ($v['end_time'] - $v['start_time']);
+                    $name = $v['name'];
+                }
+
                 $time += ($v['offline_time'] - $v['online_time']);
             }
             $diff_second = $time_total - $time;
