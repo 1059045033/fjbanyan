@@ -447,11 +447,11 @@ dd($datas);die;
             foreach ($v as $k_k=>$v_v)
             {
                 if($k == 0){
-                    $time_total = ($v_v['end_time'] - $v_v['start_time']);
-                    $name = $v_v['name'];
+                    $time_total = ($v_v['end_time'] - $v_v['start_time']); // 上班总时长
+                    $name = $v_v['name']; //班次名称
                 }
 
-                $time += ($v_v['offline_time'] - $v_v['online_time']);
+                $time += ($v_v['offline_time'] - $v_v['online_time']); //班次的有效时间
             }
             $diff_second = $time_total - $time;
             if($diff_second >0 && $diff_second <= (30*60))
