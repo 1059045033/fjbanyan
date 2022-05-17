@@ -435,7 +435,7 @@ class AttendanceLog extends Command
         }
 
         $new_data = $datas['effective'];
-
+        dd($new_data);
         $total_money = 0;
         $desc = "";
         foreach ($new_data as $k=>$v)
