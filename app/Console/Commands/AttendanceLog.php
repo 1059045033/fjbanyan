@@ -300,6 +300,7 @@ class AttendanceLog extends Command
                 $effective_ids[]=$v['working_time_id'];
             }
         }
+        !empty($new_data['effective']) &&  $new_data['effective'] = [];
 
         if(count($new_data['effective']) == count($working_times)){
             $new_data['un_effective'] = [];
