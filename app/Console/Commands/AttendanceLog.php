@@ -444,15 +444,14 @@ class AttendanceLog extends Command
             $time  = 0;
             $time_total =0;
             $name  = "";
-            echo json_encode($v)." \n";
-            foreach ($v as $k=>$v)
+            foreach ($v as $k_k=>$v_v)
             {
                 if($k == 0){
-                    $time_total = ($v['end_time'] - $v['start_time']);
-                    $name = $v['name'];
+                    $time_total = ($v_v['end_time'] - $v_v['start_time']);
+                    $name = $v_v['name'];
                 }
 
-                $time += ($v['offline_time'] - $v['online_time']);
+                $time += ($v_v['offline_time'] - $v_v['online_time']);
             }
             $diff_second = $time_total - $time;
             if($diff_second >0 && $diff_second <= (30*60))
