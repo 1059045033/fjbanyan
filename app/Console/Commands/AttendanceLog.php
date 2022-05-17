@@ -38,7 +38,7 @@ class AttendanceLog extends Command
             # 查找所有的三级和二级人员
             $users = DB::table('users')
                 ->whereIn('role',[10,20])
-                //->where('id',249)
+                ->where('id',249)
                 ->select('id','name','phone','company_id','region_id','work_region_id','role')
                 ->get()
                 ->each(function ($data,$key) use($companies,$regions){
@@ -407,6 +407,7 @@ class AttendanceLog extends Command
                             $count ++;
                             $desc .= "{$name}断档{$tt}(".date('Y-m-d H:i:s',$old_times)."~".date('Y-m-d H:i:s',$vvv)."),扣款{$money}元,";
                         }
+                        $old_times = $vvv;
                     }
                 }
             }
