@@ -446,6 +446,7 @@ class AttendanceLog extends Command
             $time  = 0;
             $time_total =0;
             $name  = "";
+            dd($v);
             foreach ($v as $k_k=>$v_v)
             {
                 if($k == 0){
