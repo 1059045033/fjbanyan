@@ -444,6 +444,7 @@ class AttendanceLog extends Command
             $time  = 0;
             $time_total =0;
             $name  = "";
+            echo json_encode($v)." \n";
             foreach ($v as $k=>$v)
             {
                 if($k == 0){
