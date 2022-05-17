@@ -38,7 +38,7 @@ class AttendanceLog extends Command
             # 查找所有的三级和二级人员
             $users = DB::table('users')
                 ->whereIn('role',[10,20])
-                ->where('id',249)
+                //->where('id',249)
                 ->select('id','name','phone','company_id','region_id','work_region_id','role')
                 ->get()
                 ->each(function ($data,$key) use($companies,$regions){
@@ -446,7 +446,7 @@ class AttendanceLog extends Command
             $time  = 0;
             $time_total =0;
             $name  = "";
-            
+
             foreach ($v as $k_k=>$v_v)
             {
                 if($k_k == 0){
@@ -489,7 +489,7 @@ class AttendanceLog extends Command
 
         }
         #======= 补充没有打卡的班次 ==========
-        dd($desc);
+
         return [
             'nums'=>null,
             'money'=>$total_money,
