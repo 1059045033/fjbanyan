@@ -435,7 +435,7 @@ class AttendanceLog extends Command
         {
             return $datas;
         }
-dd($datas);die;
+
         $new_data = $datas['effective'];
 
         $total_money = 0;
