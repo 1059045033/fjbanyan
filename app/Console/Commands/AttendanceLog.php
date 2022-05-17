@@ -286,7 +286,10 @@ class AttendanceLog extends Command
                     'online_time'=>$online_time,
                     'offline_time'=>$last_time->offline_time,
                     'name'=>$name,
-                    'working_time_id'=>$working_time_id
+                    'working_time_id'=>$working_time_id,
+                    'start_time'=>$working_times[$k]->online_time,
+                    'end_time'=>$working_times[$k]->offline_time,
+
                 ];
             }
         }
@@ -298,7 +301,7 @@ class AttendanceLog extends Command
             $new_data['effective'][$v['working_time_id']][] = $v;
             if(!in_array($v['working_time_id'],$effective_ids))
             {
-                $effective_ids[]=$v['working_time_id'];
+                $effective_ids[]=$v['working_time_id'];// 把存在有效上下班时间的先记录下来  用于后的使用
             }
         }
 
