@@ -190,10 +190,14 @@ class MemberController extends Controller
         //}
 
         $region_id = [];
+        $roles = [];
         if($user['role']==20){
+            $roles = [10];
             // $region_id = $user['region_id'];
             // 获取该区域管理人员的所有区域
             $region_id = WorkRegion::where('region_manager',$user['id'])->pluck('id')->toArray();
+        }else{
+            $roles = [10,20];
         }
 
         $list = User::with(['company','region:id,name','workRegion:id,name'])
@@ -201,7 +205,7 @@ class MemberController extends Controller
                 $query->whereIn('region_id',$region_id);
             })
             ->where('id','<>',$user['id'])
-            ->whereIn('role',[10])
+            ->whereIn('role',$roles)
             ->select('id as user_id','name','avator','created_at','phone','company_id','region_id','work_region_id','image_base64')->get();
 
         return $this->myResponse($list,'获取作业队伍列表',200);
