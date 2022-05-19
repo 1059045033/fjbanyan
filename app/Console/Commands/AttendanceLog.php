@@ -369,7 +369,7 @@ class AttendanceLog extends Command
             $currt_working_time_effective_long = 0;  // 当前班次有效工作时长
             $currt_working_time_qq_total_long = 0;   // 当前班次缺勤总时长
             $currt_working_time_name = '';           // 当前班次名称
-            $currt_working_time_dd_total_long = '';  // 当前班次断档总时长
+            $currt_working_time_dd_total_long = 0 ;  // 当前班次断档总时长
 
             // 考勤 计算
             foreach ($v as $k_k=>$v_v)
