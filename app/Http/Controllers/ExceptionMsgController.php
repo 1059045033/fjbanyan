@@ -68,7 +68,7 @@ class ExceptionMsgController extends Controller
         $all_user_ids  = (array_merge($role_20_users,$role_30_users));
         array_push($all_user_ids,$user['id']);
         $all_user_ids  = array_unique($all_user_ids); // 去重
-        $all_users     = User::whereIn('id',$all_user_ids)->select('id','phone','jpush_reg_id')->get()->toArray();
+        $all_users     = User::whereIn('id',$all_user_ids)->select('id','phone','jpush_reg_id','sms_is_open')->get()->toArray();
 
         // 【郭伟文】于【2022.04.19 15.09】在【软件园F区】【迟到打卡/早退打卡/跑出工作区域】
         $content_ = $user['name']."(".$user['phone'].")".'于'.date('Y.m.d H:i').',在'.$workRegion['name'].' '.$type_enum[$request->type];
@@ -83,7 +83,7 @@ class ExceptionMsgController extends Controller
             foreach ($all_users as $k => $v)
             {
                 // 号码不为空 且不发自己
-                if(!empty($v['phone']) && $user['id'] != $v['id'])
+                if(!empty($v['phone']) && $user['id'] != $v['id'] && !empty($v['sms_is_open']))
                 {
                     $content__ = $user['name']."(".$user['phone'].")"."||".$ddd.'||'.$workRegion['name']."({$type_enum[$request->type]})";
                     $sms->sendsms($v['phone'],$content__,146515,122136);
