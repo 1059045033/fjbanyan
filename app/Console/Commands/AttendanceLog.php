@@ -25,20 +25,17 @@ class AttendanceLog extends Command
         # 获取参数 日期参数
         $date_day = empty($this->option('day')) ? date('Y-m-d'):$this->option('day');
 
-//        $res = $this->countDuandang(14,1652544000,1652630399);
-//        dd($res);
-//        die();
         DB::transaction(function () use ($date_day){
             # 获取公司数据
             $companies = DB::table('companies')->pluck('name','id')->toArray();
             # 获取网格数据
             $regions   = DB::table('work_regions')->pluck('name','id')->toArray();
             # 当前时间戳
-            $time = time();
+            $time      = time();
             # 查找所有的三级和二级人员
             $users = DB::table('users')
                 ->whereIn('role',[10,20])
-                //->where('id',249)
+                ->where('id',14)
                 ->select('id','name','phone','company_id','region_id','work_region_id','role')
                 ->get()
                 ->each(function ($data,$key) use($companies,$regions){
@@ -55,23 +52,23 @@ class AttendanceLog extends Command
             # 用户的考勤数据集合
             $usersDatas = [];
             foreach ($users as $k=>$v){
-                $money   = 0;
+                $money      = 0;
                 $money_desc = '';
                 # 用户的基础数据集合
                 $usersDatas[$v->id] = [
-                    'user_id' => $v->id,
-                    'user_name' => $v->name,
-                    'user_phone' => $v->phone,
+                    'user_id'      => $v->id,
+                    'user_name'    => $v->name,
+                    'user_phone'   => $v->phone,
                     'user_company' => empty($v->company_id) ? null:$v->user_company."(ID:{$v->company_id})",
-                    'user_role' => $v->role,
-                    'user_region' => empty($v->region_id) ? null: $v->user_region."(ID:{$v->region_id})",
+                    'user_role'    => $v->role,
+                    'user_region'  => empty($v->region_id) ? null: $v->user_region."(ID:{$v->region_id})",
                     'user_work_region' => empty($v->work_region_id) ? null: $v->user_work_region."(ID:{$v->work_region_id})",
-                    'created_at'=>$time,
-                    'updated_at' => $time
+                    'created_at'   => $time,
+                    'updated_at'   => $time
                 ];
 
                 # ================  考勤的人员是 二级人员 start ============
-                $region_not_user_nums  = 0; // 无网格出勤次数
+                $region_not_user_nums  = 0;   // 无网格出勤次数
                 $region_not_user_money = 140; // 每次扣款的金额
                 if($v->role == 20){
                     // 1.找到这个 管理人员下所有的 区域
@@ -86,13 +83,13 @@ class AttendanceLog extends Command
                             empty($temp) && $region_not_user_nums++;
                         }
 
-                        $usersDatas[$v->id]['online_times'] = null;
-                        $usersDatas[$v->id]['offline_times'] = null;
+                        $usersDatas[$v->id]['online_times']       = null;
+                        $usersDatas[$v->id]['offline_times']      = null;
                         $usersDatas[$v->id]['task_complete_nums'] = null;
-                        $usersDatas[$v->id]['task_progress'] = null;
-                        $usersDatas[$v->id]['late_nums'] = null;
-                        $usersDatas[$v->id]['early_nums'] = null;
-                        $usersDatas[$v->id]['task_dd_nums'] = null;
+                        $usersDatas[$v->id]['task_progress']      = null;
+                        $usersDatas[$v->id]['late_nums']          = null;
+                        $usersDatas[$v->id]['early_nums']         = null;
+                        $usersDatas[$v->id]['task_dd_nums']       = null;
 
                         $money += $region_not_user_nums * $region_not_user_money;
                         $money_desc .= "【网格无人员出勤{$region_not_user_nums}次共扣".($region_not_user_nums * $region_not_user_money)."元】";
@@ -131,20 +128,24 @@ class AttendanceLog extends Command
                     // 任务完成量/任务完进度
                     $this->taskDatas($usersDatas,$v->id,$start,$end);
 
-                    $kaoqin = $this->countQueqin($v->id,$start,$end);
+                    // 不算这这个
                     $usersDatas[$v->id]['late_nums']  = null;
                     $usersDatas[$v->id]['early_nums'] = null;
-                    $money +=$kaoqin['money'];
-                    $money_desc .= '【'.$kaoqin['desc']."】";
 
-                    if(empty($kaoqin['code'])){
-                        $duandang = $this->countDuandang($v->id,$start,$end);
-                        $money += $duandang['money'];
-                        $money_desc .= '【'.$duandang['desc']."】";
-                        $usersDatas[$v->id]['task_dd_nums'] = $duandang['nums'];
-                    }else{
-                        $usersDatas[$v->id]['task_dd_nums'] = null;
-                    }
+                    //
+                    $kaoqin = $this->countQueqinAndDuandang($v->id,$start,$end);
+                    dd($kaoqin);
+//                    $money += $kaoqin['money'];
+//                    $money_desc .= '【'.$kaoqin['desc']."】";
+//
+//                    if(empty($kaoqin['code'])){
+//                        $duandang = $this->countDuandang($v->id,$start,$end);
+//                        $money += $duandang['money'];
+//                        $money_desc .= '【'.$duandang['desc']."】";
+//                        $usersDatas[$v->id]['task_dd_nums'] = $duandang['nums'];
+//                    }else{
+//                        $usersDatas[$v->id]['task_dd_nums'] = null;
+//                    }
 
                     $usersDatas[$v->id]['region_not_user_nums'] = null;
                     $usersDatas[$v->id]['money'] = $money;
@@ -154,10 +155,10 @@ class AttendanceLog extends Command
 
             }
 
-            //dd($usersDatas);
+            dd($usersDatas);
 
             // 插入考勤记录
-            $res = DB::table('attendances')->insert($usersDatas);
+            //$res = DB::table('attendances')->insert($usersDatas);
 
         });
         return 0;
@@ -347,6 +348,149 @@ class AttendanceLog extends Command
         return $new_data;
 
     }
+
+    // 计算缺勤和断档
+    public function countQueqinAndDuandang($user_id,$start,$end)
+    {
+        $datas = $this->countWorkingtimes($user_id,$start,$end);
+        if(!empty($datas['code']) && $datas['code'] == 400)
+        {
+            return $datas;
+        }
+
+        $new_data = $datas['effective'];
+        $total_money = 0;
+        $desc = "";
+        $count = 0;
+
+        foreach ($new_data as $k=>$v)
+        {
+            $currt_working_time_total_long = 0;      // 当前班次总时长
+            $currt_working_time_effective_long = 0;  // 当前班次有效工作时长
+            $currt_working_time_qq_total_long = 0;   // 当前班次缺勤总时长
+            $currt_working_time_name = '';           // 当前班次名称
+            $currt_working_time_dd_total_long = '';  // 当前班次断档总时长
+
+            // 考勤 计算
+            foreach ($v as $k_k=>$v_v)
+            {
+                if($k_k == 0){
+                    $currt_working_time_total_long = ($v_v['end_time'] - $v_v['start_time']); // 上班总时长
+                    $currt_working_time_name = $v_v['name'];     //班次名称
+                }
+
+                $currt_working_time_effective_long += ($v_v['offline_time'] - $v_v['online_time']); //班次的有效时间
+            }
+            $diff_second = $currt_working_time_total_long - $currt_working_time_effective_long;
+            $currt_working_time_qq_total_long = $diff_second;
+            $desc .= "【".$currt_working_time_name."缺勤:".$this->descTime($diff_second).",";
+
+            // 任务断档计算
+            foreach ($v as $kk=>$vv)
+            {
+
+                $d = DB::table('task_logs')->where(['user_id'=>$user_id])
+                    ->whereBetWeen('created_at',[$vv['online_time'],$vv['offline_time']])
+                    ->orderBy('created_at','asc')->pluck('created_at')->toArray();
+
+                if(!in_array($vv['online_time'],$d)){
+                    array_unshift($d, $vv['online_time']);
+                }
+                if(!in_array($vv['offline_time'],$d)){
+                    array_push($d,$vv['offline_time']);
+                }
+                $old_times = 0;
+                foreach ($d as $kkk=>$vvv)
+                {
+                    if($old_times == 0 ){
+                        $old_times = $vvv;
+                    }else{
+                        $diff_second = $vvv - $old_times;
+                        if($diff_second > (30*60))
+                        {
+                            $currt_working_time_dd_total_long += $diff_second;
+                            $desc .= "断档:".$this->descTime($diff_second)."(".date('Y-m-d H:i:s',$old_times)."~".date('Y-m-d H:i:s',$vvv)."),";
+                        }
+                        $old_times = $vvv;
+                    }
+                }
+            }
+
+            $money1 = $this->countQqMoney($currt_working_time_qq_total_long);
+            $money2 = $this->countDdMoney($currt_working_time_dd_total_long);
+            $money  = $money1 + $money2;
+            if($money > 70 ){
+                $money = 70;
+            }
+            $total_money += $money;
+            $desc .= "共扣款".$money."】";
+        }
+
+
+        #======= 补充没有打卡的班次 ==========
+        if(!empty($datas['un_effective']))
+        {
+            foreach ($datas['un_effective'] as $k=>$v)
+            {
+                $total_money += $v['money'];
+                $desc .= "【".$v['desc']."】";
+            }
+        }
+        #======= 补充没有打卡的班次 ==========
+
+        return [
+            'nums'=>null,
+            'money'=>$total_money,
+            'desc'=>$desc,
+        ];
+
+    }
+
+    // 缺勤计算
+    public function countQqMoney($diff_second)
+    {
+        $money = 0;
+        if($diff_second > (5 * 60) && $diff_second <= (30*60))
+        {
+            $money = 15;
+        }elseif ($diff_second > (30*60) && $diff_second <= (60*60))
+        {
+            $money = 30;
+        }elseif ($diff_second > (60*60) && $diff_second <= (90*60))
+        {
+            $money = 45;
+        }elseif ($diff_second > (90*60) && $diff_second <= (180*60))
+        {
+            $money = 60;
+        }elseif ($diff_second > (180*60)){
+            $money = 70;
+        }
+        return $money;
+    }
+    // 断档计算
+    public function countDdMoney($diff_second)
+    {
+        $money = 0;
+        if($diff_second > (30*60))
+        {
+            $money = 0;
+            if ($diff_second <= (60*60))
+            {
+                $money = 15;
+            }elseif ($diff_second > (60*60) && $diff_second <= (90*60))
+            {
+                $money = 30;
+            }elseif ($diff_second > (90*60) && $diff_second <= (180*60))
+            {
+                $money = 60;
+            }elseif ($diff_second > (180*60)){
+                $money = 70;
+            }
+        }
+        return $money;
+    }
+
+
     public function countDuandang($user_id,$start,$end){
         $datas = $this->countWorkingtimes($user_id,$start,$end);
         if(!empty($datas['code']) && $datas['code'] == 400)
@@ -412,13 +556,7 @@ class AttendanceLog extends Command
                 }
             }
         }
-        #======= 补充没有打卡的班次 缺勤那里已经算了 这里就不用算了 ==========
-//        if(!empty($datas['un_effective']))
-//        {
 
-//
-//        }
-        #======= 补充没有打卡的班次 ==========
 
 
         return [
@@ -473,6 +611,7 @@ class AttendanceLog extends Command
             }elseif ($diff_second > (180*60)){
                 $money = 70;
             }
+
             $total_money += $money;
             $tt = $this->descTime($diff_second);
             $desc .= "{$name}缺勤:{$tt}扣款{$money}元,";
@@ -487,7 +626,6 @@ class AttendanceLog extends Command
                 $total_money += $v['money'];
                 $desc .= $v['desc'];
             }
-
         }
         #======= 补充没有打卡的班次 ==========
 
