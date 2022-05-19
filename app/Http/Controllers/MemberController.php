@@ -36,11 +36,21 @@ class MemberController extends Controller
         }
 
 
-        $workingTime = WorkingTime::where('user_id',$user['id'])->select('start_time','end_time')->get()->toArray();
+        $workingTime = WorkingTime::where('user_id',$user['id'])->select('start_time','end_time','name')->get()->toArray();
 
         $user['working_time'] = empty($workingTime) ? null:$workingTime;
 
         return $this->myResponse($user,'得到用户信息'.$user['id'],200);
+    }
+
+    // 开启/关闭 短信通知
+    public function smsNotify(Request $request){
+
+        $is_open = empty($request->is_open) ? 0:$request->is_open;
+        $user = $request->user();
+        $user->sms_is_open = $is_open;
+        $user->save();
+        return $this->myResponse([],'设置成功',200);
     }
 
     // 上传人脸

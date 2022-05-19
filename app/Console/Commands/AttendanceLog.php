@@ -316,7 +316,7 @@ class AttendanceLog extends Command
                     # 当前班次的下班时间
                     $end_time     = strtotime(date('Y-m-d '.$v->end_time.':00',$start));
                     $diff_second = $end_time - $start_time;
-                    if($diff_second >0 && $diff_second <= (30*60))
+                    if($diff_second > (5 * 60) && $diff_second <= (30*60))
                     {
                         $money = 15;
                     }elseif ($diff_second > (30*60) && $diff_second <= (60*60))
@@ -391,10 +391,10 @@ class AttendanceLog extends Command
                             $money = 0;
                             if ($diff_second <= (60*60))
                             {
-                                $money = 30;
+                                $money = 15;
                             }elseif ($diff_second > (60*60) && $diff_second <= (90*60))
                             {
-                                $money = 45;
+                                $money = 30;
                             }elseif ($diff_second > (90*60) && $diff_second <= (180*60))
                             {
                                 $money = 60;
@@ -458,7 +458,7 @@ class AttendanceLog extends Command
                 $time += ($v_v['offline_time'] - $v_v['online_time']); //班次的有效时间
             }
             $diff_second = $time_total - $time;
-            if($diff_second >0 && $diff_second <= (30*60))
+            if($diff_second > (5 * 60) && $diff_second <= (30*60))
             {
                 $money = 15;
             }elseif ($diff_second > (30*60) && $diff_second <= (60*60))

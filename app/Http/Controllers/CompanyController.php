@@ -12,9 +12,10 @@ class CompanyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function lists()
     {
-        //
+        $res = Company::all();
+        return $this->myResponse($res,'获取公司列表',200);
     }
 
     /**

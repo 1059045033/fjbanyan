@@ -59,6 +59,8 @@ Route::post('/work/remove_user','MemberController@removeUser');//
 Route::post('/work/one_click_arrange','MemberController@oneClickArrange');//
 
 
+Route::post('/company/lists','CompanyController@lists');
+
 // 公共
 
 Route::post('/helper','MemberController@helper');
@@ -87,6 +89,7 @@ Route::post('/member/upload/image','MemberController@uploadeImage');
 
 
 Route::apiResource('/member','MemberController');
+Route::post('/sms_notify','MemberController@smsNotify');
 
 
 Route::post('/jpush','RegisterController@jpush');
