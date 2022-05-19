@@ -131,21 +131,14 @@ class AttendanceLog extends Command
                     // 不算这这个
                     $usersDatas[$v->id]['late_nums']  = null;
                     $usersDatas[$v->id]['early_nums'] = null;
+                    $usersDatas[$v->id]['task_dd_nums'] = null;
 
                     //
                     $kaoqin = $this->countQueqinAndDuandang($v->id,$start,$end);
-                    dd($kaoqin);
-//                    $money += $kaoqin['money'];
-//                    $money_desc .= '【'.$kaoqin['desc']."】";
-//
-//                    if(empty($kaoqin['code'])){
-//                        $duandang = $this->countDuandang($v->id,$start,$end);
-//                        $money += $duandang['money'];
-//                        $money_desc .= '【'.$duandang['desc']."】";
-//                        $usersDatas[$v->id]['task_dd_nums'] = $duandang['nums'];
-//                    }else{
-//                        $usersDatas[$v->id]['task_dd_nums'] = null;
-//                    }
+
+                    $money += $kaoqin['money'];
+                    $money_desc .= '【'.$kaoqin['desc']."】";
+
 
                     $usersDatas[$v->id]['region_not_user_nums'] = null;
                     $usersDatas[$v->id]['money'] = $money;
@@ -155,10 +148,10 @@ class AttendanceLog extends Command
 
             }
 
-            dd($usersDatas);
+            //dd($usersDatas);
 
             // 插入考勤记录
-            //$res = DB::table('attendances')->insert($usersDatas);
+            $res = DB::table('attendances')->insert($usersDatas);
 
         });
         return 0;
