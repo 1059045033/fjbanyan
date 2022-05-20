@@ -59,7 +59,7 @@ class TaskLogController extends Controller
             $params_user_ids = empty($request->user_ids) ? []:$request->user_ids;
             $params_region_ids = empty($request->region_ids) ? []:$request->region_ids;
             $params_company_ids = empty($request->company_ids) ? []:$request->company_ids;
-            $user_idsss = User::when(!empty($params_user_ids), function ($query) use($params_user_ids){
+            $user_ids = User::when(!empty($params_user_ids), function ($query) use($params_user_ids){
                 $query->whereIn('id',$params_user_ids);
             })->when(!empty($params_region_ids), function ($query) use($params_region_ids){
                 $query->whereIn('region_id',$params_region_ids);
@@ -67,8 +67,7 @@ class TaskLogController extends Controller
                 $query->whereIn('company_id',$params_company_ids);
             })
             ->pluck('id')->toArray();
-            print_r($user_idsss);
-            die;
+            empty($user_ids) && $user_ids = [-1];
         }
 
 
