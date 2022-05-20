@@ -49,9 +49,9 @@ class TaskLogController extends Controller
         }
 
 
-        if(!is_array($request->user_ids) || !is_array($request->user_ids) || !is_array($request->user_ids)){
-            return $this->myResponse([],'user_ids,region_id,company_ids请传数组',423);
-        }
+//        if(!is_array($request->user_ids) || !is_array($request->user_ids) || !is_array($request->user_ids)){
+//            //return $this->myResponse([],'user_ids,region_id,company_ids请传数组',423);
+//        }
 
 
         if(!empty($request->user_ids) || !empty($request->company_ids) || !empty($request->region_ids))
