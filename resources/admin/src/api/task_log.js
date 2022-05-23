@@ -10,3 +10,11 @@ export function fetchTaskLogAllList(query) {
 }
 
 
+export function exportTaskLogAllList(query) {
+  return request({
+    url: '/admin/task/export',
+    method: 'get',
+    params: query
+  })
+}
+

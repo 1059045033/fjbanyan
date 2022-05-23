@@ -9,6 +9,8 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter" style="padding-top: 8px;">
         搜索
       </el-button>
+
+      <el-button @click="exportExcel">导出</el-button>
 <!--      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">-->
 <!--        新增-->
 <!--      </el-button>-->
@@ -23,6 +25,7 @@
       :key="tableKey"
       v-loading="listLoading"
       :data="list"
+      id="task_table"
       border
       fit
       highlight-current-row
@@ -138,7 +141,7 @@
 
 <script>
   import { userlist, createUser, deleteUser, updateUser } from '@/api/users'
-  import { fetchTaskLogAllList } from '@/api/task_log'
+  import { fetchTaskLogAllList,exportTaskLogAllList } from '@/api/task_log'
   import { getAllRegions, getAllCompany } from '@/api/common'
 
   import { companylist, deleteCompany } from '@/api/company'
@@ -146,6 +149,10 @@
   import { parseTime } from '@/utils'
   import Pagination from '@/components/Pagination'
   import { fetchList } from '@/api/regions' // secondary package based on el-pagination
+
+
+  import FileSaver from "file-saver";
+  import XLSX from "xlsx";
 
   const calendarTypeOptions = [
     { key: '10', display_name: '三级' },
@@ -239,13 +246,56 @@
           role: [{ required: true, message: '等级必选', trigger: 'change' }],
           company: [{ required: true, message: '公司必选', trigger: 'change' }]
         },
-        downloadLoading: false
+        downloadLoading: false,
+        isExport:true
       }
     },
     created() {
       this.getList()
     },
     methods: {
+      exportExcel() {
+
+        // 导出交给服务器
+        this.listQuery.start_date = parseTime(this.listQuery.start_date);
+        console.log('listQuery = ', this.listQuery)
+        if(this.isExport){
+          this.isExport = false ;
+          exportTaskLogAllList(this.listQuery).then(response => {
+            this.isExport = true ;
+            console.log('导出任务的返回数据',response)
+            if(response.data.state == true){
+              //this.$router.push({ path: 'http://www.baidu.com' })
+              window.open(response.data.url, '_blank')
+            }else{
+              this.$notify({
+                title: '失败',
+                message: '稍后重试',
+                type: 'success',
+                duration: 2000
+              })
+            }
+          })
+        }
+
+
+        // 将excle导出交给浏览器
+        // //  .table要导出的是哪一个表格
+        // var wb = XLSX.utils.table_to_book(document.querySelector("#task_table"));
+        // /* get binary string as output */
+        // var wbout = XLSX.write(wb, {
+        //   bookType: "xlsx",
+        //   bookSST: true,
+        //   type: "array"
+        // });
+        // try {
+        //   //  name+'.xlsx'表示导出的excel表格名字
+        //   FileSaver.saveAs(new Blob([wbout], {type: "application/octet-stream"}),"cshimu.xlsx");
+        // } catch (e) {
+        //   if (typeof console !== "undefined") console.log(e, wbout);
+        // }
+        // return wbout;
+      },
       getList() {
         this.listLoading = true
         this.listQuery.start_date = parseTime(this.listQuery.start_date);

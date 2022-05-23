@@ -65,7 +65,6 @@ class Export implements WithHeadings, WithEvents,FromCollection
     {
         return [
             AfterSheet::class  => function(AfterSheet $event) {
-                echo "registerEvents";
                 foreach ($this->images as $k => $v){
                     if(!empty($v['atlas_arr']))
                     {

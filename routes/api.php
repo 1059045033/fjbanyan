@@ -133,6 +133,7 @@ Route::get('/admin/tracks/track','Admin\TrackController@track');//
 
 // 任务列表
 Route::get('/admin/task/logs','Admin\TaskLogController@logs');//
+Route::get('/admin/task/export','Admin\TaskLogController@export');//
 
 // 考勤明细
 Route::get('/admin/attendance/lists','Admin\AttendanceController@lists');
