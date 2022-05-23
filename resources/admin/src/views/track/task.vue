@@ -260,7 +260,7 @@
         this.listQuery.start_date = parseTime(this.listQuery.start_date);
         console.log('listQuery = ', this.listQuery)
         if(this.isExport){
-          this.isExport = false ;
+          //this.isExport = false ;
           exportTaskLogAllList(this.listQuery).then(response => {
             this.isExport = true ;
             console.log('导出任务的返回数据',response)
