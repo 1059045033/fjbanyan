@@ -191,11 +191,12 @@ class TaskLogController extends Controller
         $excel->setBold(['A1:Z1' => true]);
         $path = 'public'.DIRECTORY_SEPARATOR.'task_excle_admin'.DIRECTORY_SEPARATOR.date('Ymd').DIRECTORY_SEPARATOR;
         $url  = config('app.url').DIRECTORY_SEPARATOR."storage".DIRECTORY_SEPARATOR.'task_excle_admin'.DIRECTORY_SEPARATOR.date('Ymd').DIRECTORY_SEPARATOR.$filename."_".date('Y_m_d_H').'.xlsx';
-        if(file_exists($path.$filename."_".date('Y_m_d_H').'.xlsx')){
-            $res  = true;
-        }else{
-            $res  = Excel::store($excel, $path.$filename."_".date('Y_m_d_H').'.xlsx');
-        }
+//        if(file_exists($path.$filename."_".date('Y_m_d_H').'.xlsx')){
+//            $res  = true;
+//        }else{
+//            $res  = Excel::store($excel, $path.$filename."_".date('Y_m_d_H').'.xlsx');
+//        }
+        $res  = Excel::store($excel, $path.$filename."_".date('Y_m_d_H').'.xlsx');
         return ['state'=>$res,'url'=>$url];
     }
 }
