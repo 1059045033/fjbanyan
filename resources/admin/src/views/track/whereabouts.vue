@@ -8,7 +8,7 @@
       </div>
 <!--      <el-input v-model="listQuery.name" placeholder="用户名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter"  />-->
 
-      <el-select v-model="listQuery.user_id" placeholder="选择人员" clearable class="filter-item" style="width: 250px;margin-top: 8px">
+      <el-select v-model="listQuery.user_id" placeholder="选择人员" filterable clearable class="filter-item" style="width: 250px;margin-top: 8px">
         <el-option v-for="item in userOptions" :key="item.user_id" :label="item.label" :value="item.user_id" />
       </el-select>
 
