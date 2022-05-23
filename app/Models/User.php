@@ -107,6 +107,7 @@ class User extends Authenticatable
         return $this->belongsTo(Company::class);
     }
 
+
     public function Region()
     {
         return $this->hasOne(WorkRegion::class,'id','region_id');

@@ -147,6 +147,11 @@ Route::get('/admin/company/company_all','Admin\CompanyController@company_all');/
 Route::get('/admin/optrecord/lists','Admin\OptRecordController@lists');
 
 
+// 公司管理
+Route::get('/admin/regiongroup/lists','Admin\RegionGroupController@lists');
+Route::post('/admin/regiongroup/create','Admin\RegionGroupController@create');
+Route::post('/admin/regiongroup/delete','Admin\RegionGroupController@delete');
+Route::get('/admin/regiongroup/group_all','Admin\RegionGroupController@group_all');
 
 // 人员时间集合
 Route::get('/admin/workingtime/lists','Admin\WorkingTimeController@lists');

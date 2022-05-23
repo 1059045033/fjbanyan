@@ -39,11 +39,23 @@
         </template>
       </el-table-column>
 
+      <el-table-column label="分组" min-width="150px">
+        <template slot-scope="{row}">
+          <span v-if="row.group_info">{{ row.group_info.name }}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column label="网格经理" width="110px" align="center">
         <template slot-scope="{row}">
           <span v-if="row.region_manager_info">{{ row.region_manager_info.name }}</span>
         </template>
       </el-table-column>
+
+<!--      <el-table-column label="网格经理" width="110px" align="center">-->
+<!--        <template slot-scope="{row}">-->
+<!--          <span v-if="row.region_manager_info">{{ row.region_manager_info.name }}</span>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
 
       <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
@@ -83,6 +95,12 @@
           </el-drag-select>
         </el-form-item>
 
+        <el-form-item label="分组" prop="groups">
+          <el-select v-model="temp.group_id" class="filter-item" placeholder="请选择">
+            <el-option v-for="item in groupTypeOptions" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
+        </el-form-item>
+
 
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -102,7 +120,9 @@
 </template>
 
 <script>
-  import {fetchList, fetchPv, createArticle, updateArticle, deleteRegion,fetchManagerList,fetchRole10List,updateWorksUser} from '@/api/regions'
+import {fetchList, fetchPv, createArticle, updateArticle, deleteRegion,fetchManagerList,fetchRole10List,updateWorksUser} from '@/api/regions'
+
+import { fetchGroupList } from '@/api/regiongroup'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination'
@@ -114,6 +134,14 @@ const calendarTypeOptions = []
 // arr to obj, such as { CN : "China", US : "USA" }
 const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
   acc[cur.user_id] = cur.label
+  return acc
+}, {})
+
+const groupTypeOptions = []
+
+// arr to obj, such as { CN : "China", US : "USA" }
+const groupTypeKeyValue = groupTypeOptions.reduce((acc, cur) => {
+  acc[cur.id] = cur.name
   return acc
 }, {})
 
@@ -150,6 +178,7 @@ export default {
       },
       importanceOptions: [1, 2, 3],
       calendarTypeOptions,
+      groupTypeOptions,
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
@@ -157,6 +186,7 @@ export default {
         id: undefined,
         manager_id: undefined,
         title: '',
+        group_id:undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -179,6 +209,7 @@ export default {
   created() {
     this.getList()
     this.getManagerList()
+    this.getGroupList()
   },
   methods: {
     getList() {
@@ -199,6 +230,11 @@ export default {
 
         this.calendarTypeOptions = response.data.users
         console.log("response === ",this.calendarTypeOptions)
+      })
+    },
+    getGroupList() {
+      fetchGroupList(this.listQuery).then(response => {
+        this.groupTypeOptions = response.data
       })
     },
     getRole10List(region_id) {
@@ -313,6 +349,10 @@ export default {
             if(res.data.region_manager_info != null)
             {
               this.temp.region_manager_info = res.data.region_manager_info
+            }
+            if(res.data.group_info != null)
+            {
+              this.temp.group_info = res.data.group_info
             }
             this.list.splice(index, 1, this.temp)
             this.dialogFormVisible = false

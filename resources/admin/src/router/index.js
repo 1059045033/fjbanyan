@@ -214,6 +214,15 @@ export const asyncRoutes = [
           title: '地图绘制'
           // if do not set roles, means: this page does not require permission
         }
+      },
+      {
+        path: 'region-group',
+        component: () => import('@/views/region/groups'),
+        name: 'region-group',
+        meta: {
+          title: '网格组别'
+          // if do not set roles, means: this page does not require permission
+        }
       }
       // {
       //   path: 'map',

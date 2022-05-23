@@ -35,4 +35,9 @@ class WorkRegion extends Model
         return $this->hasMany(User::class,'region_id','id');
     }
 
+    public function groupInfo()
+    {
+        return $this->belongsTo(RegionGroup::class,'group_id','id');
+    }
+
 }

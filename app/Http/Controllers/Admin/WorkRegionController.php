@@ -38,7 +38,7 @@ class WorkRegionController extends Controller
             $query->where('name','like','%'.$search.'%');
         })->count();
 
-        $list = WorkRegion::with('regionManagerInfo:id,name')
+        $list = WorkRegion::with(['regionManagerInfo:id,name','groupInfo:id,name'])
             ->where($fillter)
             ->when(!empty($search), function ($query) use($search){
                 $query->where('name','like','%'.$search.'%');
@@ -150,6 +150,10 @@ class WorkRegionController extends Controller
             $regInfo->name = $request->title;
         }
 
+        if($request->group_id != $regInfo->group_id){
+            $regInfo->group_id = $request->group_id;
+        }
+
 
         if(empty($request->works)){
             User::where(['region_id'=>$request->id,'role'=>10])->update(['region_id'=>null]);
@@ -160,7 +164,7 @@ class WorkRegionController extends Controller
 
         if($regInfo->save())
         {
-            $new_user = WorkRegion::with(['regionManagerInfo:id,name'])
+            $new_user = WorkRegion::with(['regionManagerInfo:id,name','groupInfo:id,name'])
                 ->where('id',$request->id)
                 ->first();
 
@@ -168,7 +172,7 @@ class WorkRegionController extends Controller
             $desc = "【{$this->admin['name']}】 于 ".date('Y-m-d H:i:s')."【网格】模块【编辑】网格【{$regInfo['name']}】";
             $this->recordLogs($request,2,$this->admin,$desc);
             # ======== 记录操作 end   ===============
-            return $this->myResponse($new_user,'修改成功',200);
+            return $this->myResponse($new_user,'修改成功'.$request->group_id.' -- '.$regInfo->group_id,200);
         }
         return $this->myResponse([],'修改失败',423);
     }
