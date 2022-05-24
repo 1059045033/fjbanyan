@@ -19,7 +19,7 @@ class WorkRegionController extends Controller
 
     public function regions()
     {
-        $regions = WorkRegion::with('regionManagerInfo:id,name')->get();
+        $regions = WorkRegion::with(['regionManagerInfo:id,name','groupInfo:id,name'])->get();
         return $this->myResponse($regions,'获取地图区域成功(all)',200);
     }
 
