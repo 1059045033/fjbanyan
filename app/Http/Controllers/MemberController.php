@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreActivityMsgRequest;
 use App\Http\Requests\UpdateActivityMsgRequest;
 use App\Models\ActivityMsg;
+use App\Models\RegionGroup;
 use App\Models\User;
 use App\Models\WorkingTime;
 use App\Models\WorkRegion;
@@ -210,13 +211,22 @@ class MemberController extends Controller
             $roles = [10,20];
         }
 
-        $list = User::with(['company','region:id,name','workRegion:id,name'])
+        $regionGroups = RegionGroup::all()->toArray();
+        $regionGroups = array_column($regionGroups,null,'id');
+
+        $list = User::with(['company','region:id,name,group_id','workRegion:id,name'])
             ->when(!empty($region_id), function ($query) use($region_id){
                 $query->whereIn('region_id',$region_id);
             })
             ->where('id','<>',$user['id'])
             ->whereIn('role',$roles)
-            ->select('id as user_id','name','avator','created_at','phone','company_id','region_id','work_region_id','image_base64')->get();
+            ->select('id as user_id','name','avator','created_at','phone','company_id','region_id','work_region_id','image_base64')->get()
+            ->each(function ($data,$key) use($regionGroups){
+                if(!empty($data->region->group_id)){
+                    $data->region->group_name = empty($regionGroups[$data->region->group_id]['name']) ? null:$regionGroups[$data->region->group_id]['name'];
+                }
+
+            });
 
         return $this->myResponse($list,'获取作业队伍列表',200);
     }
