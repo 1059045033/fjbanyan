@@ -220,12 +220,11 @@ class MemberController extends Controller
             })
             ->where('id','<>',$user['id'])
             ->whereIn('role',$roles)
-            ->select('id as user_id','name','avator','created_at','phone','company_id','region_id','work_region_id','image_base64')->get()
+            ->select('id as user_id','name','avator','role','created_at','phone','company_id','region_id','work_region_id','image_base64')->get()
             ->each(function ($data,$key) use($regionGroups){
                 if(!empty($data->region->group_id)){
                     $data->region->group_name = empty($regionGroups[$data->region->group_id]['name']) ? null:$regionGroups[$data->region->group_id]['name'];
                 }
-
             });
 
         return $this->myResponse($list,'获取作业队伍列表',200);
