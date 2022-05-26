@@ -10,7 +10,7 @@
         搜索
       </el-button>
 
-      <el-button @click="exportExcel" v-if="false">导出</el-button>
+      <el-button @click="exportExcel" v-if="true">导出</el-button>
 <!--      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">-->
 <!--        新增-->
 <!--      </el-button>-->

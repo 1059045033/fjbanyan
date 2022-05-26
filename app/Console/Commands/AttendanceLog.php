@@ -35,7 +35,7 @@ class AttendanceLog extends Command
             # 查找所有的三级和二级人员
             $users = DB::table('users')
                 ->whereIn('role',[10,20])
-                //->where('id',249)
+                //->where('id',14)
                 ->select('id','name','phone','company_id','region_id','work_region_id','role')
                 ->get()
                 ->each(function ($data,$key) use($companies,$regions){
@@ -363,6 +363,7 @@ class AttendanceLog extends Command
             $currt_working_time_qq_total_long = 0;   // 当前班次缺勤总时长
             $currt_working_time_name = '';           // 当前班次名称
             $currt_working_time_dd_total_long = 0 ;  // 当前班次断档总时长
+            $currt_working_time_dd_total_money = 0 ;  // 当前班次断档总扣費
 
             // 考勤 计算
             foreach ($v as $k_k=>$v_v)
@@ -402,6 +403,7 @@ class AttendanceLog extends Command
                         if($diff_second > (30*60))
                         {
                             $currt_working_time_dd_total_long += $diff_second;
+                            $currt_working_time_dd_total_money += $this->countDdMoney($diff_second);
                             $desc .= "断档:".$this->descTime($diff_second)."(".date('Y-m-d H:i:s',$old_times)."~".date('Y-m-d H:i:s',$vvv)."),";
                         }
                         $old_times = $vvv;
@@ -410,7 +412,7 @@ class AttendanceLog extends Command
             }
 
             $money1 = $this->countQqMoney($currt_working_time_qq_total_long);
-            $money2 = $this->countDdMoney($currt_working_time_dd_total_long);
+            $money2 = $currt_working_time_dd_total_money ;//$this->countDdMoney($currt_working_time_dd_total_long);
             $money  = $money1 + $money2;
             if($money > 70 ){
                 $money = 70;

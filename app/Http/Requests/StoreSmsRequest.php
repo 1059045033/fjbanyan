@@ -25,7 +25,7 @@ class StoreSmsRequest extends FormRequest
     {
         return [
             'phone' => [
-                "required","regex:/^1(3|5|7|6|8|4)[\d]{9}$/",
+                "required","regex:/^1(3|5|7|6|8|4|9|2)[\d]{9}$/",
             ],
             'type' => 'required|in:0'
         ];

@@ -113,7 +113,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="扣款说明" min-width="150px">
+      <el-table-column label="扣款说明" min-width="400px">
         <template slot-scope="{row}">
           <span>{{ row.money_details }}</span>
         </template>
