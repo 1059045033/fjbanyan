@@ -36,6 +36,7 @@ class AttendanceLog extends Command
             $users = DB::table('users')
                 ->whereIn('role',[10,20])
                 //->where('id',14)
+                ->whereNull('deleted_at')
                 ->select('id','name','phone','company_id','region_id','work_region_id','role')
                 ->get()
                 ->each(function ($data,$key) use($companies,$regions){
