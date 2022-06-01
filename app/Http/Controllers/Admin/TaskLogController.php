@@ -79,7 +79,7 @@ class TaskLogController extends Controller
         $users = DB::table('users')
             ->whereIn('role',[10])
             ->when(!empty($user_ids), function ($query) use($user_ids){
-                $query->whereIn('user_id',$user_ids);
+                $query->whereIn('id',$user_ids);
             })
             ->select('id','name','phone','company_id','region_id','work_region_id','role')
             ->get()
