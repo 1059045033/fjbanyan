@@ -116,7 +116,9 @@ class SendData extends Command
                           $temp['created_at']       = $vv->created_at;
                           $temp['content']          = $vv->content;
                           $temp['atlas']            = null;
-                          $temp['atlas_arr']        = $vv->atlas_arr;
+                          //$temp['atlas_arr']        = $vv->atlas_arr;
+                          $temp['atlas_arr']            = null;
+                          $temp['atlas']    = implode(',',$vv->atlas_arr);
                           array_push($usersTaskDatas,$temp);
                       }
                   }
@@ -217,7 +219,7 @@ class SendData extends Command
             $rowHeights[$i] = 100;
         }
 
-        $columnWidth = ['A'=>20,'B'=>20,'C'=>35,'D'=>20,'E'=>20,'F'=>55,'G'=>40,'H'=>30,'J'=>40];
+        $columnWidth = ['A'=>20,'B'=>20,'C'=>35,'D'=>20,'E'=>20,'F'=>55,'G'=>40,'H'=>30,'J'=>140];
 
         // 执行导出
         $header = $row;//导出表头
