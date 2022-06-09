@@ -181,11 +181,13 @@ class SendData extends Command
             $params = [
                 'to_name' => "尊敬的领导",
                 'message' => '福州共享单车 '.date('Y-m-d').'打包数据',//福州共享单车 2022-05-16 打包数据
+                'type'    => 'day',
                 'data' =>[
                     'task_url' => $task_res['url'],
                     'track_url' => $track_res['url'],
                 ]
             ];
+
             Mail::send('email',['params'=>$params],function($message){
                 $to = ['190507753@qq.com','359448144@qq.com','181320651@qq.com','45233506@qq.com','1073043199@qq.com',
                     'lindongbin06487@hellobike.com','guxuanming@hellobike.com','xieyisheng04638@hellobike.com',

@@ -20,9 +20,17 @@
                                 <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
                                     <h3>{{$params['to_name']}},您好：</h3>
                                     <h6>{{$params['message']}}</h6>
-                                    <p>任务列表 下载地址:{{$params['data']['task_url']}}</p>
-                                    <br/>
-                                    <p>人员轨迹 下载地址:{{$params['data']['track_url']}}</p>
+                                    @if ($params['type'] == "day")
+                                        <p>任务列表 下载地址:{{$params['data']['task_url']}}</p>
+                                        <br/>
+                                        <p>人员轨迹 下载地址:{{$params['data']['track_url']}}</p>
+                                    @else
+                                        @foreach($params['data'] as $v)
+                                            <p>任务列表 下载地址:{{$v}}</p>
+                                            <br/>
+                                        @endforeach
+                                    @endif
+
                                     <hr/>
                                     <p>【福州共享单车自律会】</p>
                                 </div>
