@@ -87,7 +87,7 @@ class SendMonthData extends Command
             // 发送邮件
             $params = [
                 'to_name' => "尊敬的领导",
-                'message' => '福州共享单车 '.date('Y-m').'打包数据',//福州共享单车 2022-05 打包数据
+                'message' => '福州共享单车 '.date('Y-m').'打包数据【月数据】',//福州共享单车 2022-05 打包数据
                 'type'    => 'month',
                 'data' => $taskurls
             ];
@@ -97,7 +97,7 @@ class SendMonthData extends Command
                     'lindongbin06487@hellobike.com','guxuanming@hellobike.com','xieyisheng04638@hellobike.com',
                     'zsejjj@qq.com','huangxiaoqing06@meituan.com','463100532@qq.com','892374558@qq.com','rmb987@126.com',
                     '756057492@qq.com','756057492@qq.com'];//'190507753@qq.com;hui7893308@126.com';
-                $message ->to($to)->subject(date('Y-m-d')."打包数据");
+                $message ->to($to)->subject(date('Y-m')."打包数据【月数据】");
             });
             // 返回的一个错误数组，利用此可以判断是否发送成功
             dd(Mail::failures());
