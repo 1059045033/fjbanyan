@@ -82,7 +82,12 @@ class SendData extends Command
                       ->each(function ($data,$key){
                           $data->created_at = date('Y-m-d H:i:s',$data->created_at);
                           if(!empty($data->atlas)){
-                              $data->atlas_arr = json_decode($data->atlas,1);
+                              $temp = json_decode($data->atlas,1);
+                              foreach ($temp as &$vvv)
+                              {
+                                  $vvv = config('app.url').$vvv;
+                              }
+                              $data->atlas_arr = $temp;//json_decode($data->atlas,1);
                           }
 
                       })
