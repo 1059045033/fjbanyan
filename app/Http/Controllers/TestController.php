@@ -8,6 +8,7 @@ use App\Models\WorkingTime;
 use App\Services\SmsFgService;
 use Illuminate\Http\Request;
 use App\Services\JPushService;
+use Illuminate\Support\Facades\Mail;
 
 class TestController extends Controller
 {
@@ -70,6 +71,25 @@ class TestController extends Controller
         }
 
         echo json_encode($ttt);
+    }
+
+    public function test4(){
+        $params = [
+            'to_name' => "尊敬的领导",
+            'message' => '福州共享单车 '.date('Y-m-d').'打包数据',//福州共享单车 2022-05-16 打包数据
+            'type'    => 'day',
+            'data' =>[
+                'task_url' => "http://task_url.com",
+                'track_url' => "http://track_url.com",
+            ]
+        ];
+a
+        Mail::send('email',['params'=>$params],function($message){
+            $to = ['190507753@qq.com'];//'190507753@qq.com;hui7893308@126.com';
+            $message ->to($to)->subject(date('Y-m-d')."打包数据");
+        });
+        // 返回的一个错误数组，利用此可以判断是否发送成功
+        dd(Mail::failures());
     }
 
 

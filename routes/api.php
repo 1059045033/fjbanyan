@@ -173,6 +173,7 @@ Route::post('/admin/workingtime/create','Admin\WorkingTimeController@create');
 
 Route::get('/test','TestController@test');
 Route::get('/test03','TestController@test03');
+Route::get('/test04','TestController@test04');
 
 
 
