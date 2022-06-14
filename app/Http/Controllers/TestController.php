@@ -73,7 +73,7 @@ class TestController extends Controller
         echo json_encode($ttt);
     }
 
-    public function test4(){
+    public function test04(){
         $params = [
             'to_name' => "尊敬的领导",
             'message' => '福州共享单车 '.date('Y-m-d').'打包数据',//福州共享单车 2022-05-16 打包数据
@@ -83,7 +83,7 @@ class TestController extends Controller
                 'track_url' => "http://track_url.com",
             ]
         ];
-a
+
         Mail::send('email',['params'=>$params],function($message){
             $to = ['190507753@qq.com'];//'190507753@qq.com;hui7893308@126.com';
             $message ->to($to)->subject(date('Y-m-d')."打包数据");
