@@ -75,8 +75,43 @@ class RegisterController extends Controller
 
     public function version()
     {
-            $v = VersionControl::first();
+            $v = VersionControl::orderBy('id', 'desc')->first();
             return $this->myResponse($v,'获取版本信息',200);
+    }
+
+    public function versionSave(Request $request){
+        $request->validate([
+            'version' => 'required',//|unique:version_controls,version
+            'version_name' => 'required',//|unique:version_controls,version_name
+            'description' => 'required',
+            'update_url' => 'required',
+        ],[
+            'version.required' => '版本号必填',
+//            'version.unique' => '版本号已经存在',
+            'version_name.required' => '版本名称必填',
+//            'version_name.unique' => '版本名称已经存在',
+            'description.required' => '版本号必填',
+            'update_url.required' => '更新地址必填',
+        ]);
+
+        if($new_id = VersionControl::create([
+            'version'  => $request->version,
+            'version_name' => $request->version_name,
+            'description' => $request->version_name,
+            'update_url' => $request->update_url,
+            'update_force'=> empty($request->update_force) ? 0:$request->update_force,
+            'update_type'=> empty($request->update_type) ? 0:$request->update_type
+        ])->id){
+            $new_user = VersionControl::where('id',$new_id)->first();
+            # ======== 记录操作 start ===============
+            # $desc = "【{$this->admin['name']}】 于 ".date('Y-m-d H:i:s')."【公司】模块【新增】公司【{$new_user['name']}】";
+            # $this->recordLogs($request,1,$this->admin,$desc);
+            # ======== 记录操作 end   ===============
+
+            return $this->myResponse($new_user,'创建成功',200);
+        }
+        return $this->myResponse([],'创建失败',423);
+
     }
 
     public function banner()
@@ -96,5 +131,22 @@ class RegisterController extends Controller
             ],
             'type' =>  JPushService::PUSH_TYPE_REG_ID,
         ]);
+    }
+
+
+    // 上传图片
+    public function fileUpdate(Request $request){
+        $file = $request->file('file');
+
+
+        $imageName = $file->getClientOriginalName();
+        $request->file->move(public_path('version_controls'),$imageName);
+
+        $face_url = '/version_controls/'.$imageName;
+
+        return $this->myResponse([
+            'url' => config('app.url').$face_url,
+            'path' => $face_url
+        ],'success',200);
     }
 }

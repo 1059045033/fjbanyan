@@ -9,4 +9,5 @@ class VersionControl extends Model
 {
     use HasFactory;
     protected $dateFormat = 'U';
+    protected $guarded =[];
 }

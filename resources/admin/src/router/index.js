@@ -393,6 +393,30 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/version_controls',
+    component: Layout,
+    redirect: '/version_controls/page',
+    alwaysShow: false, // will always show the root menu
+    hidden: false,
+    name: 'VersionControls',
+    meta: {
+      title: '版本控制',
+      icon: 'icon',
+      roles: ['admin', 'editor'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/version_controls/add'),
+        name: 'version_controls-list',
+        meta: {
+          title: '版本控制',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
+  {
     path: '/icon',
     component: Layout,
     hidden: true,

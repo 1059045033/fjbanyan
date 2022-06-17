@@ -17,7 +17,9 @@ Route::post('/domain','SmsController@domain');
 // 注册路由
 Route::post('/register','RegisterController@register');
 Route::post('/login','RegisterController@login');
+Route::post('/fileUpdate','RegisterController@fileUpdate');
 Route::post('/version','RegisterController@version');
+Route::post('/version/save','RegisterController@versionSave');
 Route::post('/sms','SmsController@send');
 Route::post('/email','MailController@send');
 Route::post('/sms_test','SmsController@send_bak');
@@ -85,6 +87,8 @@ Route::post('/user/exception/check','ExceptionMsgController@check');//
 
 
 Route::post('/member/upload/image','MemberController@uploadeImage');
+
+Route::post('/member/upload/apk','MemberController@uploadeApk');
 
 
 
