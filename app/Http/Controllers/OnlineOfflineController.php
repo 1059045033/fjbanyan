@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
+use App\Models\DashboardAttendance;
+use App\Models\DashboardLateOrEarly;
 use App\Models\OnlineOffline;
 use App\Http\Requests\StoreOnlineOfflineRequest;
 use App\Http\Requests\UpdateOnlineOfflineRequest;
 use App\Models\User;
 use App\Models\WorkingTime;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class OnlineOfflineController extends Controller
@@ -51,8 +55,42 @@ class OnlineOfflineController extends Controller
         ]);
         User::where('id',$request->user()['id'])->update(['is_online'=>1]);
 
+        // 记录日出勤
+        $date_day = Carbon::now()->startOfDay()->timestamp;
+        DashboardAttendance::firstOrCreate(
+            ['date_day'=>$date_day,'user_id'=>$request->user()['id']],
+            [
+                'user_name'         => $request->user()['name'],
+                'user_phone'        => $request->user()['phone'],
+                'user_role'         => $request->user()['role'],
+                'user_region'       => $request->user()['region_id'],
+                'user_work_region'  => $request->user()['work_region_id'],
+                'company'           => Company::find($request->user()['company_id'])->name,
+                'company_id'        => $request->user()['company_id'],
+                'type'              => 1
+            ]
+        );
+        // 未出勤的数据 单一天结了用脚本去跑
+
+
         if($is_late)
         {
+
+            // 记录日出勤
+            DashboardLateOrEarly::firstOrCreate(
+                ['date_day'=>$date_day,'user_id'=>$request->user()['id']],
+                [
+                    'user_name'         => $request->user()['name'],
+                    'user_phone'        => $request->user()['phone'],
+                    'user_role'         => $request->user()['role'],
+                    'user_region'       => $request->user()['region_id'],
+                    'user_work_region'  => $request->user()['work_region_id'],
+                    'company'           => Company::find($request->user()['company_id'])->name,
+                    'company_id'        => $request->user()['company_id'],
+                    'type'              => 1
+                ]
+            );
+
             return $this->myResponse(['tag'=>'late'],'迟到',200);
         }
 
@@ -94,6 +132,21 @@ class OnlineOfflineController extends Controller
 
         if($is_early)
         {
+            $date_day = Carbon::now()->startOfDay()->timestamp;
+            // 记录日出勤
+            DashboardLateOrEarly::firstOrCreate(
+                ['date_day'=>$date_day,'user_id'=>$request->user()['id']],
+                [
+                    'user_name'         => $request->user()['name'],
+                    'user_phone'        => $request->user()['phone'],
+                    'user_role'         => $request->user()['role'],
+                    'user_region'       => $request->user()['region_id'],
+                    'user_work_region'  => $request->user()['work_region_id'],
+                    'company'           => Company::find($request->user()['company_id'])->name,
+                    'company_id'        => $request->user()['company_id'],
+                    'type'              => 2
+                ]
+            );
             return $this->myResponse(['tag'=>'early'],'早退',200);
         }
 

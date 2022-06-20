@@ -1,16 +1,16 @@
 <template>
   <el-table :data="list" style="width: 100%;padding-top: 15px;">
-    <el-table-column label="Order_No" min-width="200">
+    <el-table-column label="公司" min-width="200">
       <template slot-scope="scope">
-        {{ scope.row.order_no | orderNoFilter }}
+        {{ scope.row.company}}
       </template>
     </el-table-column>
-    <el-table-column label="Price" width="195" align="center">
+    <el-table-column label="任务数" width="195" align="center">
       <template slot-scope="scope">
-        ¥{{ scope.row.price | toThousandFilter }}
+        {{ scope.row.tasks}}
       </template>
     </el-table-column>
-    <el-table-column label="Status" width="100" align="center">
+    <el-table-column label="排名" width="100" align="center">
       <template slot-scope="{row}">
         <el-tag :type="row.status | statusFilter">
           {{ row.status }}
@@ -27,8 +27,9 @@ export default {
   filters: {
     statusFilter(status) {
       const statusMap = {
-        success: 'success',
-        pending: 'danger'
+        1: 'danger',
+        2: 'success',
+        3: 'warning',
       }
       return statusMap[status]
     },
@@ -46,9 +47,17 @@ export default {
   },
   methods: {
     fetchData() {
-      transactionList().then(response => {
-        this.list = response.data.items.slice(0, 8)
-      })
+
+      this.list = [
+        {"company":"公司002","timestamp":1472712699293,"username":"Paul Lee","tasks":100,"status":"1"},
+        {"company":"公司001","timestamp":1472712699293,"username":"Paul Lee","tasks":80,"status":"2"},
+        {"company":"公司003","timestamp":1472712699293,"username":"Paul Lee","tasks":70,"status":"3"},
+        {"company":"公司004","timestamp":1472712699293,"username":"Paul Lee","tasks":60,"status":"4"},
+        {"company":"公司005","timestamp":1472712699293,"username":"Paul Lee","tasks":60,"status":"5"},
+        ];
+      //   transactionList().then(response => {
+      //   this.list = response.data.items.slice(0, 8)
+      // })
     }
   }
 }

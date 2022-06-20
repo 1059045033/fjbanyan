@@ -2,16 +2,19 @@
   <div class="dashboard-editor-container">
 <!--    <github-corner class="github-corner" />-->
 
-    <panel-group @handleSetLineChartData="handleSetLineChartData" />
+    <panel-group @handleSetLineChartData="handleSetLineChartData" v-if="false" />
 
     <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
-      <line-chart :chart-data="lineChartData" />
+      <el-select v-model="company" placeholder="公司" clearable class="filter-item" style="width: 130px" @change="changeLineCart" v-if="false">
+        <el-option v-for="item in companyOptions" :key="item.id" :label="item.name" :value="item.id" />
+      </el-select>
+      <line-chart :chart-data="lineChartData"/>
     </el-row>
 
-    <el-row :gutter="32">
-      <el-col :xs="24" :sm="24" :lg="8">
+    <el-row :gutter="32" v-if="false">
+      <el-col :xs="48" :sm="48" :lg="16">
         <div class="chart-wrapper">
-          <raddar-chart />
+          <transaction-table />
         </div>
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
@@ -19,30 +22,14 @@
           <pie-chart />
         </div>
       </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <bar-chart />
-        </div>
-      </el-col>
     </el-row>
 
-    <el-row :gutter="8">
-      <el-col :xs="{span: 24}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 12}" :xl="{span: 12}" style="padding-right:8px;margin-bottom:30px;">
-<!--        <transaction-table />-->
-      </el-col>
-      <el-col :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 6}" :xl="{span: 6}" style="margin-bottom:30px;">
-<!--        <todo-list />-->
-      </el-col>
-      <el-col :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 6}" :xl="{span: 6}" style="margin-bottom:30px;">
-<!--        <box-card />-->
-      </el-col>
-    </el-row>
 
   </div>
 </template>
 
 <script>
-import GithubCorner from '@/components/GithubCorner'
+
 import PanelGroup from './components/PanelGroup'
 import LineChart from './components/LineChart'
 import RaddarChart from './components/RaddarChart'
@@ -51,26 +38,28 @@ import BarChart from './components/BarChart'
 import TransactionTable from './components/TransactionTable'
 import TodoList from './components/TodoList'
 import BoxCard from './components/BoxCard'
+import {getAllCompany, getdashboradAttendances} from '@/api/common'
+
 
 const lineChartData = {
   newVisitis: {
-    expectedData: [100, 120, 161, 134, 105, 160, 165],
-    actualData: [120, 82, 91, 154, 162, 140, 145]
+    expectedData: [100, 120, 161, 134, 105, 160, 165,10,0],
+    actualData: [190, 82, 91, 154, 162, 140, 145,188,192],
+    xAxisData: ['福州勘测有限公司', '青桔单车', '美团单车', '哈罗单车', '福州市共享单车行业自律会', '福州诚辉保安服务有限公司', '福建天安保安服务有限公司', '福州市城管委', '泉州钧泰保安服务有限公司'],
   },
-  messages: {
-    expectedData: [200, 192, 120, 144, 160, 130, 140],
-    actualData: [180, 160, 151, 106, 145, 150, 130]
-  },
-  purchases: {
-    expectedData: [80, 100, 121, 104, 105, 90, 100],
-    actualData: [120, 90, 100, 138, 142, 130, 130]
-  },
-  shoppings: {
-    expectedData: [130, 140, 141, 142, 145, 150, 160],
-    actualData: [120, 82, 91, 154, 162, 140, 130]
-  }
 }
+const companyOptions = [
+  { id: '1', name: 'newVisitis' },
+  { id: '2', name: 'messages' },
+  { id: '3', name: 'purchases' },
+  { id: '4', name: 'shoppings' },
+]
 
+// arr to obj, such as { CN : "China", US : "USA" }
+const companyKeyValue = companyOptions.reduce((acc, cur) => {
+  acc[cur.id] = cur.name
+  return acc
+}, {})
 export default {
   name: 'DashboardAdmin',
   components: {
@@ -86,13 +75,65 @@ export default {
   },
   data() {
     return {
-      lineChartData: lineChartData.newVisitis
+      lineChartData: lineChartData.newVisitis,
+      start_date: new Date(),
+      companyOptions,
+      company: undefined,
+      // xAxisData: ['福州勘测有限公司', '青桔单车', '美团单车', '哈罗单车', '福州市共享单车行业自律会', '福州诚辉保安服务有限公司', '福建天安保安服务有限公司', '福州市城管委', '泉州钧泰保安服务有限公司'],
+      companies:[]
     }
   },
+  // watch: {
+  //   xAxisData: {
+  //     deep: true,
+  //     handler(val) {
+  //       console.log('val : ',val)
+  //       this.xAxisData = val
+  //     }
+  //   }
+  // },
+  created() {
+    // console.log('子组件 : 获取公司列表')
+    getAllCompany(this.listQuery).then(response => {
+      this.companies = response.data;
+      // for(let i=0;i<response.data.length;i++){
+      //   this.xAxisData.push(response.data[i]['id'])
+      // }
+      // console.log("子组件 : 公司列表 ",this.xAxisData[0])
+    })
+
+    // 获取考勤数据
+    this.getdashboradAttendances()
+
+  },
   methods: {
+    getdashboradAttendances(){
+      // getdashboradAttendances(this.listQuery).then(response => {
+      //
+      // })
+      let inde =100;
+      let _that = this;
+      let tt = setInterval(function () {
+        inde++;
+        getdashboradAttendances(_that.listQuery).then(response => {
+          if(response.code == 200){
+            _that.lineChartData.expectedData = response.data.chuqin;
+            _that.lineChartData.actualData = response.data.nochuqin;
+            _that.lineChartData.xAxisData = response.data.xAxisData;
+          }
+        })
+        if(inde > 1){
+          clearInterval(tt)
+        }
+      },3000)
+    },
     handleSetLineChartData(type) {
       this.lineChartData = lineChartData[type]
-    }
+    },
+    changeLineCart(e){
+
+      this.lineChartData = lineChartData[companyKeyValue[e]]
+    },
   }
 }
 </script>

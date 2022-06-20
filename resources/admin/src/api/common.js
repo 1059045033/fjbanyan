@@ -64,4 +64,13 @@ export function saveVersion(data) {
   })
 }
 
+// 获取 三方出勤人数
+export function getdashboradAttendances(query) {
+  return request({
+    url: '/admin/dashboard/attendances',
+    method: 'get',
+    params: query
+  })
+}
+
 

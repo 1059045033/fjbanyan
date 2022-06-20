@@ -29,17 +29,23 @@ export default {
     chartData: {
       type: Object,
       required: true
-    }
+    },
+    // xAxisData:{
+    //   type: Array,
+    //   required: true
+    // }
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      start_date: new Date(),
     }
   },
   watch: {
     chartData: {
       deep: true,
       handler(val) {
+        console.log('LineChart :',val)
         this.setOptions(val)
       }
     }
@@ -61,18 +67,46 @@ export default {
       this.chart = echarts.init(this.$el, 'macarons')
       this.setOptions(this.chartData)
     },
-    setOptions({ expectedData, actualData } = {}) {
+
+    setOptions({ expectedData, actualData,xAxisData } = {}) {
+      // console.log(xAxisData)
       this.chart.setOption({
         xAxis: {
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          data: xAxisData,
           boundaryGap: false,
           axisTick: {
             show: false
+          },
+          axisLabel:{
+            show: true,
+            interval: 0,//使x轴文字显示全
+            formatter: function(params) {
+              var newParamsName = "";
+              var paramsNameNumber = params.length;
+              var provideNumber = 4; //一行显示几个字
+              var rowNumber = Math.ceil(paramsNameNumber / provideNumber);
+              if (paramsNameNumber > provideNumber) {
+                for (var p = 0; p < rowNumber; p++) {
+                  var tempStr = "";
+                  var start = p * provideNumber;
+                  var end = start + provideNumber;
+                  if (p == rowNumber - 1) {
+                    tempStr = params.substring(start, paramsNameNumber);
+                  } else {
+                    tempStr = params.substring(start, end) + "\n";
+                  }
+                  newParamsName += tempStr;
+                }
+              } else {
+                newParamsName = params;
+              }
+              return newParamsName;
+            }
           }
         },
         grid: {
           left: 10,
-          right: 10,
+          right: 20,
           bottom: 20,
           top: 30,
           containLabel: true
@@ -90,10 +124,10 @@ export default {
           }
         },
         legend: {
-          data: ['expected', 'actual']
+          data: ['出勤', '未出勤']
         },
         series: [{
-          name: 'expected', itemStyle: {
+          name: '出勤', itemStyle: {
             normal: {
               color: '#FF005A',
               lineStyle: {
@@ -109,7 +143,7 @@ export default {
           animationEasing: 'cubicInOut'
         },
         {
-          name: 'actual',
+          name: '未出勤',
           smooth: true,
           type: 'line',
           itemStyle: {

@@ -142,6 +142,9 @@ Route::get('/admin/task/export','Admin\TaskLogController@export');//
 // 考勤明细
 Route::get('/admin/attendance/lists','Admin\AttendanceController@lists');
 
+//Dashboard 页面数据
+Route::get('/admin/dashboard/attendances','Admin\DashboardController@attendances');
+
 // 获取所有数据
 Route::get('/admin/region/regions_all','Admin\WorkRegionController@regions_all');// 所有区域列表
 Route::get('/admin/company/company_all','Admin\CompanyController@company_all');// 所有区域列表
@@ -178,6 +181,7 @@ Route::post('/admin/workingtime/create','Admin\WorkingTimeController@create');
 Route::get('/test','TestController@test');
 Route::get('/test03','TestController@test03');
 Route::get('/test04','TestController@test04');
+Route::get('/test05','TestController@test05');
 
 
 

@@ -5,13 +5,16 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreActivityMsgRequest;
 use App\Http\Requests\UpdateActivityMsgRequest;
 use App\Models\ActivityMsg;
+use App\Models\DashboardRegionNoBody;
 use App\Models\RegionGroup;
 use App\Models\User;
 use App\Models\WorkingTime;
 use App\Models\WorkRegion;
 use App\Services\JPushService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 
 class MemberController extends Controller
 {
@@ -267,6 +270,7 @@ class MemberController extends Controller
         $work_user->work_region_id = $work_region_id;
         $work_user->save();
 
+
         #=========== 设置工作区域 start =========
         if(!empty($work_user->jpush_reg_id))
         {
@@ -279,6 +283,8 @@ class MemberController extends Controller
             ]);
         }
         #=========== 设置工作区域   end =========
+        // 更新网格的到岗数据
+        $this->updateDashboardRegionNoBody();
 
         return $this->myResponse([],'工作人员工作区域设置成功',200);
 
@@ -327,6 +333,7 @@ class MemberController extends Controller
             $temp_user->save();
             !empty($temp_user->jpush_reg_id) && $jpush_reg_ids[] = $temp_user->jpush_reg_id;
         }
+
         #=========== 设置工作区域 start =========
         if(!empty($jpush_reg_ids->jpush_reg_id)) {
             JPushService::pushInApp([
@@ -340,12 +347,14 @@ class MemberController extends Controller
         #=========== 设置工作区域   end =========
 
 
+        // 更新网格的到岗数据
+        $this->updateDashboardRegionNoBody();
         return $this->myResponse([],'工作区域全部设置完成',200);
 
     }
 
     // 移除指定区域的工作人员
-    public function removeUser(Request $request)
+    public function removeUser_bak(Request $request)
     {
         $user = $request->user();
         $request->validate([
@@ -433,6 +442,59 @@ class MemberController extends Controller
                 #=========== 设置工作区域   end =========
             }
         }
+        // 更新网格的到岗数据
+        $this->updateDashboardRegionNoBody();
         return $this->myResponse([],'一键排班完成',200);
+    }
+
+    // 更新网格的到岗数据
+    protected function updateDashboardRegionNoBody(){
+
+        // 清理完所有的工作区后  初始化每天的缺岗数据
+        $date_day = Carbon::now()->startOfDay()->timestamp;
+
+        // 先置空所有的 缺岗
+        DashboardRegionNoBody::where('date_day','=',$date_day)->update([
+            'body_nums'=>0,
+        ]);
+        // 获取组的信息
+        $groups = RegionGroup::pluck('name','id')->toArray();
+
+        // 人 - 工作网格的信息
+        $user_work_regions = User::whereNotNull('work_region_id')->pluck('work_region_id')->toArray();
+        !empty($user_work_regions) && $user_work_regions=array_unique($user_work_regions);
+        // 所有网格信息
+        $regions = $regions = WorkRegion::whereNotnull('group_id')->select('id','group_id')->get()->toArray();
+
+        foreach ($regions as $k=>$v)
+        {
+            if(in_array($v['id'],$user_work_regions)){
+                unset($regions[$k]);
+            }
+        }
+
+        $new_regions = [];
+        foreach ($regions as $k=>$v){
+            if(empty($new_regions[$v['group_id']]))
+            {
+                $new_regions[$v['group_id']] =1;
+            }else{
+                $new_regions[$v['group_id']]++;
+            }
+        }
+
+
+        foreach ($new_regions as $k=>$v)
+        {
+            DashboardRegionNoBody::updateOrCreate(
+                ['date_day'=>$date_day,'group_id'=>$k],
+                [
+                    'group_id'         => $k,
+                    'group_name'       => empty($groups[$k]) ? '':$groups[$k],
+                    'body_nums'        => $v,
+                    'date_day'         => $date_day,
+                ]
+            );
+        }
     }
 }

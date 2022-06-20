@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
+use App\Models\DashboardRegionNoBody;
+use App\Models\RegionGroup;
 use App\Models\TaskLog;
 use App\Models\User;
 use App\Models\WorkingTime;
+use App\Models\WorkRegion;
 use App\Services\SmsFgService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Services\JPushService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class TestController extends Controller
@@ -50,8 +56,6 @@ class TestController extends Controller
         echo json_encode($res);
         die;
     }
-
-
     public function test03()
     {
         $tasks = TaskLog::where('created_at','>',1652976000)->pluck('id')->toArray();
@@ -72,7 +76,6 @@ class TestController extends Controller
 
         echo json_encode($ttt);
     }
-
     public function test04(){
         $params = [
             'to_name' => "尊敬的领导",
@@ -91,8 +94,22 @@ class TestController extends Controller
         // 返回的一个错误数组，利用此可以判断是否发送成功
         dd(Mail::failures());
     }
+    public function test05()
+    {
 
 
+        $day_timestamp =  $start_date = Carbon::parse('2022-09-01')->startOfDay()->timestamp;
+        echo $day_timestamp;
+        // 记录前一天的三方未出勤人数 ------end
+        die;
+        //echo json_encode($users);die;
+
+        $yesterday = Carbon::yesterday()->timestamp;
+        echo $yesterday;die;
+
+
+        echo Carbon::now()->startOfDay()->timestamp;
+    }
     function filterURL($url)
     {
         $allowDomains = ["test.com", "demo.com"];
