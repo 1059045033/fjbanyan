@@ -73,14 +73,14 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/region/index',
-    hidden: true,
+    redirect: '/dashboard',
+    hidden: false,
     children: [
       {
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
-        meta: { title: 'Dashboard', icon: 'dashboard', affix: false }
+        name: '统计',
+        meta: { title: '统计', icon: 'dashboard', affix: true }
       }
     ]
   },
@@ -179,7 +179,7 @@ export const asyncRoutes = [
     path: '/region',
     component: Layout,
     redirect: '/region/page',
-    alwaysShow: true, // will always show the root menu
+    alwaysShow: false, // will always show the root menu
     name: 'Region',
     meta: {
       title: '区域管理',
