@@ -47,7 +47,9 @@ class ResetWrokRegion extends Command
         $yesterday = Carbon::yesterday()->timestamp;
         // 出勤
         $chuqing_user_ids = DB::table('dashboard_attendances')->where(['type'=>1,'date_day'=>$yesterday])->pluck('user_id')->toArray();
-        $users = DB::table('users')->whereNull('deleted_at')->whereIn('role',[20,10])->whereNotIn('id',$chuqing_user_ids)->get();
+        $users = DB::table('users')->whereNull('deleted_at')
+//            ->whereIn('role',[20,10])
+            ->whereNotIn('id',$chuqing_user_ids)->get();
 
         //$work_notices
         $t = time();

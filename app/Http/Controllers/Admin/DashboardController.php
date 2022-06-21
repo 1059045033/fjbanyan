@@ -21,7 +21,7 @@ class DashboardController extends Controller
             $day_timestamp = Carbon::parse($day)->startOfDay()->timestamp;
         }
 
-        $companies = DB::table('companies')->pluck('name','id')->toArray();
+        $companies = DB::table('companies')->whereNull('deleted_at')->pluck('name','id')->toArray();
 
         // 出勤
         $chuqing = DB::table('dashboard_attendances')
