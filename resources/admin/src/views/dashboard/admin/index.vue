@@ -1,6 +1,13 @@
 <template>
   <div class="dashboard-editor-container">
 <!--    <github-corner class="github-corner" />-->
+    <div class="filter-container">
+      <el-date-picker v-model="listQuery.start_date" type="date" value-format="yyyy-MM-dd" placeholder="请选择一个时间"/>
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter" style="padding-top: 8px;">
+        搜索
+      </el-button>
+    </div>
+
 
     <panel-group @handleSetLineChartData="handleSetLineChartData" v-if="false" />
 
@@ -51,6 +58,8 @@ import TransactionTable from './components/TransactionTable'
 import TodoList from './components/TodoList'
 import BoxCard from './components/BoxCard'
 import {getAllCompany, getdashboradAttendances, getdashboradRegionNoBody,getdashboradlateEarly} from '@/api/common'
+import {parseTime} from "@/utils";
+import waves from '@/directive/waves' // waves directive
 
 
 const lineChartData = {
@@ -104,16 +113,20 @@ export default {
     TodoList,
     BoxCard
   },
+  directives: { waves },
   data() {
     return {
       lineChartData: lineChartData.newVisitis,
       pieChartData: pieChartData.newVisitis,
       barChartData: barChartData.newVisitis,
-      start_date: new Date(),
+      // start_date: new Date(),
       companyOptions,
       company: undefined,
       // xAxisData: ['福州勘测有限公司', '青桔单车', '美团单车', '哈罗单车', '福州市共享单车行业自律会', '福州诚辉保安服务有限公司', '福建天安保安服务有限公司', '福州市城管委', '泉州钧泰保安服务有限公司'],
-      companies:[]
+      companies:[],
+      listQuery: {
+        start_date: new Date(),
+      },
     }
   },
   // watch: {
@@ -140,43 +153,46 @@ export default {
 
   },
   methods: {
+    handleFilter(){
+      this.listQuery.start_date = parseTime(this.listQuery.start_date);
+      this.updateDate();
+    },
     getdashboradAttendances(){
-      // getdashboradAttendances(this.listQuery).then(response => {
-      //
-      // })
-      let inde =100;
       let _that = this;
+      let ii=0
       let tt = setInterval(function () {
-        inde++;
-        getdashboradAttendances(_that.listQuery).then(response => {
-          if(response.code == 200){
-            _that.lineChartData.expectedData = response.data.chuqin;
-            _that.lineChartData.actualData = response.data.nochuqin;
-            _that.lineChartData.xAxisData = response.data.xAxisData;
-          }
-        })
-
-        getdashboradRegionNoBody(_that.listQuery).then(response => {
-          if(response.code == 200){
-            _that.pieChartData = response.data;
-            console.log('pieChartData :',_that.pieChartData)
-          }
-        })
-
-        getdashboradlateEarly(_that.listQuery).then(response => {
-          console.log('getdashboradlateEarly',response)
-          if(response.code == 200){
-            _that.barChartData.lateData = response.data.late;
-            _that.barChartData.earlyData = response.data.early;
-            _that.barChartData.xAxisData = response.data.xAxisData;
-          }
-
-        })
-
-        if(inde > 1){
+        _that.updateDate(_that.listQuery);
+        ii++;
+        if(ii > 100){
           clearInterval(tt)
         }
-      },3000)
+      },5000)
+    },
+    updateDate(){
+      this.listQuery.start_date = parseTime(this.listQuery.start_date);
+      getdashboradAttendances(this.listQuery).then(response => {
+        console.log('dddd =',response.data)
+        if(response.code == 200){
+          this.lineChartData.expectedData = response.data.chuqin;
+          this.lineChartData.actualData = response.data.nochuqin;
+          this.lineChartData.xAxisData = response.data.xAxisData;
+        }
+      })
+
+      getdashboradRegionNoBody(this.listQuery).then(response => {
+        if(response.code == 200){
+          this.pieChartData = response.data;
+
+        }
+      })
+
+      getdashboradlateEarly(this.listQuery).then(response => {
+        if(response.code == 200){
+          this.barChartData.lateData = response.data.late;
+          this.barChartData.earlyData = response.data.early;
+          this.barChartData.xAxisData = response.data.xAxisData;
+        }
+      })
     },
     handleSetLineChartData(type) {
       this.lineChartData = lineChartData[type]

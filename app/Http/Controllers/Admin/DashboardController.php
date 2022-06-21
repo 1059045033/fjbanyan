@@ -32,7 +32,7 @@ class DashboardController extends Controller
         $chuqing = array_column($chuqing,'nums','company_id');
 
 
-        if($day == false){
+        if($day == false || Carbon::now()->startOfDay()->timestamp == $day_timestamp){
             // 如果是当天的
             // 公司总人数 - 已经出勤的人数  = 未出勤的人数
             $company_users = DB::table('users')
@@ -80,7 +80,7 @@ class DashboardController extends Controller
             ->select('group_name as name','body_nums as value')
             ->get()->toArray();
 
-        if($day == false){
+        if($day == false || Carbon::now()->startOfDay()->timestamp == $day_timestamp){
             $list = [];
             # 所有的组 每个组有多少网格
             $groups = DB::table('region_groups')->pluck('name','id')->toArray();
@@ -110,7 +110,7 @@ class DashboardController extends Controller
 
 
 
-        return $this->myResponse($list,''.$day_timestamp,200);
+        return $this->myResponse($list,$day.' -- '.$day_timestamp,200);
     }
 
     public function late_early(Request $request)
@@ -146,7 +146,7 @@ class DashboardController extends Controller
         }elseif ($type == 'user_region'){
             $xAxisData = DB::table('region_groups')->pluck('name','id')->toArray();
         }
-        
+
         $list = [];
         foreach ($xAxisData as $k=>$v){
             $list['xAxisData'][] = $v;
