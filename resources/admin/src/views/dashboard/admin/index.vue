@@ -11,6 +11,18 @@
       <line-chart :chart-data="lineChartData"/>
     </el-row>
 
+    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
+      <pie-chart :chart-data="pieChartData" />
+    </el-row>
+
+    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
+      <div class="chart-wrapper">
+        <bar-chart :chart-data="barChartData"/>
+      </div>
+    </el-row>
+
+
+
     <el-row :gutter="32" v-if="false">
       <el-col :xs="48" :sm="48" :lg="16">
         <div class="chart-wrapper">
@@ -38,7 +50,7 @@ import BarChart from './components/BarChart'
 import TransactionTable from './components/TransactionTable'
 import TodoList from './components/TodoList'
 import BoxCard from './components/BoxCard'
-import {getAllCompany, getdashboradAttendances} from '@/api/common'
+import {getAllCompany, getdashboradAttendances, getdashboradRegionNoBody,getdashboradlateEarly} from '@/api/common'
 
 
 const lineChartData = {
@@ -48,18 +60,37 @@ const lineChartData = {
     xAxisData: ['福州勘测有限公司', '青桔单车', '美团单车', '哈罗单车', '福州市共享单车行业自律会', '福州诚辉保安服务有限公司', '福建天安保安服务有限公司', '福州市城管委', '泉州钧泰保安服务有限公司'],
   },
 }
+
+const pieChartData = {
+  newVisitis: [
+    { value: 0, name: '网格01' },
+    { value: 0, name: '网格02' },
+  ],
+}
+
+
+const barChartData = {
+  newVisitis: {
+    lateData: [0, 120, 161, 134, 105, 160, 165,10,0],
+    earlyData: [0, 82, 91, 154, 162, 140, 145,188,192],
+    xAxisData: ['福州勘测有限公司', '青桔单车', '美团单车', '哈罗单车', '福州市共享单车行业自律会', '福州诚辉保安服务有限公司', '福建天安保安服务有限公司', '福州市城管委', '泉州钧泰保安服务有限公司'],
+  },
+}
+
+
 const companyOptions = [
   { id: '1', name: 'newVisitis' },
   { id: '2', name: 'messages' },
   { id: '3', name: 'purchases' },
   { id: '4', name: 'shoppings' },
 ]
-
 // arr to obj, such as { CN : "China", US : "USA" }
 const companyKeyValue = companyOptions.reduce((acc, cur) => {
   acc[cur.id] = cur.name
   return acc
 }, {})
+
+
 export default {
   name: 'DashboardAdmin',
   components: {
@@ -76,6 +107,8 @@ export default {
   data() {
     return {
       lineChartData: lineChartData.newVisitis,
+      pieChartData: pieChartData.newVisitis,
+      barChartData: barChartData.newVisitis,
       start_date: new Date(),
       companyOptions,
       company: undefined,
@@ -122,6 +155,24 @@ export default {
             _that.lineChartData.xAxisData = response.data.xAxisData;
           }
         })
+
+        getdashboradRegionNoBody(_that.listQuery).then(response => {
+          if(response.code == 200){
+            _that.pieChartData = response.data;
+            console.log('pieChartData :',_that.pieChartData)
+          }
+        })
+
+        getdashboradlateEarly(_that.listQuery).then(response => {
+          console.log('getdashboradlateEarly',response)
+          if(response.code == 200){
+            _that.barChartData.lateData = response.data.late;
+            _that.barChartData.earlyData = response.data.early;
+            _that.barChartData.xAxisData = response.data.xAxisData;
+          }
+
+        })
+
         if(inde > 1){
           clearInterval(tt)
         }

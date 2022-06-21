@@ -69,8 +69,17 @@ export default {
     },
 
     setOptions({ expectedData, actualData,xAxisData } = {}) {
-      // console.log(xAxisData)
+
       this.chart.setOption({
+        title:{
+          show:true,
+          text:'三方出勤统计',
+          textStyle:{
+            color:'#333',
+            fontWeight : 'bolder',
+            textShadowOffsetX : 156
+          }
+        },
         xAxis: {
           data: xAxisData,
           boundaryGap: false,
@@ -108,7 +117,7 @@ export default {
           left: 10,
           right: 20,
           bottom: 20,
-          top: 30,
+          top: 40,
           containLabel: true
         },
         tooltip: {

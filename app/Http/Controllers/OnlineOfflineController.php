@@ -8,6 +8,7 @@ use App\Models\DashboardLateOrEarly;
 use App\Models\OnlineOffline;
 use App\Http\Requests\StoreOnlineOfflineRequest;
 use App\Http\Requests\UpdateOnlineOfflineRequest;
+use App\Models\RegionGroup;
 use App\Models\User;
 use App\Models\WorkingTime;
 use Carbon\Carbon;
@@ -75,6 +76,27 @@ class OnlineOfflineController extends Controller
 
         if($is_late)
         {
+            $region_group = 0;
+            if(!empty($request->user()['region_id']))
+            {
+                $t = RegionGroup::find($request->user()['region_id']);
+                !empty($t) && $region_group = empty($t->group_id) ? 0:$t->group_id;
+            }
+
+            $work_region_group = 0;
+            if(!empty($request->user()['work_region_id']))
+            {
+                $t = RegionGroup::find($request->user()['work_region_id']);
+                !empty($t) && $work_region_group = empty($t->group_id) ? 0:$t->group_id;
+            }
+
+            $company = '';
+            if(!empty($request->user()['company_id']))
+            {
+                $t = Company::find($request->user()['company_id']);
+                !empty($t) && $company = empty($t->name) ? '':$t->name;
+            }
+
 
             // 记录日出勤
             DashboardLateOrEarly::firstOrCreate(
@@ -85,9 +107,11 @@ class OnlineOfflineController extends Controller
                     'user_role'         => $request->user()['role'],
                     'user_region'       => $request->user()['region_id'],
                     'user_work_region'  => $request->user()['work_region_id'],
-                    'company'           => Company::find($request->user()['company_id'])->name,
+                    'company'           => $company,
                     'company_id'        => $request->user()['company_id'],
-                    'type'              => 1
+                    'type'              => 1,
+                    'region_group'      => $region_group,
+                    'work_region_group' => $work_region_group,
                 ]
             );
 
@@ -134,6 +158,28 @@ class OnlineOfflineController extends Controller
         {
             $date_day = Carbon::now()->startOfDay()->timestamp;
             // 记录日出勤
+            $region_group = 0;
+            if(!empty($request->user()['region_id']))
+            {
+                $t = RegionGroup::find($request->user()['region_id']);
+                !empty($t) && $region_group = empty($t->group_id) ? 0:$t->group_id;
+            }
+
+            $work_region_group = 0;
+            if(!empty($request->user()['work_region_id']))
+            {
+                $t = RegionGroup::find($request->user()['work_region_id']);
+                !empty($t) && $work_region_group = empty($t->group_id) ? 0:$t->group_id;
+            }
+
+            $company = '';
+            if(!empty($request->user()['company_id']))
+            {
+                $t = Company::find($request->user()['company_id']);
+                !empty($t) && $company = empty($t->name) ? '':$t->name;
+            }
+
+            // 记录日出勤
             DashboardLateOrEarly::firstOrCreate(
                 ['date_day'=>$date_day,'user_id'=>$request->user()['id']],
                 [
@@ -142,9 +188,11 @@ class OnlineOfflineController extends Controller
                     'user_role'         => $request->user()['role'],
                     'user_region'       => $request->user()['region_id'],
                     'user_work_region'  => $request->user()['work_region_id'],
-                    'company'           => Company::find($request->user()['company_id'])->name,
+                    'company'           => $company,
                     'company_id'        => $request->user()['company_id'],
-                    'type'              => 2
+                    'type'              => 1,
+                    'region_group'      => $region_group,
+                    'work_region_group' => $work_region_group,
                 ]
             );
             return $this->myResponse(['tag'=>'early'],'早退',200);

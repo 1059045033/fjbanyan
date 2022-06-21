@@ -144,6 +144,8 @@ Route::get('/admin/attendance/lists','Admin\AttendanceController@lists');
 
 //Dashboard 页面数据
 Route::get('/admin/dashboard/attendances','Admin\DashboardController@attendances');
+Route::get('/admin/dashboard/region_nobody','Admin\DashboardController@region_nobody');
+Route::get('/admin/dashboard/late_early','Admin\DashboardController@late_early');
 
 // 获取所有数据
 Route::get('/admin/region/regions_all','Admin\WorkRegionController@regions_all');// 所有区域列表

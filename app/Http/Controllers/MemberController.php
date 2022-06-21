@@ -461,7 +461,7 @@ class MemberController extends Controller
         $groups = RegionGroup::pluck('name','id')->toArray();
 
         // 人 - 工作网格的信息
-        $user_work_regions = User::whereNotNull('work_region_id')->pluck('work_region_id')->toArray();
+        $user_work_regions = User::whereNotNull('work_region_id')->whereNull('deleted_at')->pluck('work_region_id')->toArray();
         !empty($user_work_regions) && $user_work_regions=array_unique($user_work_regions);
         // 所有网格信息
         $regions = $regions = WorkRegion::whereNotnull('group_id')->select('id','group_id')->get()->toArray();

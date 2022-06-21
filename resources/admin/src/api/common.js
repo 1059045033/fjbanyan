@@ -73,4 +73,23 @@ export function getdashboradAttendances(query) {
   })
 }
 
+// 获取 网格组缺岗数量
+export function getdashboradRegionNoBody(query) {
+  return request({
+    url: '/admin/dashboard/region_nobody',
+    method: 'get',
+    params: query
+  })
+}
+
+
+// 获取 迟到早退人数
+export function getdashboradlateEarly(query) {
+  return request({
+    url: '/admin/dashboard/late_early',
+    method: 'get',
+    params: query
+  })
+}
+
 
