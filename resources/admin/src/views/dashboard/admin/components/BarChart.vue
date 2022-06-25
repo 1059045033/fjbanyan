@@ -22,7 +22,7 @@ export default {
     },
     height: {
       type: String,
-      default: '300px'
+      default: '450px'
     },
     chartData: {
       type: Object,
@@ -38,7 +38,7 @@ export default {
     chartData: {
       deep: true,
       handler(val) {
-        console.log('LineChart :',val)
+        //console.log('LineChart :',val)
         this.setOptions(val)
       }
     }

@@ -31,7 +31,7 @@ export default {
     chartData: {
       deep: true,
       handler(val) {
-        console.log('pieChart :',val)
+        //console.log('pieChart :',val)
         this.setOptions(val)
       }
     }
