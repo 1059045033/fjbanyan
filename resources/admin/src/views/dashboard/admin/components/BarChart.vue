@@ -27,7 +27,7 @@ export default {
     chartData: {
       type: Object,
       required: true
-    },
+    }
   },
   data() {
     return {
@@ -38,7 +38,7 @@ export default {
     chartData: {
       deep: true,
       handler(val) {
-        //console.log('LineChart :',val)
+        // console.log('LineChart :',val)
         this.setOptions(val)
       }
     }
@@ -59,16 +59,15 @@ export default {
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons')
       this.setOptions(this.chartData)
-
     },
-    setOptions({ lateData, earlyData,xAxisData } = {}) {
+    setOptions({ lateData, earlyData, xAxisData } = {}) {
       this.chart.setOption({
-        title:{
-          show:true,
-          text:'迟到/早退',
-          textStyle:{
-            color:'#333',
-            fontWeight : 'bolder',
+        title: {
+          show: true,
+          text: '迟到/早退',
+          textStyle: {
+            color: '#333',
+            fontWeight: 'bolder'
           }
         },
         tooltip: {
@@ -91,30 +90,30 @@ export default {
             alignWithLabel: true,
             show: false
           },
-          axisLabel:{
+          axisLabel: {
             show: true,
-            interval: 0,//使x轴文字显示全
+            interval: 0, // 使x轴文字显示全
             formatter: function(params) {
-              var newParamsName = "";
-              var paramsNameNumber = params.length;
-              var provideNumber = 4; //一行显示几个字
-              var rowNumber = Math.ceil(paramsNameNumber / provideNumber);
+              var newParamsName = ''
+              var paramsNameNumber = params.length
+              var provideNumber = 4 // 一行显示几个字
+              var rowNumber = Math.ceil(paramsNameNumber / provideNumber)
               if (paramsNameNumber > provideNumber) {
                 for (var p = 0; p < rowNumber; p++) {
-                  var tempStr = "";
-                  var start = p * provideNumber;
-                  var end = start + provideNumber;
+                  var tempStr = ''
+                  var start = p * provideNumber
+                  var end = start + provideNumber
                   if (p == rowNumber - 1) {
-                    tempStr = params.substring(start, paramsNameNumber);
+                    tempStr = params.substring(start, paramsNameNumber)
                   } else {
-                    tempStr = params.substring(start, end) + "\n";
+                    tempStr = params.substring(start, end) + '\n'
                   }
-                  newParamsName += tempStr;
+                  newParamsName += tempStr
                 }
               } else {
-                newParamsName = params;
+                newParamsName = params
               }
-              return newParamsName;
+              return newParamsName
             }
           }
         }],
@@ -129,18 +128,17 @@ export default {
           type: 'bar',
           stack: 'vistors',
           barWidth: '30%',
-          data: lateData,//[79, 52, 200, 334, 390, 330, 220],
+          data: lateData, // [79, 52, 200, 334, 390, 330, 220],
           animationDuration
         }, {
           name: '早退人数',
           type: 'bar',
           stack: 'vistors',
           barWidth: '60%',
-          data: earlyData,//[80, 52, 200, 334, 390, 330, 220],
+          data: earlyData, // [80, 52, 200, 334, 390, 330, 220],
           animationDuration
         }]
       })
-
     }
   }
 }

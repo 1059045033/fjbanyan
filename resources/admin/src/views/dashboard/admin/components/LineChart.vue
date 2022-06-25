@@ -29,7 +29,7 @@ export default {
     chartData: {
       type: Object,
       required: true
-    },
+    }
     // xAxisData:{
     //   type: Array,
     //   required: true
@@ -38,14 +38,14 @@ export default {
   data() {
     return {
       chart: null,
-      start_date: new Date(),
+      start_date: new Date()
     }
   },
   watch: {
     chartData: {
       deep: true,
       handler(val) {
-        //console.log('LineChart :',val)
+        // console.log('LineChart :',val)
         this.setOptions(val)
       }
     }
@@ -68,16 +68,15 @@ export default {
       this.setOptions(this.chartData)
     },
 
-    setOptions({ expectedData, actualData,xAxisData } = {}) {
-
+    setOptions({ expectedData, actualData, xAxisData } = {}) {
       this.chart.setOption({
-        title:{
-          show:true,
-          text:'三方出勤统计',
-          textStyle:{
-            color:'#333',
-            fontWeight : 'bolder',
-            textShadowOffsetX : 156
+        title: {
+          show: true,
+          text: '三方出勤统计',
+          textStyle: {
+            color: '#333',
+            fontWeight: 'bolder',
+            textShadowOffsetX: 156
           }
         },
         xAxis: {
@@ -86,30 +85,30 @@ export default {
           axisTick: {
             show: false
           },
-          axisLabel:{
+          axisLabel: {
             show: true,
-            interval: 0,//使x轴文字显示全
+            interval: 0, // 使x轴文字显示全
             formatter: function(params) {
-              var newParamsName = "";
-              var paramsNameNumber = params.length;
-              var provideNumber = 4; //一行显示几个字
-              var rowNumber = Math.ceil(paramsNameNumber / provideNumber);
+              var newParamsName = ''
+              var paramsNameNumber = params.length
+              var provideNumber = 4 // 一行显示几个字
+              var rowNumber = Math.ceil(paramsNameNumber / provideNumber)
               if (paramsNameNumber > provideNumber) {
                 for (var p = 0; p < rowNumber; p++) {
-                  var tempStr = "";
-                  var start = p * provideNumber;
-                  var end = start + provideNumber;
+                  var tempStr = ''
+                  var start = p * provideNumber
+                  var end = start + provideNumber
                   if (p == rowNumber - 1) {
-                    tempStr = params.substring(start, paramsNameNumber);
+                    tempStr = params.substring(start, paramsNameNumber)
                   } else {
-                    tempStr = params.substring(start, end) + "\n";
+                    tempStr = params.substring(start, end) + '\n'
                   }
-                  newParamsName += tempStr;
+                  newParamsName += tempStr
                 }
               } else {
-                newParamsName = params;
+                newParamsName = params
               }
-              return newParamsName;
+              return newParamsName
             }
           }
         },

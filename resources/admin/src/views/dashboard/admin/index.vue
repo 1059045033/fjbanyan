@@ -2,16 +2,16 @@
   <div class="dashboard-editor-container">
     <!--    <github-corner class="github-corner" />-->
     <div class="filter-container">
-      <el-date-picker v-model="listQuery.start_date" type="date" value-format="yyyy-MM-dd" placeholder="请选择一个时间" @change="handleFilter"/>
-<!--      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" style="padding-top: 8px;" @click="handleFilter">-->
-<!--        搜索-->
-<!--      </el-button>-->
+      <el-date-picker v-model="listQuery.start_date" type="date" value-format="yyyy-MM-dd" placeholder="请选择一个时间" @change="handleFilter" />
+      <!--      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" style="padding-top: 8px;" @click="handleFilter">-->
+      <!--        搜索-->
+      <!--      </el-button>-->
     </div>
 
     <el-row :gutter="32">
       <el-col :xs="24" :sm="24" :lg="8">
         <div class="chart-wrapper" style="background-color: #0f3854" :current-data="listQuery.start_date">
-          <date-clock ref="child"/>
+          <date-clock ref="child" />
         </div>
         <div class="chart-wrapper">
           <pie-chart :chart-data="pieChartData" />
@@ -19,21 +19,21 @@
       </el-col>
       <el-col :xs="48" :sm="48" :lg="16">
         <div class="chart-wrapper">
-          <bar-chart :chart-data="barChartData"/>
+          <bar-chart :chart-data="barChartData" />
         </div>
       </el-col>
     </el-row>
 
     <panel-group v-if="false" @handleSetLineChartData="handleSetLineChartData" />
 
-    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;" v-if="false">
+    <el-row v-if="false" style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
       <el-select v-if="false" v-model="company" placeholder="公司" clearable class="filter-item" style="width: 130px" @change="changeLineCart">
         <el-option v-for="item in companyOptions" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
       <line-chart :chart-data="lineChartData" />
     </el-row>
 
-    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;" v-if="false">
+    <el-row v-if="false" style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
       <pie-chart :chart-data="pieChartData" />
     </el-row>
 
@@ -138,8 +138,8 @@ export default {
       listQuery: {
         start_date: new Date()
       },
-      timerID:undefined,
-      currentDate:parseTime(new Date(),'{y}-{m}-{d}')
+      timerID: undefined,
+      currentDate: parseTime(new Date(), '{y}-{m}-{d}')
     }
   },
   created() {
@@ -153,16 +153,14 @@ export default {
   methods: {
     handleFilter() {
       // 选择日期
-      this.$refs.child.sing(this.listQuery.start_date);
-      if(this.timerID != undefined && this.currentDate !=this.listQuery.start_date){
-        clearInterval(this.timerID);
+      this.$refs.child.sing(this.listQuery.start_date)
+      if (this.timerID != undefined && this.currentDate != this.listQuery.start_date) {
+        clearInterval(this.timerID)
         this.updateDate()
-
-      }else{
+      } else {
         // 重新获取数据
         this.getDashborad()
       }
-
     },
     getDashborad() {
       const _that = this
@@ -170,13 +168,13 @@ export default {
       this.timerID = setInterval(function() {
         _that.updateDate(_that.listQuery)
         ii++
-        if (ii > 1) {
-          clearInterval(this.timerID)
+        if (ii > 300) {
+          //clearInterval(this.timerID)
         }
       }, 5000)
     },
     updateDate() {
-      console.log("获取 数据=============")
+      console.log('获取 数据=============')
       this.listQuery.start_date = parseTime(this.listQuery.start_date)
 
       getdashboradAttendances(this.listQuery).then(response => {
@@ -230,8 +228,6 @@ export default {
     margin-bottom: 32px;
   }
 }
-
-
 
 @media (max-width:1024px) {
   .chart-wrapper {
