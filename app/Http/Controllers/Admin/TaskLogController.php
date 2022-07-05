@@ -65,7 +65,7 @@ class TaskLogController extends Controller
 
     public function export(Request $request)
     {
-
+        set_time_limit(3000);
         $companies = DB::table('companies')->pluck('name','id')->toArray();
         $regions = DB::table('work_regions')->pluck('name','id')->toArray();
         $time = time();
