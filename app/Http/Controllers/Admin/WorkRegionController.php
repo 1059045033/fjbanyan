@@ -98,7 +98,8 @@ class WorkRegionController extends Controller
     {
         $has_region = empty($request->has_region) ? 0 :$request->has_region;
 
-        $users = User::where(['role'=>10])->when(!empty($has_region), function ($query) use($has_region){
+        // where(['role'=>10])->
+        $users = User::when(!empty($has_region), function ($query) use($has_region){
             if($has_region == 1){
                 $query->where('region_id','>',0);
             }elseif ($has_region == 2)
@@ -115,9 +116,9 @@ class WorkRegionController extends Controller
             $old_ = WorkRegion::with('regionUsers')->where(['id'=>$request->region_id])->first();
             if(!empty($old_->regionUsers)){
                 foreach ($old_->regionUsers as $v){
-                    if($v['role'] == 10){
+                    //if($v['role'] == 10){
                         $old[] = ['user_id'=>$v['id'],'name'=>$v['name'],'phone'=>$v['phone'],'label'=>$v['name'].'('.$v['phone'].')'];
-                    }
+                    //}
 
                 }
             }
