@@ -72,13 +72,13 @@ class TaskLogController extends Controller
         $user_ids = [];
         if(!empty($request->name)){
             // $user_ids = DB::table('users')->whereIn('role',[10])->where('name','like','%'.$request->name.'%')->pluck('id')->toArray();
-            $user_ids = User::where('name','like','%'.$request->name.'%')->pluck('id')->toArray(); 
+            $user_ids = User::where('name','like','%'.$request->name.'%')->pluck('id')->toArray();
             empty($user_ids) && $user_ids = [-1];
         }
 
         // 获取 所有的三级 人员
         $users = DB::table('users')
-            ->whereIn('role',[10])
+            //->whereIn('role',[10])
             ->when(!empty($user_ids), function ($query) use($user_ids){
                 $query->whereIn('id',$user_ids);
             })
