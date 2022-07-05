@@ -97,7 +97,7 @@ class RegisterController extends Controller
         if($new_id = VersionControl::create([
             'version'  => $request->version,
             'version_name' => $request->version_name,
-            'description' => $request->version_name,
+            'description' => $request->description,
             'update_url' => $request->update_url,
             'update_force'=> empty($request->update_force) ? 0:$request->update_force,
             'update_type'=> empty($request->update_type) ? 0:$request->update_type
