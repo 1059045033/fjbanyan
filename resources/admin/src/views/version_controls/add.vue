@@ -12,25 +12,25 @@
         <el-row>
           <el-col :span="24">
             <el-form-item style="margin-bottom: 40px;" prop="version">
-              <MDinput v-model="postForm.version" :maxlength="100" name="name" required>
+              <MDinput v-model="postForm.version" :maxlength="100" name="version" required>
                 版本号
               </MDinput>
             </el-form-item>
 
             <el-form-item style="margin-bottom: 40px;" prop="version_name">
-              <MDinput v-model="postForm.version_name" :maxlength="100" name="name" required>
+              <MDinput v-model="postForm.version_name" :maxlength="100" name="version_name" required>
                 版本名称
               </MDinput>
             </el-form-item>
 
             <el-form-item style="margin-bottom: 40px;" prop="description">
-              <MDinput v-model="postForm.description" :maxlength="100" name="name" required>
+              <MDinput v-model="postForm.description" :maxlength="100" name="description" required>
                 描述
               </MDinput>
             </el-form-item>
 
             <el-form-item style="margin-bottom: 40px;" prop="update_url">
-              <MDinput v-model="postForm.update_url" :maxlength="100" name="name" required>
+              <MDinput v-model="postForm.update_url" :maxlength="100" name="update_url" required>
                 apkUrl
               </MDinput>
             </el-form-item>
