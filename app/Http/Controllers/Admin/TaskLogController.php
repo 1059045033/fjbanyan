@@ -71,7 +71,8 @@ class TaskLogController extends Controller
         $time = time();
         $user_ids = [];
         if(!empty($request->name)){
-            $user_ids = DB::table('users')->whereIn('role',[10])->where('name','like','%'.$request->name.'%')->pluck('id')->toArray();
+            // $user_ids = DB::table('users')->whereIn('role',[10])->where('name','like','%'.$request->name.'%')->pluck('id')->toArray();
+            $user_ids = User::where('name','like','%'.$request->name.'%')->pluck('id')->toArray();
             empty($user_ids) && $user_ids = [-1];
         }
 
