@@ -109,6 +109,29 @@ class MemberController extends Controller
 //        }
     }
 
+    // 上传图片
+    public function uploadeNoSYImage(Request $request){
+        $user = $request->user();
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'type'  => 'required|in:avator,online,task_atlas',
+//            'type2' => 'required'
+        ]);
+//        $type2 = empty($request->input('type2')) ? '':$request->input('type2');
+
+        $code = str_pad(mt_rand(10, 999999), 6, "0", STR_PAD_BOTH);
+        $imageName = $user['id'].'_'.$code.'_'.time().'.'.$request->image->extension();
+
+        $request->image->move(public_path('task_atlas').DIRECTORY_SEPARATOR.date('Ymd'),$imageName);
+        $r_path = public_path('task_atlas').date('Ymd').'/'.$imageName;
+        $face_url = '/task_atlas_no_sy/'.date('Ymd').'/'.$imageName;
+
+        return $this->myResponse([
+            'url' => config('app.url').$face_url,
+            'path' => $face_url
+        ],'图片上传成功',200);
+    }
+
     // 团队列表
     public function teamList(Request $request)
     {

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TaskLog extends Model
+class TaskLogNoSy extends Model
 {
     use HasFactory;
     protected $dateFormat = 'U';
@@ -24,11 +24,6 @@ class TaskLog extends Model
     public function workRegionInfo()
     {
         return $this->belongsTo(WorkRegion::class,'work_region_id','id');
-    }
-
-    public function noSyInfo()
-    {
-        return $this->hasOne(TaskLogNoSy::class,'task_log_id','task_log_id');
     }
 
     public function toArray()
@@ -51,13 +46,13 @@ class TaskLog extends Model
     public function getlist($params=[],$user_id = 0)
     {
         $fillter = [];
-        !empty($user_id) && $fillter['user_id'] = $user_id;
+        //!empty($user_id) && $fillter['user_id'] = $user_id;
         !empty($params['user_id']) && $fillter['user_id'] = $params['user_id'];
-        return self::where($fillter)->when(!empty($params['start_date']), function ($query) use($params){//with('noSyInfo:task_log_id,atlas')->
-                $tt = strtotime($params['start_date']);
-                $data['start'] = strtotime(date('Y-m-d 00:00:00',$tt));
-                $data['end']   = strtotime(date('Y-m-d 23:59:59',$tt));
-                $query->whereBetween('created_at', [$data['start'], $data['end']]);
-                })->select('id as task_log_id','atlas','position','address','is_effective','task_id','type','created_at','content','business_district')->orderByDesc('created_at')->paginate($params['size'] ?? 10);
+        return self::where($fillter)->when(!empty($params['start_date']), function ($query) use($params){
+            $tt = strtotime($params['start_date']);
+            $data['start'] = strtotime(date('Y-m-d 00:00:00',$tt));
+            $data['end']   = strtotime(date('Y-m-d 23:59:59',$tt));
+            $query->whereBetween('created_at', [$data['start'], $data['end']]);
+        })->select('id','atlas','user_id','type')->orderByDesc('created_at')->paginate($params['size'] ?? 10);
     }
 }

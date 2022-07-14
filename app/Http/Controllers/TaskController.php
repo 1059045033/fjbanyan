@@ -6,6 +6,7 @@ use App\Models\Task;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Models\TaskLog;
+use App\Models\TaskLogNoSy;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -161,5 +162,33 @@ class TaskController extends Controller
         return $this->myResponse($list  ,'派发任务列表',200);
     }
 
+
+
+    public function executeNoSY(Request $request)
+    {
+        $user = $request->user();
+        $request->validate([
+            'atlas'   => 'required|array',
+            'task_log_id' => 'required'
+        ]);
+
+        $task_log_id = TaskLogNoSy::create([
+            'user_id'           => $user['id'],
+            'atlas'             => json_encode($request->atlas,JSON_UNESCAPED_SLASHES),
+            'task_log_id'       => empty($request->task_log_id) ? 0:$request->task_log_id,
+            'type'              => empty($request->type) ? 0:$request->type,
+        ])->id;
+
+        return $this->myResponse([],'记录成功',200);
+    }
+
+    public function executeListNoSY(Request $request)
+    {
+        $user = $request->user();
+
+        $list = TaskLogNoSy::getlist($request->all(),$user['id']);
+        return $this->myResponse($list,'执行任务列表-无水印',200);
+
+    }
 
 }
