@@ -190,5 +190,19 @@ class TaskController extends Controller
         return $this->myResponse($list,'执行任务列表-无水印',200);
 
     }
+    public function executeUpdate(Request $request)
+    {
+        $user = $request->user();
+        $request->validate([
+            'task_id'   => 'required',
+            'atlas'   => 'required|array',
+        ]);
+
+        TaskLog::where('id',$request->task_id)->update([
+            'atlas'   => json_encode($request->atlas,JSON_UNESCAPED_SLASHES),
+        ]);
+        return $this->myResponse([],'更新成功',200);
+
+    }
 
 }

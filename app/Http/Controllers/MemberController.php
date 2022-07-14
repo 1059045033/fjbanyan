@@ -81,7 +81,7 @@ class MemberController extends Controller
         $user = $request->user();
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'type'  => 'required|in:avator,online,task_atlas,task_atlas_no_sy'
+            'type'  => 'required|in:avator,online,task_atlas,task_atlas_no_sy,task_atlas_sy'
         ]);
 
         //'status'   => 'required'.($request->input('type') == 'all' ? '':($request->input('type') == 'iscross' ? '|in:-1,0,1,2,3':'|in:0,10,20,30')),
@@ -89,9 +89,13 @@ class MemberController extends Controller
         $imageName = $user['id'].'_'.$code.'_'.time().'.'.$request->image->extension();
 
         $ppp = 'task_atlas';
-        if($request->type)
+        if($request->type == 'task_atlas_no_sy')
         {
             $ppp = 'task_atlas_no_sy';
+
+        }elseif($request->type == 'task_atlas_sy'){
+
+            $ppp = 'task_atlas_sy';
         }
         $request->image->move(public_path($ppp).DIRECTORY_SEPARATOR.date('Ymd'),$imageName);
         $r_path = public_path($ppp).date('Ymd').'/'.$imageName;
