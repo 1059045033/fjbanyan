@@ -169,14 +169,14 @@ class TaskController extends Controller
         $user = $request->user();
         $request->validate([
             'atlas'   => 'required|array',
-            'task_log_id' => 'required'
+//            'task_log_id' => 'required'
         ]);
 
         $task_log_id = TaskLogNoSy::create([
             'user_id'           => $user['id'],
             'atlas'             => json_encode($request->atlas,JSON_UNESCAPED_SLASHES),
             'task_log_id'       => empty($request->task_log_id) ? 0:$request->task_log_id,
-            'type'              => empty($request->type) ? 0:$request->type,
+            'type'              => 0,
         ])->id;
 
         return $this->myResponse([],'记录成功',200);

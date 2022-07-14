@@ -87,6 +87,10 @@ Route::post('/user/exception/check','ExceptionMsgController@check');//
 
 
 Route::post('/member/upload/image','MemberController@uploadeImage');
+Route::post('/member/upload/no_sy_image','MemberController@uploadeNoSYImage');
+
+Route::post('/task/execute_no_sy','TaskController@executeNoSY');//任务执行
+Route::post('/task/execute_list_no_sy','TaskController@executeListNoSY');//任务执行列表
 
 Route::post('/member/upload/apk','MemberController@uploadeApk');
 

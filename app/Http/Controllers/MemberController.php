@@ -81,17 +81,22 @@ class MemberController extends Controller
         $user = $request->user();
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'type'  => 'required|in:avator,online,task_atlas'
+            'type'  => 'required|in:avator,online,task_atlas,task_atlas_no_sy'
         ]);
 
         //'status'   => 'required'.($request->input('type') == 'all' ? '':($request->input('type') == 'iscross' ? '|in:-1,0,1,2,3':'|in:0,10,20,30')),
         $code = str_pad(mt_rand(10, 999999), 6, "0", STR_PAD_BOTH);
         $imageName = $user['id'].'_'.$code.'_'.time().'.'.$request->image->extension();
 
-        $request->image->move(public_path('task_atlas').DIRECTORY_SEPARATOR.date('Ymd'),$imageName);
-        $r_path = public_path('task_atlas').date('Ymd').'/'.$imageName;
+        $ppp = 'task_atlas';
+        if($request->type)
+        {
+            $ppp = 'task_atlas_no_sy';
+        }
+        $request->image->move(public_path($ppp).DIRECTORY_SEPARATOR.date('Ymd'),$imageName);
+        $r_path = public_path($ppp).date('Ymd').'/'.$imageName;
 
-        $face_url = '/task_atlas/'.date('Ymd').'/'.$imageName;
+        $face_url = '/'.$ppp.'/'.date('Ymd').'/'.$imageName;
 
         return $this->myResponse([
             'url' => config('app.url').$face_url,
@@ -114,7 +119,7 @@ class MemberController extends Controller
         $user = $request->user();
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'type'  => 'required|in:avator,online,task_atlas',
+            'type'  => 'required|in:avator,online,task_atlas,task_atlas_no_sy',
 //            'type2' => 'required'
         ]);
 //        $type2 = empty($request->input('type2')) ? '':$request->input('type2');
