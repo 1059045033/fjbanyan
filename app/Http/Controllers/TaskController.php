@@ -10,6 +10,7 @@ use App\Models\TaskLogNoSy;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
 {
@@ -172,13 +173,14 @@ class TaskController extends Controller
 //            'task_log_id' => 'required'
         ]);
 
+
         $task_log_id = TaskLogNoSy::create([
             'user_id'           => $user['id'],
             'atlas'             => json_encode($request->atlas,JSON_UNESCAPED_SLASHES),
             'task_log_id'       => empty($request->task_log_id) ? 0:$request->task_log_id,
             'type'              => 0,
         ])->id;
-
+        Log::channel('daily')->info('executeNoSY-'.$task_log_id.'-'.$user['id'].'-'.json_encode($request->atlas));
         return $this->myResponse([],'记录成功',200);
     }
 
