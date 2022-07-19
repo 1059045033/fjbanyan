@@ -58,6 +58,7 @@ class Test1 extends Command
         $start = Carbon::parse($day)->startOfDay()->timestamp;
         $end   = Carbon::parse($day)->endOfDay()->timestamp;
 
+        echo "补充 {$day} 当天数据 \n";
         foreach ($directories as $k=>$v)
         {
             $logs = DB::table('task_log_no_sies_bak')
@@ -65,7 +66,7 @@ class Test1 extends Command
                 ->whereBetWeen('created_at',[$start,$end])
                 ->select('id')
                 ->get()->toArray();
-
+            echo "用户 {$k} 当天数据 有".count($logs)." 上传的数据有".count($v)."组 \n";
             foreach ($v as $kk=>$vv)
             {
                 $temp = array_shift($logs);
