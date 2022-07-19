@@ -72,7 +72,7 @@ class Test1 extends Command
                 if($temp)
                 {
                     DB::table('task_log_no_sies_bak')
-                        ->where(['user_id'=>$temp['id']])->update([
+                        ->where(['user_id'=>$temp->id])->update([
                             'atlas2' =>json_encode($vv)
                         ]);
                 }
