@@ -14,7 +14,7 @@ class Test1 extends Command
      *
      * @var string
      */
-    protected $signature = 'test:bc';
+    protected $signature = 'test:bc {--day=}';
 
     /**
      * The console command description.
@@ -42,6 +42,11 @@ class Test1 extends Command
     {
         # 获取参数 日期参数
         $day = empty($this->option('day')) ? null:$this->option('day');
+        if(empty($day))
+        {
+            return 0;
+        }
+
         $day2 = date('Ymd',strtotime($day));
 
         #获取目录中的所有图片
@@ -73,9 +78,7 @@ class Test1 extends Command
                 }
             }
         }
-
         return 0;
-
     }
 
     /**
