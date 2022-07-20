@@ -64,8 +64,8 @@ class Test2 extends Command
         foreach ($logs as $k=>$v)
         {
             DB::table('task_log_no_sies')
-                ->where(['id'=>$v['id']])->update([
-                    'atlas' =>$v['atlas']
+                ->where(['id'=>$v->id])->update([
+                    'atlas' =>$v->atlas
                 ]);
         }
         return 0;
