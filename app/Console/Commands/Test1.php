@@ -51,7 +51,7 @@ class Test1 extends Command
 
         #获取目录中的所有图片
         $ppp = 'task_atlas_no_sy';
-        $directories=$this->scanAll(public_path($ppp).DIRECTORY_SEPARATOR.$day2);
+        $directories=$this->scanAll(public_path($ppp).DIRECTORY_SEPARATOR.$day2,$day2);
 
         # 日期的起止时间戳
         //$day   = '2022-07-16';//empty($date_day) ? date('Y-m-d'):$date_day;
@@ -86,7 +86,7 @@ class Test1 extends Command
      * 遍历某个目录下的所有文件
      * @param string $dir
      */
-    function scanAll($dir)
+    function scanAll($dir,$day2)
     {
         $list = array();
         $list[] = $dir;
@@ -111,7 +111,7 @@ class Test1 extends Command
                 //处理当前文件
                 $file = basename($file, ".php");
                 $user_id = explode('_',$file)[0];
-                $res[$user_id][] =  "/task_atlas_no_sy/20220716/".$file;
+                $res[$user_id][] =  "/task_atlas_no_sy/".$day2."/".$file;
             }
         }
 
