@@ -61,7 +61,7 @@ class Test1 extends Command
         echo "补充 {$day} 当天数据 \n";
         foreach ($directories as $k=>$v)
         {
-            $logs = DB::table('task_log_no_sies_bak')
+            $logs = DB::table('task_log_no_sies')
                 ->where(['user_id'=>$k])
                 ->whereBetWeen('created_at',[$start,$end])
                 ->select('id')
@@ -72,9 +72,9 @@ class Test1 extends Command
                 $temp = array_shift($logs);
                 if($temp)
                 {
-                    DB::table('task_log_no_sies_bak')
+                    DB::table('task_log_no_sies')
                         ->where(['id'=>$temp->id])->update([
-                            'atlas2' =>json_encode($vv)
+                            'atlas' =>json_encode($vv)
                         ]);
                 }
             }
