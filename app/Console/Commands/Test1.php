@@ -119,7 +119,7 @@ class Test1 extends Command
         foreach ($final_array as $k => $v){
             $file = basename($v, ".jpg");
             $fff = explode('_',$file);
-            echo $fff[2]."\n";
+            echo date('H:i:s',$fff[2])."\n";
         }
 
         die;
