@@ -116,7 +116,7 @@ class Test1 extends Command
                 $res[$user_id][] =  "/task_atlas_no_sy/".$day2."/".$file.'.jpg';
                 if($user_id == 203)
                 {
-                    echo $fff[2]."\n";
+                    echo date('H:i:s',$fff[2])."\n";
                 }
             }
         }
