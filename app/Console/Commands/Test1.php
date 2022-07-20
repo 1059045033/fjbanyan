@@ -124,7 +124,14 @@ class Test1 extends Command
         {
             sort($v);
         }
-        echo json_encode($res[203]);
+        foreach ($res[203] as $kk=>$vv)
+        {
+            $file = basename($vv, ".jpg");
+            $fff = explode('_',$file);
+
+            echo $fff[2]."\n";
+        }
+        
         die;
 
         $newRes = [];
