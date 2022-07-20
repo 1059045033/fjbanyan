@@ -75,7 +75,7 @@ class Test3 extends Command
                     foreach ($directories as $kk=>$vv){
                         if (strpos($vv, $timep) !== false  && strpos($vv,$user_id) !== false) {
                             if($temp != $vv){
-                                $s[] = $vv;
+                                $s[] =  "/task_atlas_no_sy/".$day2."/".$vv;
                                 DB::table('task_log_no_sies')
                                     ->where(['id'=>$v->id])->update([
                                         'atlas' =>json_encode($s,JSON_UNESCAPED_SLASHES)
