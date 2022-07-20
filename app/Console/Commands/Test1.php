@@ -95,6 +95,36 @@ class Test1 extends Command
         $list[] = $dir;
         $res = [];
 
+        $children = scandir($dir);
+        $img_array = array();
+        $img_dsort = array();
+        $final_array = array();
+
+        foreach ($children as $child)
+        {
+            if ($child !== '.' && $child !== '..')
+            {
+
+                $img_array[] = $dir.'/'.$child;
+                $img_dsort[] = filemtime($dir . '/' . $child);
+            }
+        }
+        $merge_arrays = array_combine($img_dsort, $img_array);
+        krsort($merge_arrays);
+        foreach($merge_arrays as $key => $value)
+        {
+            $final_array[] = $value;
+        }
+
+        foreach ($final_array as $k => $v){
+            $file = basename($v, ".jpg");
+            $fff = explode('_',$file);
+            echo $fff[2]."\n";
+        }
+
+        die;
+
+
         while (count($list) > 0)
         {
             //弹出数组最后一个元素
