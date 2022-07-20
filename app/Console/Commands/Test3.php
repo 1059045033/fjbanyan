@@ -67,10 +67,10 @@ class Test3 extends Command
             $s = json_decode($v->atlas,1);
             if(count($s) == 2){
                 if(!empty($s[1])){
-                    $temp = explode('/',$s[1])[2];
+                    $temp = explode('/',$s[1]);
                     $t = explode('_',$temp);
                     $user_id = $t[0];
-                    $timep = $t[2];
+                    $timep   = $t[2];
                     foreach ($directories as $kk=>$vv){
                         if (strpos($vv, $timep) !== false  && strpos($vv,$user_id) !== false) {
                             if($temp != $vv){
