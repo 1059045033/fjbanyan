@@ -52,7 +52,7 @@ class Test1 extends Command
         #获取目录中的所有图片
         $ppp = 'task_atlas_no_sy';
         $directories=$this->scanAll(public_path($ppp).DIRECTORY_SEPARATOR.$day2,$day2);
-        
+
 
 
         # 日期的起止时间戳
@@ -122,7 +122,7 @@ class Test1 extends Command
           $fff = explode('_',$file);
           $user_id =$fff[0];
           $res[$user_id][] =  "/task_atlas_no_sy/".$day2."/".$file.'.jpg';
-          if($user_id == 203)
+          if($user_id == 167)
           {
               echo date('H:i:s',$fff[2])."\n";
           }
