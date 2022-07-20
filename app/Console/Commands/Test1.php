@@ -110,53 +110,49 @@ class Test1 extends Command
             }
         }
         $merge_arrays = array_combine($img_dsort, $img_array);
-        krsort($merge_arrays);
+        ksort($merge_arrays);
         foreach($merge_arrays as $key => $value)
         {
             $final_array[] = $value;
         }
 
-        foreach ($final_array as $k => $v){
-            $file = basename($v, ".jpg");
-            $fff = explode('_',$file);
-            echo date('H:i:s',$fff[2])."\n";
-        }
+      foreach ($final_array as $k=>$v)
+      {
+          //处理当前文件
+          $file = basename($v, ".jpg");
+          $fff = explode('_',$file);
+          $user_id =$fff[0];
+          $res[$user_id][] =  "/task_atlas_no_sy/".$day2."/".$file.'.jpg';
+          if($user_id == 203)
+          {
+              echo date('H:i:s',$fff[2]);
+          }
+      }
+die;
 
-        die;
-
-
-        while (count($list) > 0)
-        {
-            //弹出数组最后一个元素
-            $file = array_pop($list);
-            //如果是目录
-            if (is_dir($file))
-            {
-                $children = scandir($file);
-                foreach ($children as $child)
-                {
-                    if ($child !== '.' && $child !== '..')
-                    {
-                        $list[] = $file.'/'.$child;
-                    }
-                }
-            }else{
-                //处理当前文件
-                $file = basename($file, ".jpg");
-                $fff = explode('_',$file);
-                $user_id =$fff[0];
-                $res[$user_id][$fff[2]] =  "/task_atlas_no_sy/".$day2."/".$file.'.jpg';
-            }
-        }
-
-        print_r($res[203]);
-        die;
-        # 排序
-        foreach ($res as $k=>&$v)
-        {
-
-        }
-        die;
+//        while (count($list) > 0)
+//        {
+//            //弹出数组最后一个元素
+//            $file = array_pop($list);
+//            //如果是目录
+//            if (is_dir($file))
+//            {
+//                $children = scandir($file);
+//                foreach ($children as $child)
+//                {
+//                    if ($child !== '.' && $child !== '..')
+//                    {
+//                        $list[] = $file.'/'.$child;
+//                    }
+//                }
+//            }else{
+//                //处理当前文件
+//                $file = basename($file, ".jpg");
+//                $fff = explode('_',$file);
+//                $user_id =$fff[0];
+//                $res[$user_id][$fff[2]] =  "/task_atlas_no_sy/".$day2."/".$file.'.jpg';
+//            }
+//        }
 
         $newRes = [];
         foreach ($res as $k=>$v)
