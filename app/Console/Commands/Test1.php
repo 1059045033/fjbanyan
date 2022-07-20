@@ -74,7 +74,7 @@ class Test1 extends Command
                 {
                     DB::table('task_log_no_sies')
                         ->where(['id'=>$temp->id])->update([
-                            'atlas' =>json_encode($vv)
+                            'atlas' =>json_encode($vv,JSON_UNESCAPED_SLASHES)
                         ]);
                 }
             }
