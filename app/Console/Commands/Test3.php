@@ -58,7 +58,7 @@ class Test3 extends Command
         $directories=$this->scanAll(public_path($ppp).DIRECTORY_SEPARATOR.$day2,$day2);
 
         $logs = DB::table('task_log_no_sies')
-            //->whereBetWeen('created_at',[$start,$end])
+            ->whereBetWeen('created_at',[$start,$end])
             ->select('id','user_id','atlas')
             ->get()->toArray();
 
@@ -67,10 +67,11 @@ class Test3 extends Command
             $s = json_decode($v->atlas,1);
             if(count($s) == 2){
                 if(!empty($s[1])){
-                    $temp = explode('/',$s[1]);
+                    $temp = explode('/',$s[1])[3];
                     $t = explode('_',$temp);
                     $user_id = $t[0];
                     $timep   = $t[2];
+                    echo  $user_id.' -- '.$timep."\n";
                     foreach ($directories as $kk=>$vv){
                         if (strpos($vv, $timep) !== false  && strpos($vv,$user_id) !== false) {
                             if($temp != $vv){
