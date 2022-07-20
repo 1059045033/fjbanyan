@@ -111,7 +111,7 @@ class Test1 extends Command
                 //处理当前文件
                 $file = basename($file, ".php");
                 $user_id = explode('_',$file)[0];
-                $res[$user_id][] =  $file;
+                $res[$user_id][] =  "/task_atlas_no_sy/20220716/".$file;
             }
         }
 
