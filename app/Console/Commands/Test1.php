@@ -53,6 +53,7 @@ class Test1 extends Command
         $ppp = 'task_atlas_no_sy';
         $directories=$this->scanAll(public_path($ppp).DIRECTORY_SEPARATOR.$day2,$day2);
 
+        die;
         # 日期的起止时间戳
         //$day   = '2022-07-16';//empty($date_day) ? date('Y-m-d'):$date_day;
         $start = Carbon::parse($day)->startOfDay()->timestamp;
@@ -110,8 +111,13 @@ class Test1 extends Command
             }else{
                 //处理当前文件
                 $file = basename($file, ".jpg");
-                $user_id = explode('_',$file)[0];
+                $fff = explode('_',$file);
+                $user_id =$fff[0];
                 $res[$user_id][] =  "/task_atlas_no_sy/".$day2."/".$file.'.jpg';
+                if($user_id == 203)
+                {
+                    echo $fff[2]."\n";
+                }
             }
         }
 
