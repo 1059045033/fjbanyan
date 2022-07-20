@@ -52,8 +52,7 @@ class Test1 extends Command
         #获取目录中的所有图片
         $ppp = 'task_atlas_no_sy';
         $directories=$this->scanAll(public_path($ppp).DIRECTORY_SEPARATOR.$day2,$day2);
-
-        die;
+        
 
 
         # 日期的起止时间戳
@@ -125,10 +124,10 @@ class Test1 extends Command
           $res[$user_id][] =  "/task_atlas_no_sy/".$day2."/".$file.'.jpg';
           if($user_id == 203)
           {
-              echo date('H:i:s',$fff[2]);
+              echo date('H:i:s',$fff[2])."\n";
           }
       }
-die;
+
 
 //        while (count($list) > 0)
 //        {
@@ -170,32 +169,8 @@ die;
                 $newRes[$k][] = $temp;
             }
         }
-        return $newRes;die;
+        return $newRes;
     }
 
 
-    function dir_size($dir,$url){
-        $dh = @opendir($dir);             //打开目录，返回一个目录流
-        $return = array();
-        $i = 0;
-        while($file = @readdir($dh)){     //循环读取目录下的文件
-            if($file!='.' and $file!='..'){
-                $path = $dir.'/'.$file;     //设置目录，用于含有子目录的情况
-                if(is_dir($path)){
-                }elseif(is_file($path)){
-                    $filesize[] =  round((filesize($path)/1024),2);//获取文件大小
-                    $filename[] = $path;//获取文件名称
-                    $filetime[] = date("Y-m-d H:i:s",filemtime($path));//获取文件最近修改日期
-                    $return[] =  $url.'/'.$file;
-                }
-            }
-        }
-
-        @closedir($dh);             //关闭目录流
-        // array_multisort($filesize,SORT_DESC,SORT_NUMERIC, $return);//按大小排序
-        // array_multisort($filename,SORT_DESC,SORT_STRING, $files);//按名字排序
-         array_multisort($filetime,SORT_DESC,SORT_STRING, $return);//按时间排序
-        return $return;               //返回文件
-
-    }
 }
