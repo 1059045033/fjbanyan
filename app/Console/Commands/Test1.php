@@ -124,7 +124,7 @@ class Test1 extends Command
           $res[$user_id][] =  "/task_atlas_no_sy/".$day2."/".$file.'.jpg';
           if($user_id == 167)
           {
-              echo date('H:i:s',$fff[2])."\n";
+              echo date('H:i:s',$fff[2]).' -- '."http://www.cshimu.top/task_atlas_no_sy/".$day2."/".$file.'.jpg'."\n";
           }
       }
 
