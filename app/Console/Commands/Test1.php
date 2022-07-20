@@ -115,23 +115,17 @@ class Test1 extends Command
                 $file = basename($file, ".jpg");
                 $fff = explode('_',$file);
                 $user_id =$fff[0];
-                $res[$user_id][] =  "/task_atlas_no_sy/".$day2."/".$file.'.jpg';
+                $res[$user_id][$fff[2]] =  "/task_atlas_no_sy/".$day2."/".$file.'.jpg';
             }
         }
 
+        print_r($res[203]);
+        die;
         # 排序
         foreach ($res as $k=>&$v)
         {
-            sort($v);
-        }
-        foreach ($res[203] as $kk=>$vv)
-        {
-            $file = basename($vv, ".jpg");
-            $fff = explode('_',$file);
 
-            echo $fff[2]."\n";
         }
-        
         die;
 
         $newRes = [];
