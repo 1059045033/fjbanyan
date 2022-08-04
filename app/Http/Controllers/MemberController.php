@@ -86,7 +86,9 @@ class MemberController extends Controller
 
         //'status'   => 'required'.($request->input('type') == 'all' ? '':($request->input('type') == 'iscross' ? '|in:-1,0,1,2,3':'|in:0,10,20,30')),
         $code = str_pad(mt_rand(10, 999999), 6, "0", STR_PAD_BOTH);
-        $imageName = $user['id'].'_'.$code.'_'.time().'.'.$request->image->extension();
+        //$imageName = $user['id'].'_'.$code.'_'.time().'.'.$request->image->extension();
+        $company = empty($user->company['name']) ? "未知":$user->company['name'];
+        $imageName = date("YmdHis").'_'.$company.'_'.$user['name'].'_'.$code.'.'.$request->image->extension();
 
         $ppp = 'task_atlas';
         if($request->type == 'task_atlas_no_sy')
