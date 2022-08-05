@@ -88,10 +88,10 @@ class MemberController extends Controller
         $code = str_pad(mt_rand(10, 999999), 6, "0", STR_PAD_BOTH);
         //$imageName = $user['id'].'_'.$code.'_'.time().'.'.$request->image->extension();
         $company = empty($user->company['name']) ? "未知":$user->company['name'];
-        $imageName = date("His").'_'.$user['name'].'_'.$code.'.'.$request->image->extension();
+        $imageName = date("His").'_'.$code.'.'.$request->image->extension();
 
         //$mind = date("Y").DIRECTORY_SEPARATOR.date("m").DIRECTORY_SEPARATOR.date("d").DIRECTORY_SEPARATOR.$company;
-        $mind = date("Y").'/'.date("m").'/'.date("d").'/'.$company;
+        $mind = date("Y").'/'.date("m").'/'.date("d").'/'.$company.'/'.$user['name'].'_'.$user['phone'];
         $ppp = 'task_atlas';
         if($request->type == 'task_atlas_no_sy')
         {
