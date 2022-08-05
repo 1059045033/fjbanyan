@@ -88,8 +88,10 @@ class MemberController extends Controller
         $code = str_pad(mt_rand(10, 999999), 6, "0", STR_PAD_BOTH);
         //$imageName = $user['id'].'_'.$code.'_'.time().'.'.$request->image->extension();
         $company = empty($user->company['name']) ? "未知":$user->company['name'];
-        $imageName = date("YmdHis").'_'.$company.'_'.$user['name'].'_'.$code.'.'.$request->image->extension();
+        $imageName = date("His").'_'.$user['name'].'_'.$code.'.'.$request->image->extension();
 
+        //$mind = date("Y").DIRECTORY_SEPARATOR.date("m").DIRECTORY_SEPARATOR.date("d").DIRECTORY_SEPARATOR.$company;
+        $mind = date("Y").'/'.date("m").'/'.date("d").'/'.$company;
         $ppp = 'task_atlas';
         if($request->type == 'task_atlas_no_sy')
         {
@@ -99,10 +101,10 @@ class MemberController extends Controller
 
             $ppp = 'task_atlas_sy';
         }
-        $request->image->move(public_path($ppp).DIRECTORY_SEPARATOR.date('Ymd'),$imageName);
-        $r_path = public_path($ppp).date('Ymd').'/'.$imageName;
+        $request->image->move(public_path($ppp).DIRECTORY_SEPARATOR.$mind,$imageName);
+        //$r_path = public_path($ppp).date('Ymd').'/'.$imageName;
 
-        $face_url = '/'.$ppp.'/'.date('Ymd').'/'.$imageName;
+        $face_url = '/'.$ppp.'/'.$mind.'/'.$imageName;
 
         return $this->myResponse([
             'url' => config('app.url').$face_url,
