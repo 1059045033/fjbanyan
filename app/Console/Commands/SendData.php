@@ -191,8 +191,8 @@ class SendData extends Command
             Mail::send('email',['params'=>$params],function($message){
                 $to = ['190507753@qq.com','359448144@qq.com','181320651@qq.com','45233506@qq.com','1073043199@qq.com',
                     'lindongbin06487@hellobike.com','guxuanming@hellobike.com','xieyisheng04638@hellobike.com',
-                    'zsejjj@qq.com','huangxiaoqing06@meituan.com','463100532@qq.com','892374558@qq.com','rmb987@126.com',
-                    '756057492@qq.com','756057492@qq.com'];//'190507753@qq.com;hui7893308@126.com';
+                    'zsejjj@qq.com','huangxiaoqing06@meituan.com','892374558@qq.com','rmb987@126.com',
+                    '756057492@qq.com','756057492@qq.com','516293144@qq.com'];//'190507753@qq.com;hui7893308@126.com';,'463100532@qq.com'
                 $message ->to($to)->subject(date('Y-m-d')."打包数据");
             });
             // 返回的一个错误数组，利用此可以判断是否发送成功
